@@ -1,0 +1,49 @@
+version: "3.6"
+
+services:
+
+  database:
+
+    image: varilink/services/database
+
+    container_name: services_database
+
+    command: database
+
+    expose:
+      - "3306"
+
+    ports:
+      - "5523:22"
+
+  reverse_proxy:
+
+    image: varilink/services/reverse_proxy
+
+    container_name: services_reverse_proxy
+
+    depends_on:
+      - wordpress_host
+
+    command: reverse_proxy
+
+    ports:
+      - "80:80"
+      - "5524:22"
+
+  wordpress_host:
+
+    image: varilink/services/wordpress_host
+
+    container_name: services_wordpress_host
+
+    depends_on:
+      - database
+
+    command: wordpress_host
+
+    expose:
+      - "80"
+
+    ports:
+      - "5525:22"

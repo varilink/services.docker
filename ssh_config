@@ -1,0 +1,21 @@
+################################################################################
+# Services Docker Containers
+# If you want to test SSH connection to these containers from your client
+# machine outside of Ansible, then it may be helpful to add these entries to
+# you ~/.ssh/config file. 
+################################################################################
+
+Host services_database
+  HostName localhost
+  Port 5523
+  User user
+
+Host services_reverse_proxy
+  HostName localhost
+  Port 5524
+  User user
+
+Host services_reverse_proxy
+  HostName localhost
+  Port 5525
+  User user

@@ -1,0 +1,51 @@
+version: "3.6"
+
+services:
+
+  backup_director:
+
+    build:
+      context: .
+
+    image: varilink/services
+
+    container_name: services_backup_director
+
+    ports:
+      - "5522:22"
+
+  database:
+
+    build:
+      context: .
+
+    image: varilink/services
+
+    container_name: services_database
+
+    ports:
+      - "5523:22"
+
+  reverse_proxy:
+
+    build:
+      context: .
+
+    image: varilink/services
+
+    container_name: services_reverse_proxy
+
+    ports:
+      - "5524:22"
+
+  wordpress_host:
+
+    build:
+      context: .
+
+    image: varilink/services
+
+    container_name: services_wordpress_host
+
+    ports:
+      - "5525:22"
