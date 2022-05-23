@@ -1,0 +1,26 @@
+version: "3.6"
+
+services:
+
+  ansible:
+    build: ./build/ansible
+    image: varilink/services/client/ansible
+    volumes: ["${PWD}:/playbooks"]
+
+  bconsole:
+    build: ./build/bconsole
+    image: varilink/services/client/bconsole
+
+  cadaver:
+    build: ./build/cadaver
+    image: varilink/services/client/cadaver
+    volumes: ['./config/resolv.conf:/etc/resolv.conf']
+
+  dig:
+    build: ./build/dig
+    image: varilink/services/client/dig
+    volumes: ['./config/resolv.conf:/etc/resolv.conf']
+
+  mysql:
+    build: ./build/mysql
+    image: varilink/services/clients/mysql
