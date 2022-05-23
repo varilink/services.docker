@@ -1,0 +1,10 @@
+---
+- hosts:
+    - services_backup-director
+    - services_backup-storage
+
+  tasks:
+
+    - include_role:
+        name: backup_dropbox
+        tasks_from: exclude.yml

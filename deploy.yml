@@ -1,0 +1,33 @@
+---
+- hosts: all
+  roles: [backup_client]
+
+- hosts: services_database
+  roles: [database]
+
+- hosts: services_backup-director
+  roles: [backup_director]
+
+- hosts: services_backup-storage
+  roles: [backup_storage]
+
+- hosts: services_calendar
+  roles: [calendar]
+
+- hosts: services_dns-internal
+  roles: [dns_internal]
+
+- hosts: services_dns-external
+  roles: [dns_external]
+
+- hosts: services_email-external
+  roles: [email_external]
+
+- hosts: services_email-internal
+  roles: [email_internal]
+
+- hosts: services_reverse-proxy
+  roles: [reverse_proxy]
+
+- hosts: services_wordpress
+  roles: [wordpress]
