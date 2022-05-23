@@ -2,50 +2,92 @@ version: "3.6"
 
 services:
 
-  backup_director:
-
-    build:
-      context: .
-
+  backup-director:
+    build: ./build/sshd
     image: varilink/services
+    container_name: services_backup-director
+    networks:
+      default:
+        ipv4_address: 10.0.0.101
+    volumes: ["backup-director:/var/lib/bacula"]
 
-    container_name: services_backup_director
+  backup-storage:
+    build: ./build/sshd
+    image: varilink/services
+    container_name: services_backup-storage
+    networks:
+      default:
+        ipv4_address: 10.0.0.102
+    volumes: ["backup-storage:/var/lib/bacula"]
 
-    ports:
-      - "5522:22"
+  calendar:
+    build: ./build/sshd
+    image: varilink/services
+    container_name: services_calendar
+    networks:
+      default:
+        ipv4_address: 10.0.0.103
 
   database:
-
-    build:
-      context: .
-
+    build: ./build/sshd
     image: varilink/services
-
     container_name: services_database
+    networks:
+      default:
+        ipv4_address: 10.0.0.104
 
-    ports:
-      - "5523:22"
-
-  reverse_proxy:
-
-    build:
-      context: .
-
+  dns-external:
+    build: ./build/sshd
     image: varilink/services
+    container_name: services_dns-external
+    networks:
+      default:
+        ipv4_address: 10.0.0.105
 
-    container_name: services_reverse_proxy
-
-    ports:
-      - "5524:22"
-
-  wordpress_host:
-
-    build:
-      context: .
-
+  dns-internal:
+    build: ./build/sshd
     image: varilink/services
+    container_name: services_dns-internal
+    hostname: services_dns-internal
+    networks:
+      default:
+        ipv4_address: 10.0.0.106
+    volumes:
+      - ./config/dns-internal-hosts:/etc/hosts
+      - ./config/dns-internal-resolv.conf:/etc/resolv.conf
 
-    container_name: services_wordpress_host
+  email-external:
+    build: ./build/sshd
+    image: varilink/services
+    container_name: services_email-external
+    networks:
+      default:
+        ipv4_address: 10.0.0.107
 
-    ports:
-      - "5525:22"
+  email-internal:
+    build: ./build/sshd
+    image: varilink/services
+    container_name: services_email-internal
+    networks:
+      default:
+        ipv4_address: 10.0.0.108
+
+  reverse-proxy:
+    build: ./build/sshd
+    image: varilink/services
+    container_name: services_reverse-proxy
+    networks:
+      default:
+        ipv4_address: 10.0.0.109
+
+  wordpress:
+    build: ./build/sshd
+    image: varilink/services
+    container_name: services_wordpress
+    networks:
+      default:
+        ipv4_address: 10.0.0.110
+
+volumes:
+  backup-director:
+  backup-storage:

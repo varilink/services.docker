@@ -2,48 +2,83 @@ version: "3.6"
 
 services:
 
+  backup-director:
+    image: varilink/services/backup-director
+    depends_on: [database]
+    command: backup-director
+    # Creation of Bacula MySQL tables requires that the database service is
+    # ready. Since there can be a delay until that is the case, we need to
+    # restart after any initial failure.
+    restart: on-failure
+    expose:
+      - "9101" # bacula director
+      - "9102" # bacula file daemon
+
+  backup-storage:
+    image: varilink/services/backup-storage
+    command: backup-storage
+    expose:
+      - "9102" # bacula file daemon
+      - "9103" # bacula storage daemon
+
+  calendar:
+    image: varilink/services/calendar
+    command: calendar
+    expose:
+      - "5232" # caldav
+      - "9102" # bacula file daemon
+
   database:
-
     image: varilink/services/database
-
-    container_name: services_database
-
     command: database
-
     expose:
-      - "3306"
+      - "3306" # mysql
+      - "9102" # bacula file daemon
 
-    ports:
-      - "5523:22"
+  dns-internal:
+    image: varilink/services/dns-internal
+    command: dns-internal
+    expose: ["53", "9102"] # dns and the bacula file daemon
+#    networks:
+#      custom:
+#        ipv4_address: 10.0.0.106
+#    privileged: true
 
-  reverse_proxy:
-
-    image: varilink/services/reverse_proxy
-
-    container_name: services_reverse_proxy
-
-    depends_on:
-      - wordpress_host
-
-    command: reverse_proxy
-
-    ports:
-      - "80:80"
-      - "5524:22"
-
-  wordpress_host:
-
-    image: varilink/services/wordpress_host
-
-    container_name: services_wordpress_host
-
-    depends_on:
-      - database
-
-    command: wordpress_host
-
+  dynamic-dns:
+    image: varilink/services/dynamic-dns
     expose:
-      - "80"
+      - "9102" # bacula file daemon
 
+  email-external:
+    image: varilink/services/email-external
+    command: email-external
+    expose:
+      - "25" # smtp
+      - "993" # imap
+      - "9102" # bacula file daemon
+
+  email-internal:
+    image: varilink/services/email-internal
+    container_name: services_email-internal
+    command: email-internal
+    expose:
+      - "9102" # bacula file daemon
     ports:
-      - "5525:22"
+      - "5529:22" # ssh
+      - "5626:25" # smtp
+      - "5994:993" # imap
+
+  reverse-proxy:
+    image: varilink/services/reverse-proxy
+    container_name: services_reverse-proxy
+    depends_on: [wordpress]
+    command: reverse-proxy
+    ports: ["80:80", "5530:22"]
+
+  wordpress:
+    image: varilink/services/wordpress
+    container_name: services_wordpress
+    depends_on: [database]
+    command: wordpress
+    expose: ["80"]
+    ports: ["5531:22"]
