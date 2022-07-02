@@ -1,1 +1,4 @@
-authorized_keys
+# Ansible retry files
+/*.retry
+# Any variable file containing sensitive values
+private.yml
