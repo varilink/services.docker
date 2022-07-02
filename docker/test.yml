@@ -4,8 +4,8 @@ services:
 
   backup-director:
     image: varilink/services/backup-director
-    depends_on: [database]
-    command: backup-director
+    depends_on: [database-internal]
+    command: backup
     # Creation of Bacula MySQL tables requires that the database service is
     # ready. Since there can be a delay until that is the case, we need to
     # restart after any initial failure.
@@ -14,13 +14,6 @@ services:
       - "9101" # bacula director
       - "9102" # bacula file daemon
 
-  backup-storage:
-    image: varilink/services/backup-storage
-    command: backup-storage
-    expose:
-      - "9102" # bacula file daemon
-      - "9103" # bacula storage daemon
-
   calendar:
     image: varilink/services/calendar
     command: calendar
@@ -28,24 +21,42 @@ services:
       - "5232" # caldav
       - "9102" # bacula file daemon
 
-  database:
-    image: varilink/services/database
+  database-external:
+    image: varilink/services/database-external
     command: database
     expose:
       - "3306" # mysql
       - "9102" # bacula file daemon
 
+  database-internal:
+    image: varilink/services/database-internal
+    command: database
+    expose:
+      - "3306" # mysql
+      - "9102" # bacula file daemon
+
+  dns-external:
+    image: varilink/services/dns-external
+    command: dns
+    expose:
+      - "53" # dns
+      - "9102" # bacula file daemon
+
   dns-internal:
     image: varilink/services/dns-internal
-    command: dns-internal
-    expose: ["53", "9102"] # dns and the bacula file daemon
-#    networks:
-#      custom:
-#        ipv4_address: 10.0.0.106
-#    privileged: true
+    command: dns
+    expose:
+      - "53" # dns
+      - "9102" # bacula file daemon
 
   dynamic-dns:
     image: varilink/services/dynamic-dns
+    command: dynamic-dns
+    expose:
+      - "9102" # bacula file daemon
+
+  email-certificates:
+    image: varilink/services/email-certificates
     expose:
       - "9102" # bacula file daemon
 
@@ -68,17 +79,32 @@ services:
       - "5626:25" # smtp
       - "5994:993" # imap
 
-  reverse-proxy:
-    image: varilink/services/reverse-proxy
-    container_name: services_reverse-proxy
-    depends_on: [wordpress]
+  reverse-proxy-external:
+    image: varilink/services/reverse-proxy-external
+    container_name: services_reverse-proxy-external
+    depends_on: [wordpress-external]
     command: reverse-proxy
     ports: ["80:80", "5530:22"]
 
-  wordpress:
-    image: varilink/services/wordpress
-    container_name: services_wordpress
-    depends_on: [database]
+  reverse-proxy-internal:
+    image: varilink/services/reverse-proxy-internal
+    container_name: services_reverse-proxy-internal
+    depends_on: [wordpress-internal]
+    command: reverse-proxy
+    ports: ["80:80", "5530:22"]
+
+  wordpress-external:
+    image: varilink/services/wordpress-external
+    container_name: services_wordpress-external
+    depends_on: [database-external]
+    command: wordpress
+    expose: ["80"]
+    ports: ["5531:22"]
+
+  wordpress-internal:
+    image: varilink/services/wordpress-internal
+    container_name: services_wordpress-internal
+    depends_on: [database-internal]
     command: wordpress
     expose: ["80"]
     ports: ["5531:22"]
