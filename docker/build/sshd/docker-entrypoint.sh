@@ -12,33 +12,35 @@ then
 
 else
 
-  # A command line parameter was provided. This is the case
-  #, bring SSH up in the background and whatever
-  # command is indicated by the command line parameter in the foreground.
-
-  /usr/sbin/sshd -D &
   # We don't run systemd in container so apt will not have created /run/bacula
   if [[ ! -d "/run/bacula" ]]
   then
     mkdir /run/bacula
     chown bacula:bacula /run/bacula
   fi
-  /usr/sbin/bacula-fd -f &
+  bacula-fd
 
-  if [[ $1 = "backup-director" ]]
+  # A command line parameter was provided. This is the case
+  #, bring SSH up in the background and whatever
+  # command is indicated by the command line parameter in the foreground.
+
+  if [[ $1 != 'email-certificates' ]]
+  then
+    /usr/sbin/sshd
+  fi
+
+  if [[ $1 == "backup" ]]
   then
 
+    bacula-sd
+
     /usr/share/bacula-director/make_mysql_tables                               \
-      --host=services_database.services_default                                \
+      --host=database-internal                                                 \
       --user=bacula                                                            \
       --password=bacula                                                        \
       bacula
-    exec gosu bacula /usr/sbin/bacula-dir -f
 
-  elif [[ $1 == "backup-storage" ]]
-  then
-
-    exec gosu bacula /usr/sbin/bacula-sd -f
+    exec gosu bacula bacula-dir -f
 
   elif [[ $1 == "calendar" ]]
   then
@@ -48,24 +50,32 @@ else
   elif [[ $1 == "database" ]]
   then
 
-    exec /usr/bin/mysqld_safe
+    exec mysqld_safe
 
-  elif [[ $1 == "dns-internal" ]]
+  elif [[ $1 == "dns" ]]
   then
 
-    exec dnsmasq -d
+    exec dnsmasq --no-daemon
+
+  elif [[ $1 == "dynamic-dns" ]]
+  then
+
+    rsyslogd # start the syslog daemon
+    cron # start the cron daemon
+    exec tail -f /var/log/syslog # tail syslog to the Docker sysout
 
   elif [[ $1 == "email-external" ]]
   then
 
-    /usr/sbin/exim4 -bd &
-    exec /usr/sbin/dovecot -F
+    exim4 -bd
+    exec dovecot -F
 
   elif [[ $1 == 'email-internal' ]]
   then
 
-    /usr/sbin/exim4 -bd &
-    exec /usr/sbin/dovecot -F
+    exim4 -bd
+    /etc/init.d/fetchmail
+    exec dovecot -F
 
   elif [[ $1 == "reverse-proxy" ]]
   then

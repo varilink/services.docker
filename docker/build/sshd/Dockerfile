@@ -1,6 +1,5 @@
-# At the current time, Debian Buster has just transitioned to old stable, i.e.
-# an upgrade is needed.
-FROM debian:buster
+ARG RELEASE=buster
+FROM debian:$RELEASE
 
 # Create a bare minimum image containing only what is necessary for Ansible to
 # start building out containers based on this image.
@@ -15,16 +14,18 @@ RUN                                                                            \
   apt-get --yes --no-install-recommends install                                \
     makepasswd                                                                 \
     openssh-server                                                             \
-    python-minimal                                                             \
-    python-setuptools                                                          \
+    python3-apt                                                                \
+    python3-minimal                                                            \
+    python3-setuptools                                                         \
     rsync                                                                      \
+    rsyslog                                                                    \
     sudo                                                                    && \
   mkdir /run/sshd                                                           && \
-  useradd --create-home user --password `echo -n password                      \
+  useradd --create-home username1 --password `echo -n userpass1                \
     | makepasswd --crypt --clearfrom - | tr --squeeze-repeats ' '              \
     | cut --delimiter=' ' --fields=2`                                       && \
-  usermod --shell /bin/bash user                                            && \
-  usermod -a -G sudo user                                                   && \
+  usermod --shell /bin/bash username1                                       && \
+  usermod -a -G sudo username1                                              && \
   sed -i                                                                       \
     's/^%sudo\tALL=(ALL:ALL) ALL$/%sudo\tALL=(ALL:ALL) NOPASSWD:ALL/'          \
     /etc/sudoers
