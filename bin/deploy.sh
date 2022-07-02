@@ -11,17 +11,8 @@ for service in $services
 do
 
   if [ "$service" == "backup-director" ]
-   then
-     docker volume rm services_backup-director
-  elif [ "$service" == "backup-storage" ]
-    then
-      docker volume rm services_backup-storage
-  elif [ "$service" == "dns-internal" ]
-   then
-     cp ./docker/config/original-dns-internal-hosts                            \
-       ./docker/config/dns-internal-hosts
-     cp ./docker/config/original-dns-internal-resolv.conf                      \
-       ./docker/config/dns-internal-resolv.conf
+  then
+    docker volume rm services_backup
   fi
 
 done
