@@ -19,7 +19,10 @@ services:
   dig:
     build: ./build/dig
     image: varilink/services/client/dig
-    volumes: ['./config/resolv.conf:/etc/resolv.conf']
+
+  mutt:
+    build: ./build/mutt
+    image: varilink/services/client/mutt
 
   mysql:
     build: ./build/mysql
