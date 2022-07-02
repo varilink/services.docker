@@ -14,7 +14,6 @@ services:
   cadaver:
     build: ./build/cadaver
     image: varilink/services/client/cadaver
-    volumes: ['./config/resolv.conf:/etc/resolv.conf']
 
   dig:
     build: ./build/dig
