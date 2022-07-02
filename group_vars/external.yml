@@ -1,0 +1,18 @@
+dns_resolvers: [10.0.0.105]
+
+#-------------------------------------------------------------------------------
+# Email
+#-------------------------------------------------------------------------------
+
+# Exim configuration
+# ------------------
+# Settings for the /etc/exim4/update-exim4.conf file
+
+# All hosts on the external to office network (Internet) with the exception of
+# the external email server use the external email server as a smarthost. The
+# external email server itself uses multiple smarthosts, one for each sender
+# domain that it supports.
+exim_smarthosts:
+  - hostname: email-external
+    username: username1
+    userpass: userpass1

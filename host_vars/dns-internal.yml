@@ -1,0 +1,17 @@
+ansible_host: 10.0.0.106
+
+backup_client_director_password: F95SHRgJYGMpZnjKe6u5rj4Es97atgXYC
+backup_client_monitor_password: TY594Lug5Ztqf55PMPJPpha4gcFVtrXNj
+
+
+
+
+
+
+
+
+
+
+dns_resolvers: [127.0.0.1]
+dns_internal_upstream_nameservers:
+  - 10.0.0.105

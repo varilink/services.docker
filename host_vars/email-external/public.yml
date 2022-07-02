@@ -1,0 +1,34 @@
+ansible_host: 10.0.0.109
+
+backup_client_director_password: PhNMsZ2Lz3Y4PE5nz6R3Vhfa5NAYYWNKN
+backup_client_monitor_password: HLm9XNZG6scme88Y3AXb6KBYqTwWwREbr
+
+#-------------------------------------------------------------------------------
+# Email
+#-------------------------------------------------------------------------------
+
+# Exim configuration
+# ------------------
+# Settings for the /etc/exim4/update-exim4.conf.conf file
+
+# Listen on port 25 for any process on this host itself that wishes to send
+# emails and ports 25, 465 and 587 for any remote client SMTP connections.
+exim_local_interfaces: >-
+  <;
+  [127.0.0.1]:25;
+  [10.0.0.109]:25; [10.0.0.109]:465; [10.0.0.109]:587
+# Relay emails for the internal email server. The other external hosts that
+# connect to me will only be sending emails to addresses in the home domain.
+exim_relay_nets: 10.0.0.110
+
+# Note that the exim_smarthosts variable for this host is provided in a private
+# file. The smarthosts that we use for testing here are the same as those that
+# we use for live, so we don't commit them to Git. The variable is an array of
+# dictionary objects, with each dictionary object containing keys as follows:
+# - domain = the sender domain that the smarthost corresponds to
+# - hostname = the smarthost's hostname
+# - port = the port number to connect to the smarthost on
+# - username = the username to connect to the smarthost as
+# - userpass = the password to use when connecting to the smarthost
+# See the smarthosts.yml tasks and the smarthosts.j2 template within the
+# email_external role.

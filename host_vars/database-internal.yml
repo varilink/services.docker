@@ -1,0 +1,18 @@
+ansible_host: 10.0.0.104
+
+backup_client_director_password: G3DQDBGSwnMJMFkhavxBELzbaZUAk4Lhr
+backup_client_monitor_password: urJz4R6VX7nYXgGzgc8k4EURsavy8Fjfx
+
+
+
+
+
+
+
+
+
+
+
+
+database_expose_externally: True
+database_root_password: ;9s"c38/8R[vuR<7

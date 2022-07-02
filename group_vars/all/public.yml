@@ -1,0 +1,140 @@
+# Ansible connection
+ansible_user: username1
+# TODO: Use SSH certificates for live deployment so convert to that here.
+ansible_ssh_pass: userpass1
+ansible_ssh_extra_args: >-
+  -o StrictHostKeyChecking=no
+  -o UserKnownHostsFile=/dev/null
+  -o LogLevel=QUIET
+
+#-------------------------------------------------------------------------------
+# environment
+#-------------------------------------------------------------------------------
+home_domain: varilink.co.uk
+office_subnet: 10.0.0.0/24
+unsafe_writes: yes
+# Encrypted passwords generated using:
+# `echo -n userpass | makepasswd --crypt --clearfrom -`
+# where userpass = userpass1 or userpass2
+admin_user:
+  username: username1
+  userpass: userpass1
+  userpass_encrypted: CAnDPdDzAIx8k
+other_users:
+  - username: username2
+    userpass: userpass2
+    userpass_encrypted: O8ywdoQ6wehJg
+  - username: username3
+    userpass: userpass3
+    userpass_encrypted: O8ywdoQ6wehJg
+
+#-------------------------------------------------------------------------------
+# backup
+#-------------------------------------------------------------------------------
+
+# The name by which the bacula director knows and identifies itself.
+backup_director_name: services_backup_director
+# The password for bacula console to connect to the bacula director.
+backup_director_console_password: TcDZJfHhmC8CkEe7bAVcAPfPkGgYrpXp7
+# The name by which the bacula monitor knows and identifies itself.
+backup_monitor_name:  services_backup_monitor
+# The host of the backup director, which is permitted to connect to the bacula
+# database. It looks to me as if when the backup director tries to connect
+# MariaDB does a reverse DNS lookup for the name of the host that is trying to
+# connect and somehow (I'm not sure how) it receives a response from the builtin
+# Docker DNS service, which knows the host by this combination of container
+# name and network name.
+backup_director_host: services_backup-director.services_default
+
+# Override the default whereby scheduled jobs would be automatically run.
+backup_director_schedules_active: false
+# Override the default folder for off-site copies.
+backup_copy_folder: bacula-test
+
+# The host and user credentials for the bacula database.
+backup_database_host: database-internal
+backup_database_password: bacula
+backup_database_username: bacula
+
+# Storage daemon
+# --------------
+
+# The name of the storage daemon, which is a required directive for the bacula
+# storage daemon configuration. I can't see that this has to be known by either
+# the bacula director or the bacula file daemons so I'm usure of its purpose.
+# Maybe it's just the name by which the bacula storage daemon knows itself.
+backup_storage_name: services_backup_storage
+
+
+
+
+# The hostname for the bacula storage daemon.
+backup_storage_host: backup-director
+# The password that must be supplied to connect to the bacula storage daemon.
+backup_storage_password: Ffjqa8w4TuNyLhKbFcht8aJeK5EcRYAn5
+
+#-------------------------------------------------------------------------------
+# Email
+#-------------------------------------------------------------------------------
+
+# When testing uses containers, we often tear-down and recreate the containers
+# over and over again. If we're integrating with Let's Encrypt, this can easily
+# lead to hitting their usage constraints. For this reason we override the
+# default behaviour of the email_certificates and domain_email_certificates
+# roles, which is to integrate with Let's Encrypt. To specifically test the
+# Let's Encrypt integration, use --extra-vars flag to set this variable back to
+# true when running the hosts.yml and domain.yml playbooks.
+email_uses_ca: false
+
+# Exim configuration
+# ------------------
+# Settings for the /etc/exim4/update-exim4.conf.conf file
+
+# Settings that are common to all hosts with the exception of the internal and
+# external email servers. Those hosts override some of these settings
+# accordingly.
+exim_configtype: satellite
+exim_other_hostnames: ''
+exim_local_interfaces: 127.0.0.1
+exim_readhost: varilink.co.uk
+exim_use_split_config: 'false'
+exim_hide_mailname: 'true'
+exim_localdelivery: mail_spool
+
+
+
+
+
+
+
+
+
+
+
+
+dynamic_dns_crontab_stride: 5
+
+
+
+
+dns_linode_base_url: https://api.linode.com/v4/domains
+
+
+
+
+
+
+mail_domains:
+  - example1.com
+  - example2.com
+
+email_admin_address: postmaster@varilink.co.uk
+
+
+
+
+
+dns_internal_ip_address: 10.0.0.106
+#database_listen_ip: 0.0.0.0
+#reverse_proxy_ssl: false
+#wordpress_host_listen_ip: 0.0.0.0

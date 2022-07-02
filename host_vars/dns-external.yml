@@ -1,0 +1,22 @@
+ansible_host: 10.0.0.105
+
+backup_client_director_password: nRX5L6cR99jAALbYxJpJzztMVABGVvTEY
+backup_client_monitor_password: RadwH4ZccAGYZYxZyg8fUfeT5fJ6MvNd5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+dns_group: external
+dns_resolvers: [127.0.0.1]
+dns_internal_upstream_nameservers:
+  - 192.168.1.1
