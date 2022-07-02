@@ -1,0 +1,9 @@
+- hosts: all
+  roles: [dns_client]
+
+- hosts: database-internal
+  tasks:
+
+    - import_role:
+        name: database
+        tasks_from: bacula
