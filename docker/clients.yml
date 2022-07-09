@@ -2,11 +2,6 @@ version: "3.6"
 
 services:
 
-  ansible:
-    build: ./build/ansible
-    image: varilink/services/client/ansible
-    volumes: ["${PWD}:/playbooks"]
-
   bconsole:
     build: ./build/bconsole
     image: varilink/services/client/bconsole
@@ -19,10 +14,10 @@ services:
     build: ./build/dig
     image: varilink/services/client/dig
 
+  lynx:
+    build: ./build/lynx
+    image: varilink/services/client/lynx
+
   mutt:
     build: ./build/mutt
     image: varilink/services/client/mutt
-
-  mysql:
-    build: ./build/mysql
-    image: varilink/services/clients/mysql
