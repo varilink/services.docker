@@ -18,7 +18,7 @@ function services {
   backup='backup-director database-internal dns-external dns-internal'
   # Docker Compose services that combine to deliver the calendar composite
   # service.
-  calendar='calendar'
+  calendar='caldav dns-external dns-internal'
   # Docker Compose services that combine to deliver the dns composite service.
   dns='dns-external dns-internal'
   # Docker Compose services that combine to deliver the dynamic_dns composite

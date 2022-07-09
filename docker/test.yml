@@ -10,101 +10,63 @@ services:
     # ready. Since there can be a delay until that is the case, we need to
     # restart after any initial failure.
     restart: on-failure
-    expose:
-      - "9101" # bacula director
-      - "9102" # bacula file daemon
 
-  calendar:
-    image: varilink/services/calendar
+  caldav:
+    image: varilink/services/caldav
     command: calendar
-    expose:
-      - "5232" # caldav
-      - "9102" # bacula file daemon
 
   database-external:
     image: varilink/services/database-external
     command: database
-    expose:
-      - "3306" # mysql
-      - "9102" # bacula file daemon
 
   database-internal:
     image: varilink/services/database-internal
     command: database
-    expose:
-      - "3306" # mysql
-      - "9102" # bacula file daemon
 
   dns-external:
     image: varilink/services/dns-external
     command: dns
-    expose:
-      - "53" # dns
-      - "9102" # bacula file daemon
 
   dns-internal:
     image: varilink/services/dns-internal
     command: dns
-    expose:
-      - "53" # dns
-      - "9102" # bacula file daemon
 
   dynamic-dns:
     image: varilink/services/dynamic-dns
     command: dynamic-dns
-    expose:
-      - "9102" # bacula file daemon
 
   email-certificates:
     image: varilink/services/email-certificates
-    expose:
-      - "9102" # bacula file daemon
 
   email-external:
     image: varilink/services/email-external
     command: email-external
-    expose:
-      - "25" # smtp
-      - "993" # imap
-      - "9102" # bacula file daemon
 
   email-internal:
     image: varilink/services/email-internal
     container_name: services_email-internal
     command: email-internal
-    expose:
-      - "9102" # bacula file daemon
-    ports:
-      - "5529:22" # ssh
-      - "5626:25" # smtp
-      - "5994:993" # imap
 
   reverse-proxy-external:
     image: varilink/services/reverse-proxy-external
     container_name: services_reverse-proxy-external
     depends_on: [wordpress-external]
     command: reverse-proxy
-    ports: ["80:80", "5530:22"]
 
   reverse-proxy-internal:
     image: varilink/services/reverse-proxy-internal
     container_name: services_reverse-proxy-internal
     depends_on: [wordpress-internal]
     command: reverse-proxy
-    ports: ["80:80", "5530:22"]
 
   wordpress-external:
     image: varilink/services/wordpress-external
     container_name: services_wordpress-external
     depends_on: [database-external]
     command: wordpress
-    expose: ["80"]
-    ports: ["5531:22"]
 
   wordpress-internal:
     image: varilink/services/wordpress-internal
     container_name: services_wordpress-internal
     depends_on: [database-internal]
     command: wordpress
-    expose: ["80"]
-    ports: ["5531:22"]

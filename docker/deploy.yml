@@ -12,11 +12,11 @@ services:
         ipv4_address: 10.0.0.101
     volumes: ["backup:/var/lib/bacula"]
 
-  calendar:
+  caldav:
     build: ./build/sshd
     image: varilink/services:$RELEASE
-    container_name: services_calendar
-    hostname: calendar
+    container_name: services_caldav
+    hostname: caldav
     networks:
       default:
         ipv4_address: 10.0.0.102
