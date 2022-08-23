@@ -1,9 +1,31 @@
+# Playbook to run after switching from "for deploy" to "for test" mode when
+# using this repository; see:
+# https://github.com/varilink/services-docker#completing-the-host-role-deployment
+# for an explanation of why.
+
+---
+
+# Reapply the dns_client role to all hosts so that the /etc/hosts and
+# /etc/resolv.conf files are restored to the desired content. Docker will
+# overwrite the changes that we applied in "for deploy" mode when the Docker
+# Compose services are brought up again in "for test" mode.
 - hosts: all
   roles: [dns_client]
 
+# Reapply the calendar role to the caldav host so that the required user
+# calendars are created. This will have been skipped when the Docker Compose
+# services were in "for deploy" mode since the Radicale service wasn't running
+# at that point and we use the Radicale service to create the calendars.
+- hosts: caldav
+  roles: [calendar]
+
+# Apply the tasks that create the required bacula database and user account from
+# the database role to the database-internal host, which hosts the bacula
+# database. This will have been skipped when the Docker Compose services were in
+# "for deploy" mode since the MariaDB service wasn't running at that point and
+# we use that service to create the bacula database and user account.
 - hosts: database-internal
   tasks:
-
     - import_role:
         name: database
         tasks_from: bacula
