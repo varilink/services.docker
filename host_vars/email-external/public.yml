@@ -13,13 +13,13 @@ backup_client_monitor_password: HLm9XNZG6scme88Y3AXb6KBYqTwWwREbr
 
 # Listen on port 25 for any process on this host itself that wishes to send
 # emails and ports 25, 465 and 587 for any remote client SMTP connections.
-exim_local_interfaces: >-
+email_exim_local_interfaces: >-
   <;
   [127.0.0.1]:25;
   [10.0.0.109]:25; [10.0.0.109]:465; [10.0.0.109]:587
 # Relay emails for the internal email server. The other external hosts that
 # connect to me will only be sending emails to addresses in the home domain.
-exim_relay_nets: 10.0.0.110
+email_exim_relay_nets: 10.0.0.110
 
 # Note that the exim_smarthosts variable for this host is provided in a private
 # file. The smarthosts that we use for testing here are the same as those that

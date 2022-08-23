@@ -1,0 +1,16 @@
+ansible_host: 10.0.0.111
+
+backup_client_director_password: wMa9JX64qqt3IvFKvsy8f5OWY6sZeCigU
+backup_client_monitor_password: F2FQu882K9Of01L7M3mnc5VnJfgJth3l6
+
+# internet site; mail is sent and received directly using SMTP
+email_exim_configtype: internet
+# hide mailname isn't relevant for config type "internet"
+email_exim_hide_mailname: ''
+# listen for connections on all available network interfaces
+email_exim_local_interfaces: ''
+email_exim_smarthosts: []
+# mailname
+email_exim_mailname: other.com
+email_exim_readhost: ''
+email_exim_relay_nets: "{{ office_subnet }}"

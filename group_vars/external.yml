@@ -12,7 +12,7 @@ dns_resolvers: [10.0.0.105]
 # the external email server use the external email server as a smarthost. The
 # external email server itself uses multiple smarthosts, one for each sender
 # domain that it supports.
-exim_smarthosts:
+email_exim_smarthosts:
   - hostname: email-external
     username: username1
     userpass: userpass1
