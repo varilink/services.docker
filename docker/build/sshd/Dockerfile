@@ -12,20 +12,19 @@ FROM debian:$RELEASE
 RUN                                                                            \
   apt-get update                                                            && \
   apt-get --yes --no-install-recommends install                                \
-    makepasswd                                                                 \
     openssh-server                                                             \
     python3-apt                                                                \
     python3-minimal                                                            \
     python3-setuptools                                                         \
     rsync                                                                      \
     rsyslog                                                                    \
-    sudo                                                                    && \
+    sudo                                                                       \
+    whois                                                                   && \
   mkdir /run/sshd                                                           && \
-  useradd --create-home username1 --password `echo -n userpass1                \
-    | makepasswd --crypt --clearfrom - | tr --squeeze-repeats ' '              \
-    | cut --delimiter=' ' --fields=2`                                       && \
-  usermod --shell /bin/bash username1                                       && \
-  usermod -a -G sudo username1                                              && \
+  useradd --create-home user1fname                                             \
+    --password `mkpasswd --method=md5 user1passwd`                          && \
+  usermod --shell /bin/bash user1fname                                      && \
+  usermod -a -G sudo user1fname                                             && \
   sed -i                                                                       \
     's/^%sudo\tALL=(ALL:ALL) ALL$/%sudo\tALL=(ALL:ALL) NOPASSWD:ALL/'          \
     /etc/sudoers

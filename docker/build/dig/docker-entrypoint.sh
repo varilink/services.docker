@@ -13,11 +13,11 @@ shift
 
 if [[ "$scope" == 'external' ]]; then
 
-  exec dig @10.0.0.106 $@
+  exec dig @10.0.0.105 $@
 
 elif [[ "$scope" == 'internal' ]]; then
 
-  exec dig @10.0.0.107 $@
+  exec dig @10.0.0.106 $@
 
 else
 
