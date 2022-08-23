@@ -1,7 +1,0 @@
-- hosts: dns-api
-  roles:
-    - role: domain_email_certificates
-      vars:
-        email_domain: derbyartsandtheatre.org.uk
-        email_domain_organisation: Derby Arts and Theatre Association
-        email_domain_uses_ca: false

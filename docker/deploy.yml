@@ -1,6 +1,37 @@
-version: "3.6"
+version: "3.7"
+
+networks:
+
+  # We use the IPAM driver to allocate a subnet. Service hosts are then
+  # allocated fixed IP addresses from 10.0.0.101 and test clients are allowed
+  # to pick up dynamically allocated IP addresses from the Docker DHCP service.
+  #
+  # The services here simulate a hybird server estate combining on-premise or
+  # office hosted servers (internal) with servers provided by our Cloud, virtual
+  # server hosting provider (external). In the comments for the service
+  # definitions that follow we make reference to the network location of each
+  # service.
+  #
+  # We don't simulate that network separation in this Docker Compose project as
+  # to do so would add complexity without serving any practical purpose.
+
+  default:
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
 
 services:
+
+  # The components of the backup service, if you ignore the backup file daemon
+  # service that must run on every host that is backed up.
+  #
+  # The backup-director service combines a bacula director and bacula storage
+  # daemon because my integration with Dropbox forces these services to be
+  # co-hosted, until and unless I can find a workaround to this - see:
+  # https://github.com/varilink/libraries-ansible/issues/2
+  #
+  # The database holds the backup catalogue. These services are hosted on the
+  # internal network.
 
   backup-director:
     build: ./build/sshd
@@ -12,6 +43,19 @@ services:
         ipv4_address: 10.0.0.101
     volumes: ["backup:/var/lib/bacula"]
 
+  database-internal:
+    build: ./build/sshd
+    image: varilink/services:$RELEASE
+    container_name: services_database-internal
+    hostname: database-internal
+    networks:
+      default:
+        ipv4_address: 10.0.0.104
+
+  # Calendar (including task lists) service hosted on the internal network. We
+  # use the name caldav here to avoid a name clash between the host name and the
+  # calendar Ansible group.
+
   caldav:
     build: ./build/sshd
     image: varilink/services:$RELEASE
@@ -20,6 +64,34 @@ services:
     networks:
       default:
         ipv4_address: 10.0.0.102
+
+  # WordPress stack (reverse proxy, WordPress and database) hosted on the
+  # external network. Here the stack is deploy across separate containers for
+  # each layer, as is natural in a container environment. In our server estate
+  # we usually combine them on a single server.
+  #
+  # We could drop the "external" suffix on the reverse proxy and WordPress
+  # services here without causing a name clash within Docker Compose services
+  # but retaining it avoids a name clash between Ansible hosts and Ansible
+  # groups.
+
+  reverse-proxy-external:
+    build: ./build/sshd
+    image: varilink/services:$RELEASE
+    container_name: services_reverse-proxy-external
+    hostname: reverse-proxy-external
+    networks:
+      default:
+        ipv4_address: 10.0.0.112
+
+  wordpress-external:
+    build: ./build/sshd
+    image: varilink/services:$RELEASE
+    container_name: services_wordpress-external
+    hostname: wordpress-external
+    networks:
+      default:
+        ipv4_address: 10.0.0.113
 
   database-external:
     build: ./build/sshd
@@ -30,14 +102,14 @@ services:
       default:
         ipv4_address: 10.0.0.103
 
-  database-internal:
-    build: ./build/sshd
-    image: varilink/services:$RELEASE
-    container_name: services_database-internal
-    hostname: database-internal
-    networks:
-      default:
-        ipv4_address: 10.0.0.104
+  # DNS servers for the external and internal networks. In the live environment
+  # we use Dnsmasq to provide a DNS service on the office network that
+  # supplements our ISP's DNS provided service with lookups for our home and
+  # client domains on that office network.
+  #
+  # In the live environment we do not deploy a DNS service externally. We only
+  # use one here for testing purposes, so that we can direct some external
+  # lookups to containers rather than have them refer to their true addresses.
 
   dns-external:
     build: ./build/sshd
@@ -57,6 +129,15 @@ services:
       default:
         ipv4_address: 10.0.0.106
 
+  # Dynamic DNS service hosted on our internal network. This uses the Linode API
+  # to keep DNS records that correspond to services hosted on our office network
+  # but exposed externally updated with our office's externally facing IP
+  # address. We do not have a fixed IP address allocated by our ISP.
+  #
+  # In the live environment we co-host this with the email certificates service
+  # so that the personal access token with authority to update the DNS zones
+  # under out management is only present on one host.
+
   dynamic-dns:
     build:
       context: ./build/sshd
@@ -68,6 +149,23 @@ services:
     networks:
       default:
         ipv4_address: 10.0.0.107
+
+  # The various Docker Compose services that combine to deliver our email
+  # service. This comprises a pair of hosts that act as smarthosts and email
+  # servers, one on the internal network and one on the external network.
+  #
+  # The internal host is used by the clients on the office network. It
+  # integrates with the external host, using it as a smarthost for sending email
+  # outbound and pulls inbound email from it using fetchmail.
+  #
+  # The email certificates service provides certificates to the external email
+  # service for encrypting client IMAP and SMTP connections. It is co-hosted
+  # with the Dynamic DNS service on the internal network in our live environment
+  # - see above.
+  #
+  # The "email-other" service here mimics a third-party email relay services for
+  # the purposes of testing inbound emails for our home or client domains. It
+  # does not correspond to any servie that we deploy in a live environment.
 
   email-certificates:
     build:
@@ -99,43 +197,38 @@ services:
       default:
         ipv4_address: 10.0.0.110
 
-  reverse-proxy-external:
+  email-other:
     build: ./build/sshd
     image: varilink/services:$RELEASE
-    container_name: services_reverse-proxy-external
-    hostname: reverse-proxy-external
+    hostname: email-other
+    container_name: services_email-other
     networks:
       default:
         ipv4_address: 10.0.0.111
 
-  reverse-proxy-internal:
-    build: ./build/sshd
-    image: varilink/services:$RELEASE
-    container_name: services_reverse-proxy-internal
-    hostname: reverse-proxy-internal
-    networks:
-      default:
-        ipv4_address: 10.0.0.112
+  # A service that combines the three-layers of our WordPress stack (see above)
+  # on the internal network. Combining these layers into a single container is
+  # not the natural approach in a container environment but we do it here just
+  # to test that the relevant Ansible roles are capable of deploying to such a
+  # co-hosted arrangement.
 
-  wordpress-external:
+  wordpress-stack:
     build: ./build/sshd
     image: varilink/services:$RELEASE
-    container_name: services_wordpress-external
-    hostname: wordpress-external
-    networks:
-      default:
-        ipv4_address: 10.0.0.113
-
-  wordpress-internal:
-    build: ./build/sshd
-    image: varilink/services:$RELEASE
-    container_name: services_wordpress-internal
-    hostname: wordpress-internal
+    container_name: services_wordpress-stack
+    hostname: wordpress-stack
     networks:
       default:
         ipv4_address: 10.0.0.114
 
 volumes:
 
-  # Required due to squashfs issue
+  # Our backup service integrates with Dropbox to make off-site copies. Dropbox
+  # uses extended attributes (X-attrs) to when synchronising files in the
+  # Dropbox folder.
+  #
+  # Internally, containers use the SquashFS filesystem that does not support
+  # extended attributes. In order for Dropbox synchronisation to work within a
+  # container we must map the Dropbox folder to a host volume.
+
   backup:

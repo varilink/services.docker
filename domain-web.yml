@@ -1,0 +1,31 @@
+# Deploy a project domain. There can be two aspects to this:
+# 1. Web services
+# 2. Email service
+# Web services is plural because there may be multiple webhosts for a domain;
+# for example dev (development), test and www (live).
+
+---
+
+# If we're deploying web services then include the domain var for the groups of
+# hosts that host web service domain roles.
+- hosts: database:reverse_proxy:wordpress
+  tags: web
+  tasks:
+    - ansible.builtin.include_vars:
+        file: "{{ domain_var }}"
+        name: domain
+
+# If we're deploying web services then now deploy those domain roles.
+
+# NOTE: Installs database and username used by the domain_wordpress role.
+- hosts: database
+  tags: web
+  roles: [domain_wordpress_database]
+
+- hosts: wordpress
+  tags: web
+  roles: [domain_wordpress]
+
+- hosts: reverse_proxy
+  tags: web
+  roles: [domain_reverse_proxy]

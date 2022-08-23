@@ -1,4 +1,22 @@
-version: "3.6"
+version: "3.7"
+
+# The service definitions here extend or modify those in docker/deploy.yml in
+# order to bring the services up in "for test" mode as opposed to "for deploy"
+# mode - see this repository's README for an explanation of this. The
+# differences to "for deploy" mode are as follows:
+#
+# - The services here use the service specific images committed by bin/test.sh
+#   rather than the generic varilink/services image that provides the sshd used
+#   in "for deploy" mode.
+#
+# - The services here provide a service specific command to the
+#   docker-entrypoint.sh script that tells that script how to bring up the
+#   required service(s).
+#
+# - The services here define the dependencies between services that exist in
+#   "for test" mode. There are no such dependencies between the services in "for
+#   deploy" mode.
+
 
 services:
 
@@ -13,7 +31,7 @@ services:
 
   caldav:
     image: varilink/services/caldav
-    command: calendar
+    command: caldav
 
   database-external:
     image: varilink/services/database-external
@@ -37,6 +55,7 @@ services:
 
   email-certificates:
     image: varilink/services/email-certificates
+    command: email-certificates
 
   email-external:
     image: varilink/services/email-external
@@ -44,29 +63,22 @@ services:
 
   email-internal:
     image: varilink/services/email-internal
-    container_name: services_email-internal
     command: email-internal
+
+  email-other:
+    image: varilink/services/email-other
+    command: email-other
 
   reverse-proxy-external:
     image: varilink/services/reverse-proxy-external
-    container_name: services_reverse-proxy-external
     depends_on: [wordpress-external]
-    command: reverse-proxy
-
-  reverse-proxy-internal:
-    image: varilink/services/reverse-proxy-internal
-    container_name: services_reverse-proxy-internal
-    depends_on: [wordpress-internal]
     command: reverse-proxy
 
   wordpress-external:
     image: varilink/services/wordpress-external
-    container_name: services_wordpress-external
     depends_on: [database-external]
     command: wordpress
 
-  wordpress-internal:
-    image: varilink/services/wordpress-internal
-    container_name: services_wordpress-internal
-    depends_on: [database-internal]
-    command: wordpress
+  wordpress-stack:
+    image: varilink/services/wordpress-stack
+    command: wordpress-stack

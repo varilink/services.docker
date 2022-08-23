@@ -26,11 +26,10 @@ function services {
   dynamic_dns='dns-external dns-internal dynamic-dns email-internal'
   # Docker Compose services that combine to deliver the email composite service.
   email='dns-external dns-internal'
-  email="$email email-certificates email-external email-internal"
+  email="$email email-certificates email-external email-internal email-other"
   # Docker Compose services that combine to deliver the web composite service.
-  web='database-external database-internal'
-  web="$web reverse-proxy-external reverse-proxy-internal"
-  web="$web wordpress-external wordpress-internal"
+  web='database-external reverse-proxy-external wordpress-external'
+  web="$web wordpress-stack dns-external dns-internal"
 
   if [[ $# -eq 0 ]]
   then

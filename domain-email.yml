@@ -1,0 +1,38 @@
+- hosts: dns-external:email-certificates:email-external:email-internal
+  tasks:
+    - ansible.builtin.include_vars:
+        dir: "domains/{{ domain_name }}"
+        name: domain
+
+- hosts: dns-external
+
+  # Play for required IMAP and SMTP entries for a domain in the external DNS
+  # service. We don't use a role for this because in the live environment we
+  # use the ISPs DNS service not one deployed by ourselves using Dnsmasq.
+
+  become: yes
+  tasks:
+
+    - name: Add imap and smtp entries to external DNS service (customer domain)
+      ansible.builtin.lineinfile:
+        path: /etc/addn-hosts
+        line: 10.0.0.109 imap.{{ domain.name}} smtp.{{ domain.name }}
+      when: domain.name != home_domain
+
+    - name: Add imap and smtp entries to external DNS service (office domain)
+      ansible.builtin.lineinfile:
+        path: /etc/addn-hosts
+        line: 10.0.0.109 imap smtp
+      when: domain.name == home_domain
+
+    - name: Reload the dnsmasq service's configuration
+      ansible.builtin.command: kill -1 1
+
+- hosts: email-certificates
+  roles: [domain_email_certificate]
+
+- hosts: email-external
+  roles: [domain_email_external]
+
+- hosts: email-internal
+  roles: [domain_email_internal]
