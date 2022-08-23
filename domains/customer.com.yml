@@ -1,0 +1,22 @@
+name: customer.com
+organisation: A dummy customer organisation
+reverse_proxy_pass_port: 8081
+webhosts:
+  - name: dev
+    reverse_proxy_host: wordpress-stack-internal
+    wordpress_host: wordpress-stack-internal
+    wordpress_database_host: wordpress-stack-internal
+    wordpress_database_password: 'z!dhn4vmJbe$N_JJ'
+  - name: test
+    reverse_proxy_host: wordpress-stack-internal
+    reverse_proxy_pass_port: 8082
+    wordpress_host: wordpress-stack-internal
+    wordpress_database_host: wordpress-stack-internal
+    wordpress_database_password: 'KD_y2Q*&*Ca-XLt@'
+  - name: www
+    reverse_proxy_host: reverse-proxy-external
+    wordpress_host: wordpress-external
+    wordpress_database_host: database-external
+    wordpress_database_password: '*AtEz?dpfg^m3aw@'
+users:
+  - 

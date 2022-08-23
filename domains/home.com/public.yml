@@ -1,0 +1,26 @@
+name: home.com
+organisation: Mock-Up Home Organisation
+reverse_proxy_pass_port: 8080
+
+hostnames:
+  - name: test
+    reverse_proxy_host: wordpress-stack-internal
+    wordpress_host: wordpress-stack-internal
+    wordpress_database_host: wordpress-stack-internal
+    wordpress_database_password: '%KHPfgUp%YB3zvte'
+  - name: www
+    reverse_proxy_host: reverse-proxy-external
+    wordpress_host: wordpress-external
+    wordpress_database_host: database-external
+    wordpress_database_password: 'cPqWcKu&^whQ7Q2K'
+
+users:
+  # The first user in this list is the admin user for the office domain. That
+  # user account will have already been created before Ansible is used, since it
+  # is the Ansible connect user. So, we don't need its password here, just the
+  # first name and last name for creating an email alias.
+  - fname: user1fname
+    lname: user1lname
+  - fname: user2fname
+    lname: user2lname
+    passwd: user2passwd
