@@ -1,24 +1,26 @@
+#-------------------------------------------------------------------------------
+# Ansible connection variables and arguments
+#-------------------------------------------------------------------------------
+
 ansible_host: 10.0.0.105
+
+#-------------------------------------------------------------------------------
+# Variables used by the roles in my Libraries - Ansible repository
+# See the README for that repository at:
+# https://github.com/varilink/libraries-ansible#readme
+# for documentation about these variables.
+#-------------------------------------------------------------------------------
+
+# Mandatory
+# ---------
 
 backup_client_director_password: nRX5L6cR99jAALbYxJpJzztMVABGVvTEY
 backup_client_monitor_password: RadwH4ZccAGYZYxZyg8fUfeT5fJ6MvNd5
-
-
-
-
-dns_mx_host: email-external
-
-
-
-
-
-
-
-
-
-
-
 dns_group: external
 dns_resolvers: [127.0.0.1]
-dns_internal_upstream_nameservers:
+dns_upstream_nameservers:
   - 192.168.1.1
+
+# Optional
+# --------
+dns_mx_host: email-external

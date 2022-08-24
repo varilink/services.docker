@@ -1,13 +1,15 @@
+#-------------------------------------------------------------------------------
+# Variables used by the roles in my Libraries - Ansible repository
+# See the README for that repository at:
+# https://github.com/varilink/libraries-ansible#readme
+# for documentation about these variables.
+#-------------------------------------------------------------------------------
+
+# Mandatory
+#----------
+
+# All hosts on the internal office network use our DNS service on that network.
 dns_resolvers: [10.0.0.106]
-
-#-------------------------------------------------------------------------------
-# Email
-#-------------------------------------------------------------------------------
-
-# Exim configuration
-# ------------------
-# Settings for the /etc/exim4/update-exim4.conf file
-
 # All hosts on the internal, office network with the exception of the internal
 # email server use the internal email server as a smarthost. The internal email
 # server itself uses the external email server as a smarthost.

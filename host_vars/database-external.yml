@@ -1,17 +1,19 @@
+#-------------------------------------------------------------------------------
+# Ansible connection variables and arguments
+#-------------------------------------------------------------------------------
+
 ansible_host: 10.0.0.103
+
+#-------------------------------------------------------------------------------
+# Variables used by the roles in my Libraries - Ansible repository
+# See the README for that repository at:
+# https://github.com/varilink/libraries-ansible#readme
+# for documentation about these variables.
+#-------------------------------------------------------------------------------
+
+# Mandatory
+# ---------
 
 backup_client_director_password: BXMBm3ZgafeuNPRGjP38nNwz2zLWH3qCY
 backup_client_monitor_password: MUpmTuhQSnuqen6qLDJ994ZtE3tCw7jJD
-
-
-
-
-
-
-
-
-
-
-
 database_expose_externally: true
-database_root_password: K4kp5t%uNMeva6hA

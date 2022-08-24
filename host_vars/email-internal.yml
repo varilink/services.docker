@@ -1,16 +1,21 @@
+#-------------------------------------------------------------------------------
+# Ansible connection variables and arguments
+#-------------------------------------------------------------------------------
+
 ansible_host: 10.0.0.110
+
+#-------------------------------------------------------------------------------
+# Variables used by the roles in my Libraries - Ansible repository
+# See the README for that repository at:
+# https://github.com/varilink/libraries-ansible#readme
+# for documentation about these variables.
+#-------------------------------------------------------------------------------
+
+# Mandatory
+# ---------
 
 backup_client_director_password: Pfn6ZxZ8xzL4sGb9X3H5D56zB3tzQRXQq
 backup_client_monitor_password: n3PBU4TqNNShU73UwddGF7JNp4UWgbYX3
-
-#-------------------------------------------------------------------------------
-# Email
-#-------------------------------------------------------------------------------
-
-# Exim configuration
-# ------------------
-# Settings for the /etc/exim4/update-exim4.conf.conf file
-
 email_exim_smarthost:
   hostname: email-external
   port: 465
