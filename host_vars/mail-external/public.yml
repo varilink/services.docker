@@ -17,14 +17,14 @@ ansible_host: 10.0.0.109
 backup_client_director_password: PhNMsZ2Lz3Y4PE5nz6R3Vhfa5NAYYWNKN
 backup_client_monitor_password: HLm9XNZG6scme88Y3AXb6KBYqTwWwREbr
 
-# A variable email_exim_smarthost, which is a dictionary object containing two
+# A variable mta_smarthost, which is a dictionary object containing two
 # attributes, hostname and port, is also defined but since its values are
 # sensitive data they are not tracked in this Git repository.
 
 # Optional
 # --------
 
-email_exim_local_interfaces: >-
+mta_local_interfaces: >-
   <;
   [127.0.0.1]:25;
   [10.0.0.109]:25; [10.0.0.109]:465; [10.0.0.109]:587

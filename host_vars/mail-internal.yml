@@ -16,8 +16,8 @@ ansible_host: 10.0.0.110
 
 backup_client_director_password: Pfn6ZxZ8xzL4sGb9X3H5D56zB3tzQRXQq
 backup_client_monitor_password: n3PBU4TqNNShU73UwddGF7JNp4UWgbYX3
-email_exim_smarthost:
-  hostname: email-external
+mta_smarthost:
+  hostname: mail-external
   port: 465
   # We use the credentials for the admin user
   username: "{{ home_domain_admin_user }}"

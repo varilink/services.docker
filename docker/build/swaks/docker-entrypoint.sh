@@ -8,4 +8,4 @@ nameserver 10.0.0.105
 options ndots:0
 EOF
 
-swaks --to $1 --server email-other
+exec swaks --to $1 --server mail-other

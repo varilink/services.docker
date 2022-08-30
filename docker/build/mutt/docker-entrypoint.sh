@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
+# Entrypoint script for mutt client. It requires two positional parameters:
+# 1. username - username of the mail service user
+# 2. connection - connection to the internal (office) or external network
 
-# This is the entrypoint script for our mutt client. It requires that three
-# positional parameters are passed to it:
-# 1. username - the username of the email user including the domain
-# 2. connection - simulate connection to the office network or the Internet
 
 # Set named variables from the positional values for greater readability below
 username=$1

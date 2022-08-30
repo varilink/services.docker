@@ -52,7 +52,7 @@
   roles:
     - role: domain_dns
       vars:
-        email_server_address: 10.0.0.109
+        mail_server_address: 10.0.0.109
         dns_scope: external
 
 - hosts: dns-internal
@@ -60,7 +60,7 @@
   roles:
     - role: domain_dns
       vars:
-        email_server_address: 10.0.0.110
+        mail_server_address: 10.0.0.110
         dns_scope: internal
 
 - hosts: mail-certificates

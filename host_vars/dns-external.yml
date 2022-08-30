@@ -23,4 +23,4 @@ dns_upstream_nameservers:
 
 # Optional
 # --------
-dns_mx_host: email-external
+dns_mx_host: mail-external

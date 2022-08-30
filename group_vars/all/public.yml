@@ -72,9 +72,9 @@ dynamic_dns_crontab_stride: 1
 # When testing uses containers, we often tear-down and recreate the containers
 # over and over again. If we're integrating with Let's Encrypt, this can easily
 # lead to hitting their usage constraints. For this reason we override the
-# default behaviour of the email_certificates and domain_email_certificates
-# roles, which is to integrate with Let's Encrypt.
-email_uses_ca: false
+# default behaviour of the mail_certificates and domain_mail_certificates roles,
+# which is to integrate with Let's Encrypt.
+mail_uses_ca: false
 
 # Since we're testing in a container environment we need to enable unsafe writes
 # for overwriting the /etc/hosts and /etc/resolv.conf file.s

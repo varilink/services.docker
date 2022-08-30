@@ -11,9 +11,9 @@
 # All hosts on the internal office network use our DNS service on that network.
 dns_resolvers: [10.0.0.106]
 # All hosts on the internal, office network with the exception of the internal
-# email server use the internal email server as a smarthost. The internal email
-# server itself uses the external email server as a smarthost.
-email_exim_smarthost:
-  hostname: email-internal
+# mail server use the internal mail server as a smarthost. The internal mail
+# server itself uses the external mail server as a smarthost.
+mta_smarthost:
+  hostname: mail-internal
   username: username1
   userpass: userpass1

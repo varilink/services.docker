@@ -11,11 +11,11 @@
 # All hosts on the external to office network (Internet) use a third-party DNS
 # service, which we simulate here in this Docker container environment.
 dns_resolvers: [10.0.0.105]
-# All hosts on the external to office network (Internet) with the exception of
-# the external email server use the external email server as a smarthost. The
-# external email server uses another services providers email gateway server as
-# a smarthost.
-email_exim_smarthost:
-  hostname: email-external
+# All hosts that are external to the office network with the exception of the
+# external mail server use the external mail server as a smarthost. The external
+# mail server uses another services providers mail gateway server as a
+# smarthost.
+mta_smarthost:
+  hostname: mail-external
   username: username1
   userpass: userpass1
