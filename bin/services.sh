@@ -5,7 +5,7 @@
 # - calendar
 # - dns
 # - dynamic_dns
-# - email
+# - mail
 # - web
 # It sets a variable "services" to a sorted list of either all the Docker
 # Compose services (if no composite services were passed) or all the Docker
@@ -23,10 +23,10 @@ function services {
   dns='dns-external dns-internal'
   # Docker Compose services that combine to deliver the dynamic_dns composite
   # service.
-  dynamic_dns='dns-external dns-internal dynamic-dns email-internal'
-  # Docker Compose services that combine to deliver the email composite service.
-  email='dns-external dns-internal'
-  email="$email email-certificates email-external email-internal email-other"
+  dynamic_dns='dns-external dns-internal dynamic-dns mail-internal'
+  # Docker Compose services that combine to deliver the mail composite service.
+  mail='dns-external dns-internal'
+  mail="$mail mail-certificates mail-external mail-internal mail-other"
   # Docker Compose services that combine to deliver the web composite service.
   web='database-external reverse-proxy-external wordpress-external'
   web="$web wordpress-stack dns-external dns-internal"
@@ -35,7 +35,7 @@ function services {
   then
 
     # No parameters were provided so return ALL Docker Compose services.
-    services="$backup $calendar $dns $dynamic_dns $email $web"
+    services="$backup $calendar $dns $dynamic_dns $mail $web"
 
   else
 
@@ -43,11 +43,11 @@ function services {
     for service in $@
     do
 
-      if [[ 'backup calendar dns dynamic_dns email web' =~ ( |^)$service( |$) ]]
+      if [[ 'backup calendar dns dynamic_dns mail web' =~ ( |^)$service( |$) ]]
       then
 
         # The composite service is one of backup, calendar, dns, dynamic_dns,
-        # email or web. Append the multiple Docker Compose services that combine
+        # mail or web. Append the multiple Docker Compose services that combine
         # to deliver that composite service to the output.
         services="$services ${!service}"
 

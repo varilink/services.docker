@@ -134,7 +134,7 @@ services:
   # but exposed externally updated with our office's externally facing IP
   # address. We do not have a fixed IP address allocated by our ISP.
   #
-  # In the live environment we co-host this with the email certificates service
+  # In the live environment we co-host this with the mail certificates service
   # so that the personal access token with authority to update the DNS zones
   # under out management is only present on one host.
 
@@ -150,58 +150,58 @@ services:
       default:
         ipv4_address: 10.0.0.107
 
-  # The various Docker Compose services that combine to deliver our email
-  # service. This comprises a pair of hosts that act as smarthosts and email
+  # The various Docker Compose services that combine to deliver our mail
+  # service. This comprises a pair of hosts that act as smarthosts and mail
   # servers, one on the internal network and one on the external network.
   #
   # The internal host is used by the clients on the office network. It
-  # integrates with the external host, using it as a smarthost for sending email
-  # outbound and pulls inbound email from it using fetchmail.
+  # integrates with the external host, using it as a smarthost for sending mail
+  # outbound and pulls inbound mail from it using fetchmail.
   #
-  # The email certificates service provides certificates to the external email
+  # The mail certificates service provides certificates to the external mail
   # service for encrypting client IMAP and SMTP connections. It is co-hosted
   # with the Dynamic DNS service on the internal network in our live environment
   # - see above.
   #
-  # The "email-other" service here mimics a third-party email relay services for
-  # the purposes of testing inbound emails for our home or client domains. It
-  # does not correspond to any servie that we deploy in a live environment.
+  # The "mail-other" service here mimics a third-party mail relay services for
+  # the purposes of testing inbound mail for our home or client domains. It does
+  # not correspond to any service that we deploy in a live environment.
 
-  email-certificates:
+  mail-certificates:
     build:
       context: ./build/sshd
       args:
         RELEASE: bullseye
     image: varilink/services:bullseye
-    container_name: services_email-certificates
-    hostname: email-certificates
+    container_name: services_mail-certificates
+    hostname: mail-certificates
     networks:
       default:
         ipv4_address: 10.0.0.108
 
-  email-external:
+  mail-external:
     build: ./build/sshd
     image: varilink/services:$RELEASE
-    container_name: services_email-external
-    hostname: email-external
+    container_name: services_mail-external
+    hostname: mail-external
     networks:
       default:
         ipv4_address: 10.0.0.109
 
-  email-internal:
+  mail-internal:
     build: ./build/sshd
     image: varilink/services:$RELEASE
-    hostname: email-internal
-    container_name: services_email-internal
+    hostname: mail-internal
+    container_name: services_mail-internal
     networks:
       default:
         ipv4_address: 10.0.0.110
 
-  email-other:
+  mail-other:
     build: ./build/sshd
     image: varilink/services:$RELEASE
-    hostname: email-other
-    container_name: services_email-other
+    hostname: mail-other
+    container_name: services_mail-other
     networks:
       default:
         ipv4_address: 10.0.0.111

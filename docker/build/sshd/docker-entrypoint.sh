@@ -87,13 +87,13 @@ else
     /etc/init.d/cron start # start the cron daemon
     exec tail -f /var/log/syslog # tail syslog to the Docker sysout
 
-  elif [[ $1 == "email-certificates" ]]
+  elif [[ $1 == "mail-certificates" ]]
   then
 
     touch /var/log/rsync # Make sure that /var/log/rsync exists
     exec tail -f /var/log/rsync # tail rsync log to the Docker sysout
 
-  elif [[ $1 == "email-external" ]]
+  elif [[ $1 == "mail-external" ]]
   then
 
     # Start rsyslog so that Dovecot log output can be written to syslog
@@ -101,7 +101,7 @@ else
     /etc/init.d/dovecot start
     exec exim4 -bd -d
 
-  elif [[ $1 == 'email-internal' ]]
+  elif [[ $1 == 'mail-internal' ]]
   then
 
     #mkdir --mode=0700 /var/run/fetchmail
@@ -110,7 +110,7 @@ else
     /etc/init.d/fetchmail start
     exec exim4 -bd -v
 
-  elif [[ $1 == 'email-other' ]]
+  elif [[ $1 == 'mail-other' ]]
   then
 
     exec exim4 -bd -v

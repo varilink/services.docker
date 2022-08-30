@@ -53,21 +53,21 @@ services:
     image: varilink/services/dynamic-dns
     command: dynamic-dns
 
-  email-certificates:
-    image: varilink/services/email-certificates
-    command: email-certificates
+  mail-certificates:
+    image: varilink/services/mail-certificates
+    command: mail-certificates
 
-  email-external:
-    image: varilink/services/email-external
-    command: email-external
+  mail-external:
+    image: varilink/services/mail-external
+    command: mail-external
 
-  email-internal:
-    image: varilink/services/email-internal
-    command: email-internal
+  mail-internal:
+    image: varilink/services/mail-internal
+    command: mail-internal
 
-  email-other:
-    image: varilink/services/email-other
-    command: email-other
+  mail-other:
+    image: varilink/services/mail-other
+    command: mail-other
 
   reverse-proxy-external:
     image: varilink/services/reverse-proxy-external

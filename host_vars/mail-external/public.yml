@@ -28,6 +28,3 @@ email_exim_local_interfaces: >-
   <;
   [127.0.0.1]:25;
   [10.0.0.109]:25; [10.0.0.109]:465; [10.0.0.109]:587
-# Relay emails for the internal email server. The other external hosts that
-# connect to me will only be sending emails to addresses in the home domain.
-email_exim_relay_nets: 10.0.0.110
