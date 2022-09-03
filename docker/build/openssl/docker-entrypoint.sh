@@ -5,7 +5,7 @@ set -e
 fqdn="$1"
 
 cat <<- 'EOF' > /etc/resolv.conf
-search varilink.co.uk
+search home.com
 nameserver 10.0.0.105
 options ndots:0
 EOF
