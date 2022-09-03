@@ -1,4 +1,4 @@
-# rolename@customer.com connection to the office network
+# rolename@customer.com connection external to the office network
 
 ## IMAP
 set folder    = 'imaps://imap.customer.com:993/'
@@ -9,8 +9,7 @@ mailboxes     = '+INBOX'
 set record    = '+Sent'
 
 ## SMTP
-unset ssl_force_tls
-unset ssl_starttls
-set smtp_url  = 'smtp://smtp:25'
+set smtp_url  = 'smtps://rolename%40customer.com@smtp.customer.com:465'
+set smtp_pass = 'rolepasswd'
 set realname  = 'Customer user with role email address'
 set from      = 'rolename@customer.com'

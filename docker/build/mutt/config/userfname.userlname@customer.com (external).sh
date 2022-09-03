@@ -1,18 +1,15 @@
-# username1@varilink.co.uk connecting to IMAP and SMPT via the Internet
+# userfname.userlname@customer.com connection external to the office network
 
-## General options
-set ssl_starttls = yes
-set ssl_force_tls = yes
+## IMAP
+set folder    = 'imaps://imap.customer.com:993/'
+set imap_user = 'userfname.userlname@customer.com'
+set imap_pass = 'userpasswd'
+set spoolfile = '+INBOX'
+mailboxes     = '+INBOX'
+set record    = '+Sent'
 
-## Receive options
-set folder    = imaps://username1@imap.customer.com/
-set imap_user = username1
-set imap_pass = userpass1
-set spoolfile = +INBOX
-mailboxes     = +INBOX
-set record    = +Sent
-
-## Send options
-set smtp_url  = smtps://smtp.customer.com
-set realname  = 'User 1'
-set from      = username1@customer.com
+## SMTP
+set smtp_url  = 'smtps://userfname.userlname%40customer.com@smtp.customer.com:465'
+set smtp_pass = 'userpasswd'
+set realname  = 'Customer user with personal email address'
+set from      = 'userfname.userlname@customer.com'

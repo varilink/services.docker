@@ -1,16 +1,16 @@
-## General options
-set ssl_starttls = no
-set ssl_force_tls = no
+# userfname.userlname@customer.com connection to the office network
 
-## Receive options
-set folder    = imap://username1@imap.varilink.co.uk/
-set imap_user = username1
-set imap_pass = userpass1
-set spoolfile = +INBOX
-mailboxes     = +INBOX
-set record    = +Sent
+## IMAP
+set folder    = 'imaps://imap.customer.com:993/'
+set imap_user = 'userfname.userlname@customer.com'
+set imap_pass = 'userpasswd'
+set spoolfile = '+INBOX'
+mailboxes     = '+INBOX'
+set record    = '+Sent'
 
-## Send options
-set smtp_url  = smtp://smtp.varilink.co.uk:25
-set realname  = 'User 1'
-set from      = username1@varilink.co.uk
+## SMTP
+unset ssl_force_tls
+unset ssl_starttls
+set smtp_url  = 'smtp://smtp:25'
+set realname  = 'Customer user with personal email address'
+set from      = 'userfname.userlname@customer.com'

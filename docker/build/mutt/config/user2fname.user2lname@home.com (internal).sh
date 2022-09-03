@@ -1,16 +1,16 @@
-## General options
-set ssl_starttls = no
-set ssl_force_tls = no
+# user2fname.user2lname@home.com connection to the office network
 
-## Receive options
-set folder    = imap://user2fname@imap.home.com/
-set imap_user = user2fname
-set imap_pass = user2passwd
-set spoolfile = +INBOX
-mailboxes     = +INBOX
-set record    = +Sent
+## IMAP
+set folder    = 'imap://imap:143/'
+set imap_user = 'user2fname'
+set imap_pass = 'user2passwd'
+set spoolfile = '+INBOX'
+mailboxes     = '+INBOX'
+set record    = '+Sent'
 
-## Send options
-set smtp_url  = smtp://smtp.home.com:25
-set realname  = 'User 2'
-set from      = user2fname.user2lname@home.com
+## SMTP
+unset ssl_force_tls
+unset ssl_starttls
+set smtp_url  = 'smtp://smtp:25'
+set realname  = 'Home user 2'
+set from      = 'user2fname.user2lname@home.com'
