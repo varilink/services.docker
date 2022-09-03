@@ -73,8 +73,8 @@ else
   elif [[ $1 == "dns" ]]
   then
 
-    # Replace the current shell process with dnsmasq in the foreground.
-    exec dnsmasq --no-daemon
+    dnsmasq --user=root --log-facility /var/log/dnsmasq.log
+    bash -c "exec tail -f /var/log/dnsmasq.log"
 
   elif [[ $1 == "dynamic-dns" ]]
   then
@@ -83,9 +83,13 @@ else
     # both those daemons in the background and follow the syslog as the means to
     # associate meaningful sysout with the container.
 
-    /etc/init.d/rsyslog start # start the syslog daemon
-    /etc/init.d/cron start # start the cron daemon
-    exec tail -f /var/log/syslog # tail syslog to the Docker sysout
+    touch /var/log/cron.log
+    chmod u=rw,g=r,o= /var/log/cron.log
+    chown root:adm /var/log/cron.log
+    sed -i 's/^#cron\.\*/cron.*/' /etc/rsyslog.conf
+    rsyslogd # start the syslog daemon
+    cron # start the cron daemon
+    bash -c "exec tail -f /var/log/cron.log"
 
   elif [[ $1 == "mail-certificates" ]]
   then
@@ -96,24 +100,39 @@ else
   elif [[ $1 == "mail-external" ]]
   then
 
-    # Start rsyslog so that Dovecot log output can be written to syslog
-    /etc/init.d/rsyslog start
-    /etc/init.d/dovecot start
-    exec exim4 -bd -d
+    touch /var/log/dovecot.log
+    chmod u=rw,g=,o= /var/log/dovecot.log
+    sed -i 's~^#info_log_path = $~info_log_path = /var/log/dovecot.log~'       \
+      /etc/dovecot/conf.d/10-logging.conf
+    dovecot
+    touch /var/log/exim4/mainlog
+    chmod u=rw,g=r,o= /var/log/exim4/mainlog
+    chown Debian-exim:adm /var/log/exim4/mainlog
+    exim -bd & # Note, -bd doesn't go into background within container!
+    bash -c "exec tail -f /var/log/dovecot.log /var/log/exim4/mainlog"
 
   elif [[ $1 == 'mail-internal' ]]
   then
 
-    #mkdir --mode=0700 /var/run/fetchmail
-    #chown fetchmail:nogroup /var/run/fetchmail
-    /etc/init.d/dovecot start
-    /etc/init.d/fetchmail start
-    exec exim4 -bd -v
+    touch /var/log/dovecot.log
+    chmod u=rw,g=,o= /var/log/dovecot.log
+    sed -i 's~^#info_log_path = $~info_log_path = /var/log/dovecot.log~'       \
+      /etc/dovecot/conf.d/10-logging.conf
+    dovecot
+    touch /var/log/exim4/mainlog
+    chmod u=rw,g=r,o= /var/log/exim4/mainlog
+    chown Debian-exim:adm /var/log/exim4/mainlog
+    exim -bd & # Note, -bd doesn't go into background within container!
+    bash -c "exec tail -f /var/log/dovecot.log /var/log/exim4/mainlog"
 
   elif [[ $1 == 'mail-other' ]]
   then
 
-    exec exim4 -bd -v
+    touch /var/log/exim4/mainlog
+    chmod u=rw,g=r,o= /var/log/exim4/mainlog
+    chown Debian-exim:adm /var/log/exim4/mainlog
+    exim -bd & # Note, -bd doesn't go into background within container!
+    bash -c "exec tail -f /var/log/exim4/mainlog"
 
   elif [[ $1 == "reverse-proxy" ]]
   then

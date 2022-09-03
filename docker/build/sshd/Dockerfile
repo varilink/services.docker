@@ -13,6 +13,7 @@ RUN                                                                            \
   apt-get update                                                            && \
   apt-get --yes --no-install-recommends install                                \
     openssh-server                                                             \
+    psmisc                                                                     \
     python3-apt                                                                \
     python3-minimal                                                            \
     python3-setuptools                                                         \
@@ -20,7 +21,11 @@ RUN                                                                            \
     rsyslog                                                                    \
     sudo                                                                       \
     whois                                                                   && \
+  # /run/sshd is not automatically created in container environment
   mkdir /run/sshd                                                           && \
+  # Edit to /etc/rsyslog.conf prevents this error message at rsyslog start
+  # rsyslogd: imklog: cannot open kernel log (/proc/kmsg): Operation not permitted
+  sed -i '/imklog/s/^/#/' /etc/rsyslog.conf                                 && \
   useradd --create-home user1fname                                             \
     --password `mkpasswd --method=md5 user1passwd`                          && \
   usermod --shell /bin/bash user1fname                                      && \
