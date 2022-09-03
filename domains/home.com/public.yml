@@ -1,8 +1,13 @@
 name: home.com
 organisation: Mock-Up Home Organisation
+
+# Default reverse proxy pass port to use when configuring this domain's web
+# services. This can be overridden for an individual webhost below.
 reverse_proxy_pass_port: 8080
 
-hostnames:
+# Details of each webhost that a web service for which a web service is to be
+# deployed for this domain.
+webhosts:
   - name: test
     reverse_proxy_host: wordpress-stack-internal
     wordpress_host: wordpress-stack-internal
@@ -14,13 +19,16 @@ hostnames:
     wordpress_database_host: database-external
     wordpress_database_password: 'cPqWcKu&^whQ7Q2K'
 
+# Details for Dynamic DNS updates for this domain.
+linode_domain_id: 1860193
+linode_dynamic_dns_domain_records:
+  - 21720983 # test
+
+# Users for which to configure an mail service for this domain.
 users:
-  # The first user in this list is the admin user for the office domain. That
-  # user account will have already been created before Ansible is used, since it
-  # is the Ansible connect user. So, we don't need its password here, just the
-  # first name and last name for creating an email alias.
-  - fname: user1fname
+  - fname: "{{ home_domain_admin_user }}"
     lname: user1lname
+    passwd: "{{ home_domain_admin_user_passwd }}"
   - fname: user2fname
     lname: user2lname
     passwd: user2passwd
