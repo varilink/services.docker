@@ -38,30 +38,27 @@
 
 # Plays for the mail service
 
-- hosts: "\
-    dns-external:dns-internal:mail-certificates:mail-external:mail-internal\
-    "
+- hosts: dns-external:dns-internal:mail-certificates:mail-external:mail-internal
   tags: mail
   tasks:
     - ansible.builtin.include_vars:
         dir: "domains/{{ domain_name }}"
         name: domain
 
-- hosts: dns-external
-  tags: mail
-  roles:
-    - role: domain_dns
-      vars:
-        mail_server_address: 10.0.0.109
-        dns_scope: external
-
 - hosts: dns-internal
   tags: mail
+  handlers:
+    - name: Restart dnsmasq if dnsmasq configuration changed
+      ansible.builtin.shell:
+        cmd: >-
+          timeout 5 killall -vw dnsmasq &&
+          dnsmasq --user=root --log-facility /var/log/dnsmasq
+      listen: dnsmasq configuration changed
+      become: yes
   roles:
     - role: domain_dns
       vars:
-        mail_server_address: 10.0.0.110
-        dns_scope: internal
+        mail_internal_host: mail-internal
 
 - hosts: mail-certificates
   tags: mail
@@ -69,11 +66,98 @@
 
 - hosts: mail-external
   tags: mail
+  handlers:
+    - block:
+      - name: Restart dovecot if dovecot configuration changed
+        ansible.builtin.shell:
+          cmd: timeout 10 killall -vw dovecot && dovecot
+        listen: dovecot configuration changed
+      - name: Run update-exim4.conf if exim configuration changed
+        ansible.builtin.shell:
+          cmd: update-exim4.conf
+        listen: exim configuration changed
+      - name: Restart exim if exim configuration changed
+        ansible.builtin.shell:
+          cmd: timeout 5 killall -vw exim && `exim -bd &`
+        listen: exim configuration changed
+      become: yes
   roles: [domain_mail_external]
 
 - hosts: mail-internal
   tags: mail
   roles: [domain_mail_internal]
+
+# Special actions specific to a container environment
+
+# NOTE: Workarounds for systemd not being in place in a container environment
+# Testing shows that aassystemd is not in place in a container environment, the
+# ansible.builtin.service_facts Ansible moodule, which in the absence of systemd
+# uses sysv as its source, incorrectly reports the dnsmasq service as stopped
+# when it is running. Consequently, the handlers in the dns role fail to restart
+# the dnsmasq service in response to "dnsmasq configuration changed"
+# notifications.
+
+- hosts: dns-external
+  tags: mail
+  handlers:
+    - name: Restart dnsmasq if dnsmasq configuration changed
+      ansible.builtin.shell:
+        cmd: >-
+          timeout 5 killall -vw dnsmasq &&
+          dnsmasq --user=root --log-facility /var/log/dnsmasq
+      listen: dnsmasq configuration changed
+      become: yes
+  tasks:
+    - block:
+      - name: Enable an MX record
+        ansible.builtin.lineinfile:
+          path: /etc/dnsmasq.conf
+          regexp: >-
+            ^#?mx-host=(?:maildomain\.com|{{
+            domain.name
+            }}),(?:servermachine\.com|mail-external),50$
+          insertafter: '^mx-host=[A-Za-z0-9\.-]+,mail-external,50$'
+          line: "mx-host={{ domain.name }},mail-external,50"
+        notify: dnsmasq configuration changed
+      - name: Add imap and smtp entries to DNS service (customer domain)
+        ansible.builtin.lineinfile:
+          path: /etc/addn-hosts
+          line: >-
+            {{ hostvars['mail-external'].ansible_host }}
+            imap.{{ domain.name}} smtp.{{ domain.name }}
+        when: domain.name != home_domain
+        notify: dnsmasq configuration changed
+      become: yes
+
+- hosts: mail-other
+  tags: mail
+  handlers:
+    - block:
+      - name: Run update-exim4.conf if exim configuration changed
+        ansible.builtin.shell:
+          cmd: update-exim4.conf
+        listen: exim configuration changed
+      - name: Restart exim if exim configuration changed
+        ansible.builtin.shell:
+          cmd: timeout 5 killall -vw exim && `exim -bd &`
+        listen: exim configuration changed
+      become: yes
+  tasks:
+    - name: Import the mta role
+      ansible.builtin.import_role:
+        name: mta
+    - name: Remove ignore_taget_hosts setting from dnslookup router
+      ansible.builtin.lineinfile:
+        path: /etc/exim4/exim4.conf.template
+        line: "{{ item }}"
+        state: absent
+      loop:
+        - "  # ignore private rfc1918 and APIPA addresses"
+        - "  ignore_target_hosts = 0.0.0.0 : 127.0.0.0/8 : 192.168.0.0/16 :\\"
+        - "                        172.16.0.0/12 : 10.0.0.0/8 : 169.254.0.0/16 :\\"
+        - "			255.255.255.255"
+      notify: exim configuration changed
+      become: yes
 
 # 3. Web
 # ------
