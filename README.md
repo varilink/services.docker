@@ -10,13 +10,14 @@ This repository provides the means to test the roles in my [Libraries - Ansible]
 
 ## Contents of this Repository
 
-| Location(s)                                                                    | Item(s)                                                                          |
-| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| .env<br />deploy.env<br />docker/<br />bin/                                    | Docker Compose environments, services and associated helper shell scripts        |
-| hosts.ini<br />group_vars/<br />host_vars/                                     | Ansible inventory and associated variables for the Docker containers             |
-| roles/                                                                         | The library of Ansible roles that this repository tests, included as a submodule |
-| hosts.yml,<br />domain.yml<br />dropbox-excludes.yml<br />hosts-completion.yml | Ansible playbooks for deploying those roles to the Docker containers             |
-| readme-images/                                                                 | Images that are used in this README                                              |
+| Location(s)                                                                | Item(s)                                                                                  |
+| -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| .env<br />deploy.env<br />docker/<br />bin/                                | Docker Compose environments, services and associated helper shell scripts.               |
+| hosts.ini<br />group_vars/<br />host_vars/                                 | Ansible inventory and associated variables for the Docker containers.                    |
+| roles/                                                                     | The library of Ansible roles that this repository tests, included as a submodule.        |
+| hosts.yml,<br />dropbox&#8209;excludes.yml<br />hosts&#8209;completion.yml | Ansible playbooks for deploying host roles to the Docker containers.                     |
+| domain.yml<br />domains/                                                   | Ansible playbook and domain details for deploying domain roles to the Docker containers. |
+| readme&#8209;images/                                                       | Images that are used in this README.                                                     |
 
 The Ansible inventory, variables and playbooks in this repository reflect the Docker containers used here to test the roles in [Libraries - Ansible](https://github.com/varilink/libraries-ansible). Of course for live deployment to the Varilink Computing Ltd server estate I use a different inventory, variables and playbooks that reflect the live environment. However the inventory, variables and playbooks in this repository serve as a useful guide to the structure required to deploy the Ansible roles, regardless of target environment.
 
@@ -33,7 +34,7 @@ To use this repository to test the roles in my [Libraries - Ansible](https://git
 1. [Initial Host Role Deployment](#initial-host-role-deployment)
 2. [Bringing the Services up in Test Mode](#bringing-the-services-up-in-test-mode)
 3. [Completing the Host Role Deployment](#completing-the-host-role-deployment)
-4. [Activating Dropbox Synchronisation for the Backup Composite Service](#activating-dropbox-synchronisation-for-the-backup-composite-service)
+4. [Activating Backup Synchronisation with Dropbox](#activating-backup-synchronisation-with-dropbox)
 5. [Deploying the Domain Roles](#deploying-the-domain-roles)
 6. [Testing the Deployed Composite Services](#testing-the-deployed-composite-services)
 
@@ -55,7 +56,7 @@ The composite services are:
 - calendar
 - dns
 - dynamic_dns
-- email
+- mail
 - web
 
 The key consideration for scoping these composite services is that independent testing guidance is given for each under [Testing the Deployed Composite Services](#testing-the-deployed-composite-services) below.
@@ -66,9 +67,9 @@ So, for example:
 - `./bin/deploy.sh backup` - limits to the *backup* composite service only
 - `./bin/deploy.sh backup calendar` - limits to the *backup* and *calendar* composite services
 
-This will bring up the required Docker Compose services as containers that will initiallly be the targets for the associated **host** roles in my [Libraries - Ansible](https://github.com/varilink/libraries-ansible) repository. That repository contains both host roles and domain roles; for example the *database* host role configures a server to host MariaDB databases whereas the *domain-wordpress-database* domain role deploys the WordPress database for a specific WordPress site to a MariaDB host server. The deployment of domain roles is dependent on the host roles having already been deployed, so we're starting with the deployment of host roles.
+This will bring up the required Docker Compose services as containers that will initiallly be the targets for the associated *host* roles in my [Libraries - Ansible](https://github.com/varilink/libraries-ansible) repository. That repository contains both host roles and domain roles; for example the *database* host role configures a server to host MariaDB databases whereas the *domain-wordpress-database* domain role deploys the WordPress database for a specific WordPress site to a MariaDB host server. The deployment of domain roles is dependent on the host roles having already been deployed, so we're starting with the deployment of host roles.
 
-Whereas for testing purposes, this repository uses a separate Docker Composer service and associated container for each host role, in the live setup servers generally host multiple host roles; for example a live web server might host both the *wordpress* and *database* roles. It's more natural for Docker containers to provide a single service and applying this principle here is useful validation that the roles aren't defined in such a way that they can't reside on separate hosts.
+Whereas for testing purposes, this repository generally uses a separate Docker Composer service and associated container for each host role, in the live setup servers generally host multiple host roles; for example a live web server might host both the *wordpress* and *database* roles. It's more natural for Docker containers to provide a single service and applying this principle here is useful validation that the roles aren't defined in such a way that they can't reside on separate hosts.
 
 With the required Docker Compose services up in this *for deploy* state, the associated Ansible roles can now be deployed to them, either for **all** host roles:
 
@@ -113,8 +114,9 @@ When we bring the services up in *for test* mode, it recreates the containers, s
 
 When the services are initially brought up in `for test` mode the deployment of host roles is incomplete. There are two reasons for this:
 
-1. To implement the *dns* composite service, the Ansible deployment modifies the `/etc/hosts` and/or `/etc/resolv.conf` files in target hosts. In a Docker environment these are automatically overwritten by Docker each time a container is recreated. Thus when we switched from *for deploy* to *for test* mode we lost the changes that Ansible had made to these files.
-2. The complete deployment of host roles can be dependent on access to services that have been deployed by Ansible. As we noted above, these were not started during the [Initial Host Role Deployment](#initial-host-role-deployment), they only became available when we brought the services up in *for test* mode.
+1. To implement the *dns* composite service, the *dns_client* role in my [Libraries - Ansible](https://github.com/varilink/libraries-ansible) repository modifies the `/etc/hosts` and `/etc/resolv.conf` files in target hosts. In a Docker environment these are automatically overwritten by Docker each time a container is recreated. If we had applied that role when the containers were in *for deploy* mode then we would have lost the changes when switched to *for test* mode, so we didn't do that then and it is still pending.
+
+2. The complete deployment of host roles can be dependent on access to services that have been deployed by Ansible. As we noted above, these were not started during the [Initial Host Role Deployment](#initial-host-role-deployment), they only became available when we brought the services up in *for test* mode. Consequently, again we have aspects of the deployment pending.
 
 With the services now up in *for test* mode, you must complete the host role deployment by running:
 
@@ -152,7 +154,7 @@ Anticipating this, the *backup-director* Docker Compose service restarts on fail
 backup-director_1         | Creation of Bacula MySQL tables succeeded.
 ```
 
-### Activating Dropbox Synchronisation for the Backup Composite Service
+### Activating Backup Synchronisation with Dropbox
 
 The *backup* composite service utilises synchronisation with Dropbox for making off-site copies of backup files. If you're using the *backup* composite service then it is now necessary to activate synchronisation between the *backup-director* Docker Compose service and the Dropbox account that you're using for your off-site copies.
 
@@ -203,7 +205,45 @@ This limits the synchronisation to a singe folder dictated by the `backup_copy_f
 
 ### Deploying the Domain Roles
 
-*To be done*
+Aspects of one or more domains may now be deployed on top of the host services. The domains correspond to development projects. Each development project delivers web services and/or a mail service for a domain and may also require that maintenance of dynamic DNS entries for that domain.
+
+A project's web services correspond to one or more host names for a project domain; for example dev.example.com, test.example.com and www.example.com. Typically the bare domain name also redirects to the www host name, i.e. example.com redirects to www.example.com. Where I provide a mail service I do so only for the domain, i.e. I don't provide separate, subdomain mail services for a domain.
+
+A domain deployment playbook is provided within this repository, `domain.yml` to deploy a domain on top of the host roles. This playbook requires that the `domain_name` variable is provided.
+
+So, for example:
+
+```bash
+ansible-playbook --extra-vars "domain_name=customer.com" --inventory hosts.ini domain.yml
+```
+
+Deploys **all** the configured web and mail services as well as any required dynamic DNS entries for the `customer.com` domain. Of course if you're going to deploy all aspects of a domain then you must have the containers associated with the *dynamic_dns*, *mail* and *web* composite services up in *for test* mode.
+
+To restrict the deployment of the domain to one or more of these aspect, you can use tags, for example:
+
+```bash
+ansible-playbook --extra-vars "domain_name=home.com" --tags "dynamic_dns,web" --inventory hosts.ini domain.yml
+```
+
+Restricts the deployment to the dynamic DNS and web services requirements of the `home.com` domain, i.e. it excludes any email service requirement.
+
+For a domain's web services, another level of filtering is possible. As explained above, a project's web services correspond to one or more host names for a project domain. If you wanted to deploy the web service for only the *test* host name within the *customer.com* domain then you can do so as follows:
+
+```bash
+ansible-playbook --extra-vars "domain_name=customer.com" --extra-vars "hostname_filter=test" --tags web --inventory hosts.ini domain.yml
+```
+
+The variable hostname_filter can also take a regular expression that each defined web service hostname must match for it to be included in the deployment.
+
+So, for example:
+
+```bash
+ansible-playbook --extra-vars "domain_name=customer.com.yml" --extra-vars "hostname_filter=(?:dev|test)" --tags web --inventory hosts.ini domain.yml
+```
+
+Will deploy the `dev` and `test` web services for `customer.com` but not the `www` web service.
+
+The mock-up domains `customer.com` and `home.com` are provided within this repository to provide the facility to test domain deployments - see the YAML files in this repository's `domains/` folder. These illustrate how those YAML files serve as a specification for the services to be deployed for a project domain.
 
 ### Testing the Deployed Composite Services
 
@@ -239,7 +279,47 @@ docker-compose run --rm cadaver
 You should successfully connect to the calendar (caldav) service:
 
 ```
-dav:/> 
+dav:/>
+```
+List the collections that have been created:
+
+```
+dav:/> ls
+Listing collection `/': succeeded.
+Coll:   office                                 0  Jan  1  1970
+Coll:   username1                              0  Jan  1  1970
+Coll:   username2                              0  Jan  1  1970
+dav:/>
+```
+
+Get the properties of one of the calendars that have been created:
+
+```
+dav:/> propget office/calendar
+Fetching properties for `office/calendar':
+DAV: principal-collection-set = <DAV:href>/</DAV:href>
+DAV: current-user-principal = <DAV:unauthenticated></DAV:unauthenticated>
+DAV: current-user-privilege-set = <DAV:privilege><DAV:read></DAV:read></DAV:privilege><DAV:privilege><DAV:all></DAV:all></DAV:privilege><DAV:privilege><DAV:write></DAV:write></DAV:privilege><DAV:privilege><DAV:write-properties></DAV:write-properties></DAV:privilege><DAV:privilege><DAV:write-content></DAV:write-content></DAV:privilege>
+DAV: supported-report-set = <DAV:supported-report><DAV:report><DAV:expand-property></DAV:expand-property></DAV:report></DAV:supported-report><DAV:supported-report><DAV:report><DAV:principal-search-property-set></DAV:principal-search-property-set></DAV:report></DAV:supported-report><DAV:supported-report><DAV:report><DAV:principal-property-search></DAV:principal-property-search></DAV:report></DAV:supported-report><DAV:supported-report><DAV:report><DAV:sync-collection></DAV:sync-collection></DAV:report></DAV:supported-report><DAV:supported-report><DAV:report><urn:ietf:params:xml:ns:caldavcalendar-multiget></urn:ietf:params:xml:ns:caldavcalendar-multiget></DAV:report></DAV:supported-report><DAV:supported-report><DAV:report><urn:ietf:params:xml:ns:caldavcalendar-query></urn:ietf:params:xml:ns:caldavcalendar-query></DAV:report></DAV:supported-report>
+DAV: resourcetype = <urn:ietf:params:xml:ns:caldavcalendar></urn:ietf:params:xml:ns:caldavcalendar><DAV:collection></DAV:collection>
+DAV: owner = <DAV:href>/office/</DAV:href>
+DAV: getetag = "6c6ba96cdd5b411b856ce2c4d9bcd96c"
+DAV: getlastmodified = Fri, 08 Jul 2022 16:45:26 GMT
+DAV: getcontenttype = text/calendar
+DAV: getcontentlength = 202
+DAV: displayname =
+        office
+
+DAV: sync-token = http://radicale.org/ns/sync/d41d8cd98f00b204e9800998ecf8427e
+http://calendarserver.org/ns/ getctag = "6c6ba96cdd5b411b856ce2c4d9bcd96c"
+urn:ietf:params:xml:ns:caldav supported-calendar-component-set = <urn:ietf:params:xml:ns:caldavcomp name='VEVENT'></urn:ietf:params:xml:ns:caldavcomp><urn:ietf:params:xml:ns:caldavcomp name='VJOURNAL'></urn:ietf:params:xml:ns:caldavcomp><urn:ietf:params:xml:ns:caldavcomp name='VTODO'></urn:ietf:params:xml:ns:caldavcomp>
+urn:ietf:params:xml:ns:caldav calendar-description =
+        Calendar for office
+
+http://apple.com/ns/ical/ calendar-color =
+        #2c8323ff
+
+dav:/>
 ```
 
 #### dns
@@ -249,13 +329,13 @@ A Docker Compose *dig* client is provided that can be directed to use either the
 - An external, Internet domain:
 
 ```bash
-docker-compose run --rm external dig bbc.co.uk
+docker-compose run --rm dig external bbc.co.uk
 ```
 
 Confirms that the *dns-external* DNS is correctly using the host network's for upstream resolution.
 
 ```bash
-docker-compose run --rm internal dig bbc.co.uk
+docker-compose run --rm dig internal bbc.co.uk
 ```
 
 Confirms that the *dns-internal* DNS is correctly using the *dns-external* DNS for upstream resolution.
@@ -263,13 +343,13 @@ Confirms that the *dns-internal* DNS is correctly using the *dns-external* DNS f
 - A host on the internal office network:
 
 ```bash
-docker-compose run --rm dig external calendar
+docker-compose run --rm dig external caldav
 ```
 
 Confirms that the host is unknown to dns-external DNS service.
 
 ```bash
-docker-compose run --rm dig internal calendar
+docker-compose run --rm dig internal caldav
 ```
 
 Confirms that the host is known to the dns-internal DNS service.
@@ -290,104 +370,242 @@ Confirms that imap clients on the Internet will resolve *imap* to the *email-ext
 
 #### dynamic_dns
 
-When the `dynamic_dns` Docker Compose service comes up it runs the *cron* in the foreground. All being well the *cron* scheduled jobs that update the dynamic records in our DNS domains will start running. Open a shell CLI within the service's container:
+When the *dynamic_dns* Docker Compose service comes up it will start running the cron scheduled jobs that update the configured dynamic records in DNS domains. These jobs write execution reports to the syslog and the service comes up with a monitor of the syslog attached to the terminal.
 
-```bash
-docker exec -it services_dynamic-dns /bin/bash
-```
-
-Start following the *syslog* output:
-
-```bash
-tail -f /var/log/syslog
-```
-
-It's overwhelmingly probable that no DNS updates are required currently, so we should probably just see pairs of lines as follows appearing in the *syslog* according to the schedule:
+It is overwhelmingly probable that no DNS updates are required currently and so you will simply see something like the following three lines continuously repeating at a frequency dictated by the value of the `dynamic_dns_crontab_stride` variable:
 
 ```
-Jun 22 09:45:01 dynamic-dns dynamic-dns[136]: Started check for Dynamic DNS updates
-Jun 22 09:45:11 dynamic-dns dynamic-dns[136]: Finished check for Dynamic DNS updates
+Jul  3 08:30:01 dynamic-dns CRON[149]: (root) CMD (/usr/local/sbin/dynamic-dns.pl)
+Jul  3 08:30:01 dynamic-dns dynamic-dns[150]: Started check for Dynamic DNS updates
+Jul  3 08:30:12 dynamic-dns dynamic-dns[150]: Finished check for Dynamic DNS update
 ```
 
-In other words, the check resulted in no actions required. To test that the script does update a DNS record when required, the easiest thing is simply to go into the Linode management portal, change the IP address of one of the dynamic DNS records and then on the next scheduled execution of the script we see something like this:
+Of course, the cron execution numbers, date and time will be different. This tells us that the *Dynamic DNS updates* check resulted in no actions required. To test that the script does update a DNS record when required, the easiest thing is simply to go into the Linode management portal, change the IP address of one of the dynamic DNS records and then on the next scheduled execution of the script we see something like this:
 
-#### email
+```
+Jul  3 08:50:01 dynamic-dns CRON[161]: (root) CMD (/usr/local/sbin/dynamic-dns.pl)
+Jul  3 08:50:01 dynamic-dns dynamic-dns[162]: Started check for Dynamic DNS updates
+Jul  3 08:50:12 dynamic-dns dynamic-dns[162]: The target was changed from 86.146.221.112 to 86.146.221.111 for record test in domain varilink.co.uk
+Jul  3 08:50:12 dynamic-dns dynamic-dns[162]: Finished check for Dynamic DNS updates
+```
 
-There are multiple email scenarios that vary according to the following conditions:
+Of course, the details of the target that was changed will differ.
 
-- Whether the client sending the email is connecting via the office network (*office*) or via the *Internet*
-- Whether the sender domain is the *home domain*, the domain of a *customer* that we host the email service for or an *other* domain
-- Whether the recipient domain is the *home* domain, a *customer* domain that we host the email service for or an *other* domain
+#### mail
 
-Two tables follow. The first reflects the scenario where the sender is using a client connected to our office network. In this scenario sending is only supported for our *home* domain or *customer* domains that we host - see vertical column.
+The main objective when testing the mail service is to confirm that emails sent are received in multiple combinations of sender and receiver. The mail sender and receiver scenarios vary according to three factors:
 
-##### Office client
+- Whether the client sending the email is connected *internal* or *external* to the office network
+- Whether the sender's domain is the *home* domain, the domain of a *customer* that we host the mail service for or an *other* domain
+- Whether the recipient's domain is the *home* domain, a *customer* domain that we host the mail service for or an *other* domain
 
-|              | Home                                                         | Customer                                                     | Other                                                        |
-| ------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| **Home**     | - Send to internal email server via SMTP<br />- Read from internal email server via IMAP | - Sent via SMTP to internal email server<br />- Relayed to external email server<br />- Read via IMAP from external email server | - Send to internal email server via SMTP <br />- Relay to external email server<br />- Relay to email gateway service provider using home domain's smarthost |
-| **Customer** | - Sent via SMTP to internal email server<br />- Relayed to external email server<br />- Read via IMAP from external email server | - Sent via SMTP to internal email server<br />- Relayed to external email server<br />- Read via IMAP from external email server | - Sent via SMTP to internal email server<br />- Relayed to external email server<br />- Relayed to external email gateway service provider using customer domain's smarthost |
+To follow the testing steps below you must have deployed the mail service for both the *customer.com* and *home.com* domains.
+
+##### Sender internal (to the office network) connected client
+
+First we consider scenarios where the sender is using a client connected to our office network. In this scenario sending is only supported for senders in our *home* domain or *customer* domains, because our staff sometimes send emails from user accounts in the domains of our customers.
+
+The recipient can be an email address in any domain. Therefore the table below contains every combination of sender domain (vertical axis) and recipient domain (horizontal axis). At each intersection the steps in transporting the mail from the sender to the receiver are listed. The steps in *italics* require manual action, the other steps are automated.
+
+|            | Home                                                                      | Customer                                                                                                       | Other                                                                                                                                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| *Home*     | - *Send via internal mail server*<br />- *Read from internal mail server* | - *Send via internal mail server*<br />- Relay to external mail server<br />- *Read from external mail server* | - *Send via internal mail server*<br />- Relay to external mail server<br />- Relay to mail gateway service provider using home domain's smarthost<br />- Relay to receipient's domain's MX host<br />- *Read from receipient's mailbox*     |
+| *Customer* | - *Send via internal mail server*<br />- *Read from internal mail server* | - *Send via internal mail server*<br />- Relay to external mail server<br />- *Read from external mail server* | - *Send via internal mail server*<br />- Relay to external mail server<br />- Relay to mail gateway service provider using customer domain's smarthost<br />- Relay to receipient's domain's MX host<br />- *Read from receipient's mailbox* |
+
+There follows notes on how to execute each of the manual steps highlighted above.
 
 ###### Home -> Home
 
-Send to internal email server via SMTP:
+*Send via internal mail server*
 
 ```bash
-docker-compose run --rm mutt office username1
+docker-compose run --rm mutt user1fname.user1lname@home.com internal
 ```
 
-In mutt send a test email to username2@varilink.co.uk
+Send a test mail to `user2fname.user2lname@home.com`.
 
-Read from internal email server via IMAP:
+*Read from internal mail server*
 
 ```bash
-docker-compose run --rm mutt office username2
+docker-compose run --rm mutt user2fname.user2lname@home.com internal
 ```
 
-Read the email just sent from username1@varilink.co.uk
+Validate receipt of the test email from `user1fname.user1lname@home.com`.
 
 ###### Home -> Customer
 
-###### Home -> Other
-
-Send to internal email server via SMTP
+*Send via internal mail server*
 
 ```bash
-docker-compose run --rm mutt office username1
+docker-compose run --rm mutt user1fname.user1lname@home.com internal
 ```
 
-In mutt send a test email to any real world recipient in another domain. I use ping@tools.mxtoolbox.com so that I get an [MxToolbox deliverability report](https://mxtoolbox.com/deliverability).
+Send a test email to `userfname.userlname@customer.com`.
+
+*Read from external mail server*
+
+```bash
+docker-compose run --rm mutt userfname.userlname@customer.com external
+```
+
+- Note that certificate by which the IMAP connection is encrypted belongs to and is issued by `customer.com`.
+- Validate receipt of the test email from `user1fname.user1lname@home.com`.
+
+###### Home -> Other
+
+*Send via internal mail server*
+
+```bash
+docker-compose run --rm mutt user1fname.user1lname@home.com internal
+```
+
+Send a test email to any real world recipient, i.e. not in either of the mock-up domains `home.com` or `customer.com`.
+
+*Read from recipient's mailbox*
+
+Use whatever means you normally use to access that mailbox, of course it has to be one that you have access to.
 
 ###### Customer -> Home
 
+*Send via internal mail server*
+
+```bash
+docker-compose run --rm mutt userfname.userlname@customer.com internal
+```
+
+- Note that certificate by which the IMAP connection is encrypted belongs to and is issued by `customer.com`.
+- Send a test email to `user2fname.user2lname@home.com`.
+
+*Read from internal mail server*
+
+```bash
+docker-compose run --rm mutt user2fname.user2lname@home.com internal
+```
+
+Validate receipt of the test email from `userfname.userlname@customer.com`.
+
 ###### Customer -> Customer
+
+*Send via internal mail server*
+
+```bash
+docker-compose run --rm mutt userfname.userlname@customer.com internal
+```
+
+- Note that certificate by which the IMAP connection is encrypted belongs to and is issued by `customer.com`.
+- Send a test email to `rolename@customer.com`.
+
+*Read from external mail server*
+
+```bash
+docker-compose run --rm mutt rolename@customer.com external
+```
+
+- Note that certificate by which the IMAP connection is encrypted belongs to and is issued by `customer.com`.
+- Validate receipt of the test email from `userfname.userlname@customer.com`.
 
 ###### Customer -> Other
 
-##### Internet client
+*Send via internal mail server*
 
-|              | Home                                                         | Customer                                                     | Other                                                        |
-| ------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| **Home**     | - Sent via SMTP to external email server<br />- Fetched by internal email server<br />- Read via IMAP from internal email server | - Sent via SMTP to external email server<br />- Read via IMAP from external email server | - Sent via SMTP to external email server<br />- Relayed to external email gateway server provider using home domain's smarthost |
-| **Customer** | - Sent via SMTP to external email server<br />- Fetched by internal email server<br />- Read via IMAP from internal emal server | - Sent via SMTP to external email server<br />- Read via IMAP from external email server | - Sent via SMTP to external email server<br />- Relayed to external email gateway server provider using customer domain's smarthost |
-| **Other**    | - Sent via SMTP to other domains email service provider<br />- Relayed according to MX record for home domain to external email server<br />- Fetched by internal email server<br />- Read via IMAP from internal email server | - Sent via SMTP to other domains email service provider<br />- Relayed according to MX record for customer domain to external email server<br />- Read via IMAP from external email server | This scenario does not involve our services in any way and so does not concern us |
+```bash
+docker-compose run --rm mutt userfname.userlname@customer.com internal
+```
 
-###### Home -> Home
+- Note that certificate by which the IMAP connection is encrypted belongs to and is issued by `customer.com`.
+- Send a test email to any real world recipient, i.e. not in either of the mock-up domains `home.com` or `customer.com`.
 
-###### Home -> Customer
+*Read from recipient's mailbox*
 
-###### Home -> Other
+Use whatever means you normally use to access that mailbox, of course it has to be one that you have access to.
+
+##### Sender external (to the office network) connected client
+
+|              | Home                                                                                                                                                                                                     | Customer                                                                                                                                                                | Other                                                                                                                                                                                                   |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Customer** | - *Send via external mail server*<br />- Fetch by internal mail server<br />- *Read from internal mail server*                                                                                           | - *Send via external mail server*<br />- *Read from external mail server*                                                                                               | - *Send via external mail server*<br />- Relay to mail gateway service provider using customer domain's smarthost<br />- Relay to receipient's domain's MX host<br />- *Read from receipient's mailbox* |
+| **Other**    | - *Send via other domain mail service provider*<br />- Relay according to MX record for home domain to external mail server<br />- Fetch by internal mail server<br />- *Read from internal mail server* | - *Send via other domain mail service provider*<br />- Relay according to MX record for customer domain to external mail server<br />- *Read from external mail server* | This scenario does not involve our services in any way and so does not concern us                                                                                                                       |
 
 ###### Customer -> Home
 
+*Send via external mail server*
+
+```bash
+docker-compose run --rm mutt userfname.userlname@customer.com external
+```
+
+- Note that certificate by which the IMAP connection is encrypted belongs to and is issued by `customer.com`.
+- Send a test email to `user2fname.user2lname@home.com`.
+- Note that certificate by which the SMTP connection is encrypted belongs to and is issued by `customer.com`.
+
+*Read from internal mail server*
+
+```bash
+docker-compose run --rm mutt user2fname.user2lname@home.com internal
+```
+
+Validate email just sent from `userfname.userlname@customer.com` has been received.
+
 ###### Customer -> Customer
+
+*Send via external mail server*
+
+```bash
+docker-compose run --rm mutt userfname.userlname@customer.com external
+```
+
+- Note that certificate by which the IMAP connection is encrypted belongs to and is issued by `customer.com`.
+- Send a test email to `rolename@customer.com`.
+- Note that certificate by which the SMTP connection is encrypted belongs to and is issued by `customer.com`.
+
+*Read from external mail server*
+
+```bash
+docker-compose run --rm mutt rolename@customer.com external
+```
+
+- Note that certificate by which the IMAP connection is encrypted belongs to and is issued by `customer.com`.
+- Validate receipt of the test email from `userfname.userlname@customer.com`.
 
 ###### Customer -> Other
 
 ###### Other -> Home
 
+*Send via other domain mail server provider*
+
+For testing the sending of emails from a domain other than our home or customer domains, a *swaks* client tool rather than one based on *mutt*. This is because we don't need to provide an IMAP service for the *other* domain.
+
+```bash
+docker-compose run --rm swaks user2fname.user2lname@home.com
+```
+
+*Read from internal mail server*
+
+```bash
+docker-compose run --rm mutt user2fname.user2lname@home.com internal
+```
+
+Validate email just sent from `root@other.com` has been received.
+
 ###### Other -> Customer
+
+*Send via other domain mail server provider*
+
+```bash
+docker-compose run --rm swaks userfname.userlname@customer.com
+```
+
+*Read from external mail server*
+
+```bash
+docker-compose run --rm mutt userfname.userlname@customer.com external
+```
+
+- Note that certificate by which the IMAP connection is encrypted belongs to and is issued by `customer.com`.
+- Validate receipt of the test email from `userfname.userlname@customer.com`.
 
 #### web
 
-*To be done*
+### Testing Limitations
+
+Or, what can't be tested here.
