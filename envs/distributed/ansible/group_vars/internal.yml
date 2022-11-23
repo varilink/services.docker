@@ -9,7 +9,7 @@
 #----------
 
 # All hosts on the internal office network use our DNS service on that network.
-dns_resolvers: [10.0.0.106]
+dns_client_nameservers: [10.0.0.106]
 # All hosts on the internal, office network with the exception of the internal
 # mail server use the internal mail server as a smarthost. The internal mail
 # server itself uses the external mail server as a smarthost.
