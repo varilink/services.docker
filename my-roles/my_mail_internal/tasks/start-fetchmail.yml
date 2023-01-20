@@ -1,0 +1,29 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_mail_internal/tasks/start-fetchmail.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the fetchmail process is running
+  ansible.builtin.shell: pgrep -f '^/usr/bin/fetchmail$' || true
+  register: pgrep_result
+  changed_when: false
+
+- name: Test if fetchmail has been configured with mailservers
+  ansible.builtin.command: ls /etc/fetchmailrc
+  register: fetchmailrc_exists
+  changed_when: false
+  failed_when: fetchmailrc_exists.rc != 0 and fetchmailrc_exists.rc != 2
+
+- name: Start the fetchmail process if it isn't already running
+  ansible.builtin.shell: |-
+    echo 'fetchmail  : Starting' >> '/var/local/services.log'
+    nohup /usr/bin/fetchmail >> '/var/local/services.log' &
+    while true
+    do
+      sleep 3
+      pgrep -f '^/usr/bin/fetchmail$' && break
+    done
+    echo 'fetchmail  : Started' >> '/var/local/services.log'
+  become: yes
+  when: not pgrep_result.stdout and fetchmailrc_exists == 0

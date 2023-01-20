@@ -1,0 +1,33 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_mta/tasks/start-exim.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the exim process is running
+  ansible.builtin.shell: pgrep -f '^/usr/sbin/exim4 -bdf$' || true
+  register: pgrep_result
+  changed_when: false
+
+- name: Start the exim process
+  ansible.builtin.shell: |-
+    echo 'exim       : Starting' >> /var/local/services.log
+    nohup /usr/sbin/exim4 -bdf 2>&1 | sed 's/^/exim       : /' \
+      >> /var/local/services.log &
+
+    n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      pgrep -f '^/usr/sbin/exim4 -bdf$' && \
+        echo 'exim       : Started' >> /var/local/services.log && break
+    let n=n+1
+    done
+    
+    if [ $n -eq 3 ]; then
+      echo 'exim       : Failed to start process' \
+        >> /var/local/services.log
+    fi
+  args:
+    executable: /bin/bash
+  become: yes
+  when: not pgrep_result.stdout

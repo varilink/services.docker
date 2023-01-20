@@ -1,0 +1,15 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_database/handlers/main.yml
+# ------------------------------------------------------------------------------
+
+# NOTE: We must use include_tasks not import_tasks in handlers in the roles
+# within the my-role directory, otherwise the handlers they define are not
+# visible to the roles within the libraries-ansible directory.
+
+---
+
+- ansible.builtin.include_tasks: stop-mysql.yml
+  listen: Mariadb configuration changed
+
+- ansible.builtin.include_tasks: start-mysql.yml
+  listen: Mariadb configuration changed

@@ -1,0 +1,56 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_calendar/tasks/start-radicale.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Get the codename of the Debian release on this host
+  ansible.builtin.command: lsb_release --codename --short
+  register: lsb_release
+  changed_when: false
+
+- debug:
+    var: lsb_release
+
+- name: Test if the radicale process is running
+  ansible.builtin.shell: |-
+    {% if lsb_release.stdout == 'buster' %}
+    pgrep -f '^/usr/bin/python3 /usr/bin/radicale -f$' || true
+    {% elif lsb_release.stdout == 'bullseye' %}
+    pgrep -f '^/usr/bin/python3 /usr/bin/radicale$' || true
+    {% endif %}
+  register: pgrep_result
+  changed_when: false
+
+- name: Start the radicale process
+  ansible.builtin.shell: |-
+    echo 'radicale   : Starting' >> /var/local/services.log
+    {% if lsb_release.stdout == 'buster'%}
+    nohup /usr/bin/radicale -f 2>&1 | sed 's/^/radicale   : /' \
+      >> /var/local/services.log &
+    {% elif lsb_release.stdout == 'bullseye' %}
+    nohup /usr/bin/radicale 2>&1 | sed 's/^/radicale   : /' \
+      >> /var/local/services.log &
+    {% endif %}
+
+    n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      {% if lsb_release.stdout == 'buster'%}
+      pgrep -f '^/usr/bin/python3 /usr/bin/radicale -f$' && \
+        echo 'radicale   : Started' >> /var/local/services.log && break
+      {% elif lsb_release.stdout == 'bullseye' %}
+      pgrep '^/usr/bin/python3 /usr/bin/radicale$' && \
+        echo 'radicale   : Started' >> /var/local/services.log && break
+      {% endif %}
+      let n=n+1
+    done
+
+    if [ $n -eq 3 ]; then
+      echo 'radicale   : Failed to start process' \
+        >> /var/local/services.log
+    fi
+  args:
+    executable: /bin/bash
+  become: yes
+  when: not pgrep_result.stdout

@@ -1,0 +1,17 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_calendar/tasks/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.import_role:
+    name: calendar
+    tasks_from: install.yml
+    handlers_from: none.yml
+
+- ansible.builtin.import_tasks: start-radicale.yml
+
+- ansible.builtin.import_role:
+    name: calendar
+    tasks_from: configure.yml
+    handlers_from: none.yml

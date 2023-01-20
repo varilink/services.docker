@@ -1,0 +1,64 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_database/tasks/start-mysql.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Get the codename of the Debian release on this host
+  ansible.builtin.command: lsb_release --codename --short
+  register: lsb_release
+  changed_when: false
+
+- name: Test if the mysqld (buster) or mariadb (bullseye) process is running
+  ansible.builtin.shell: |-
+    {% if lsb_release.stdout == 'buster' %}
+    pgrep -f '^/usr/sbin/mysqld' || true
+    {% elif lsb_release.stdout == 'bullseye' %}
+    pgrep -f '^/usr/sbin/mariadbd' || true
+    {% endif %}
+  register: pgrep_result
+  changed_when: false
+
+- name: Start the mysqld (buster) or mariadb (bullseye) process
+  ansible.builtin.shell: |-
+    {% if lsb_release.stdout == 'buster' %}
+
+    echo 'mysqld     : Starting' >> /var/local/services.log
+    nohup mysqld_safe 2>&1 | sed 's/^/mysqld     : /' \
+      >> /var/local/services.log &
+
+    n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      pgrep -f '^/usr/sbin/mysqld' && \
+        echo 'mysqld     : Started' >> /var/local/services.log && break
+      let n=n+1
+    done
+
+    if [ $n -eq 3 ]; then
+      echo 'mysqld     : Failed to start process' >> /var/local/services.log
+    fi
+
+    {% elif lsb_release.stdout == 'bullseye' %}
+
+    echo 'mariadbd   : Starting' >> /var/local/services.log
+    nohup mysqld_safe 2>&1 | sed 's/^/mariadbd   : /' \
+      >> /var/local/services.log &
+
+    n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      pgrep -f '^/usr/sbin/mariadbd' && \
+        echo 'mariadbd   : Started' >> /var/local/services.log && break
+      let n=n+1
+    done
+
+    if [ $n -eq 3 ]; then
+      echo 'mariadbd   : Failed to start process' >> /var/local/services.log
+    fi
+
+    {% endif %}
+  args:
+    executable: /bin/bash
+  become: yes
+  when: not pgrep_result.stdout

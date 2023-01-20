@@ -1,0 +1,32 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_dns/tasks/stop-dnsmasq.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the dnsmasq process is running
+  ansible.builtin.shell: |-
+    pgrep -f '^dnsmasq -d$' || true
+  register: pgrep_result
+  changed_when: false
+
+- name: Stop the dnsmasq process
+  ansible.builtin.shell: |-
+    echo 'dnsmasq    : Stopping' >> /var/local/services.log
+    pkill -f '^dnsmasq -d$'
+
+    n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      pgrep -f '^dnsmasq -d$' || \
+        echo 'dnsmasq    : Stopped' >> /var/local/services.log && break
+    done
+    
+    if [ $n -eq 3 ]; then
+      echo 'dnsmasq    : Failed to stop process' \
+        >> /var/local/services.log
+    fi
+  args:
+    executable: /bin/bash
+  become: yes
+  when: pgrep_result.stdout

@@ -1,0 +1,15 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_backup_storage/tasks/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.import_role:
+    name: backup_storage
+    tasks_from: install
+    handlers_from: none
+
+- ansible.builtin.import_role:
+    name: backup_storage
+    tasks_from: configure
+    handlers_from: none

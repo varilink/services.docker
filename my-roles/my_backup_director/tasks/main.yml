@@ -1,0 +1,18 @@
+# ------------------------------------------------------------------------------
+# my_roles/my_backup_director/tasks/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.import_role:
+    name: my_mta
+
+- ansible.builtin.import_role:
+    name: backup_director
+    tasks_from: install
+    handlers_from: none
+
+- ansible.builtin.import_role:
+    name: backup_director
+    tasks_from: configure
+    handlers_from: none

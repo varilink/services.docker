@@ -1,0 +1,34 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_dns/tasks/start-dnsmasq.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the dnsmasq process is running
+  ansible.builtin.shell: |-
+    pgrep -f '^dnsmasq -d$' || true
+  register: pgrep_result
+  changed_when: false
+
+- name: Start the dnsmasq process
+  ansible.builtin.shell: |-
+    echo 'dnsmasq    : Starting' >> /var/local/services.log
+    nohup dnsmasq -d 2>&1 | sed 's/^/dnsmasq    : /' \
+      >> /var/local/services.log &
+
+    n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      pgrep -f '^dnsmasq -d$' && 
+        echo 'dnsmasq    : Started' >> /var/local/services.log && break
+      let n=n+1
+    done
+    
+    if [ $n -eq 3 ]; then
+      echo 'dnsmasq    : Failed to start process' \
+        >> /var/local/services.log
+    fi
+  args:
+    executable: /bin/bash
+  become: yes
+  when: not pgrep_result.stdout

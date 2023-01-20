@@ -1,0 +1,33 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_wordpress_apache/tasks/stop-apache.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the apache2 process is running
+  ansible.builtin.shell: |-
+    pgrep -f '^apache2 -D FOREGROUND$' || true
+  register: pgrep_result
+  changed_when: false
+
+- name: Stop the apache2 process
+  ansible.builtin.shell: |-
+    echo 'apache2    : Stopping' >> '/var/local/services.log'
+    pkill -f '^apache2 -D FOREGROUND$'
+
+    n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      pgrep -f '^apache2 -D FOREGROUND$' || \
+        echo 'apache2    : Stopped' >> '/var/local/services.log' && break
+      let n=n+1
+    done
+    
+    if [ $n -eq 3 ]; then
+      echo 'apache2    : Failed to stop process' \
+        >> /var/local/services.log
+    fi
+  args:
+    executable: /bin/bash
+  become: yes
+  when: pgrep_result.stdout

@@ -1,0 +1,17 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_wordpress_nginx/handlers/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.include_tasks: stop-nginx.yml
+  listen: Nginx configuration changed
+
+- ansible.builtin.include_tasks: start-nginx.yml
+  listen: Nginx configuration changed
+
+- ansible.builtin.include_tasks: stop-php-fpm.yml
+  listen: PHP FPM configuration changed
+
+- ansible.builtin.include_tasks: start-php-fpm.yml
+  listen: PHP FPM configuration changed

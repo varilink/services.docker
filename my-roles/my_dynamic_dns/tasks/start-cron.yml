@@ -1,0 +1,33 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_dynamic_dns/tasks/start-cron.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the cron process is running
+  ansible.builtin.shell: pgrep -f '^cron -f$' || true
+  register: pgrep_result
+  changed_when: false
+
+- name: Start the cron process
+  ansible.builtin.shell: |-
+    echo 'cron       : Starting' >> /var/local/services.log
+    nohup cron -f 2>&1 | sed 's/^/cron       : /' \
+      >> /var/local/services.log &
+
+        n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      pgrep -f '^cron -f$' && \
+        echo 'cron       : Started' >> /var/local/services.log && break
+      let n=n+1
+    done
+    
+    if [ $n -eq 3 ]; then
+      echo 'cron       : Failed to start process' \
+        >> /var/local/services.log
+    fi
+  args:
+    executable: /bin/bash
+  become: yes
+  when: not pgrep_result.stdout

@@ -1,0 +1,31 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_backup_director/tasks/stop-bacula-dir.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the bacula-dir process is running
+  ansible.builtin.shell: pgrep -f '^bacula-dir -f$' || true
+  register: pgrep_result
+  changed_when: false
+
+- name: Stop the bacula-dir process
+  ansible.builtin.shell: |-
+    echo 'bacula-dir : Stopping' >> /var/local/services.log
+    pkill -f '^bacula-dir -f$'
+
+    n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      pgrep -f '^bacula-dir -f$' || \
+        echo 'bacula-dir : Stopped' >> /var/local/services.log && break
+      let n=n+1
+    done
+    
+    if [ $n -eq 3 ]; then
+      echo 'bacula-dir : Failed to stop process' >> /var/local/services.log
+    fi
+  args:
+    executable: /bin/bash
+  become: yes
+  when: pgrep_result.stdout

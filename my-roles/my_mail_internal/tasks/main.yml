@@ -1,0 +1,16 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_mail_internal/tasks/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.import_role:
+    name: my_mail
+
+- ansible.builtin.import_role:
+    name: mail_internal
+    tasks_from: install.yml
+
+- ansible.builtin.import_role:
+    name: mail_internal
+    tasks_from: configure.yml

@@ -1,0 +1,28 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_wordpress_apache/tasks/create-site-stack.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Check for a single host
+  fail: msg="Single host check failed"
+  when: (play_hosts|length) != 1
+
+- block:
+
+    - ansible.builtin.import_role:
+        name: my_database
+        tasks_from: create-site
+
+    - ansible.builtin.import_role:
+        name: my_reverse_proxy
+        tasks_from: create-site
+
+    - ansible.builtin.import_role:
+        name: my_wordpress_apache
+        tasks_from: create-site
+
+  vars:
+    wordpress_site_server_name: "\
+      {{ wordpress_site_subdomain }}.{{ domain_name }}"
+    wordpress_site_path: "/var/www/{{ wordpress_site_server_name }}/html"

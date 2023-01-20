@@ -1,0 +1,32 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_mta/tasks/stop-exim.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the exim process is running
+  ansible.builtin.shell: pgrep -f '^/usr/sbin/exim4 -bdf$' || true
+  register: pgrep_result
+  changed_when: false
+
+- name: Stop exim process
+  ansible.builtin.shell: |-
+    echo 'exim       : Stopping' >> /var/local/services.log
+    pkill -f '^/usr/sbin/exim4 -bdf$'
+
+    n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      pgrep -f '^/usr/sbin/exim4 -bdf$' || \
+        echo 'exim       : Stopped' >> /var/local/services.log && break
+      let n=n+1
+    done
+    
+    if [ $n -eq 3 ]; then
+      echo 'exim       : Failed to stop process' \
+        >> /var/local/services.log
+    fi
+  args:
+    executable: /bin/bash
+  become: yes
+  when: pgrep_result.stdout

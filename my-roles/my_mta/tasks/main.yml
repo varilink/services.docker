@@ -1,0 +1,16 @@
+# my-roles/my_mta/tasks/main.yml
+
+---
+
+- ansible.builtin.import_role:
+    name: mta
+    tasks_from: install.yml
+    handlers_from: none.yml
+
+- ansible.builtin.import_tasks:
+    file: start-exim.yml
+
+- ansible.builtin.import_role:
+    name: mta
+    tasks_from: configure.yml
+    handlers_from: common.yml

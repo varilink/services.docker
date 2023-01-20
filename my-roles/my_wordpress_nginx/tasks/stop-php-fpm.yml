@@ -1,0 +1,32 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_wordpress_nginx/tasks/stop-php-fpm.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the php-fpm process is running
+  ansible.builtin.shell: "pgrep -f '^php-fpm: master process$' || true"
+  register: pgrep_result
+  changed_when: false
+
+- name: Stop the php-fpm process if it is running
+  ansible.builtin.shell: |-
+    echo 'php-fpm    : Stopping' >> '/var/local/services.log'
+    pkill -f "^php-fpm: master process"
+
+    n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      pgrep -f "^php-fpm: master process" || \
+        echo 'php-fpm    : Stopped' >> '/var/local/services.log' && break
+      let n=n+1
+    done
+    
+    if [ $n -eq 3 ]; then
+      echo 'php-fpm    : Failed to stop process' \
+        >> /var/local/services.log
+    fi
+  args:
+    executable: /bin/bash
+  become: yes
+  when: pgrep_result.stdout

@@ -1,0 +1,33 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_mail/tasks/start-dovecot.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the dovecot process is running
+  ansible.builtin.shell: pgrep -f '^/usr/sbin/dovecot -F$' || true
+  register: pgrep_result
+  changed_when: false
+
+- name: Start the dovecot process
+  ansible.builtin.shell: |-
+    echo 'dovecot    : Starting' >> '/var/local/services.log'
+    nohup dovecot -F 2>&1 | sed 's/^/dovecot    : /' \
+      >> '/var/local/services.log' &
+
+    n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      pgrep -f '^/usr/sbin/dovecot -F$' && \
+        echo 'dovecot    : Started' >> '/var/local/services.log' && break
+      let n=n+1
+    done
+
+    if [ $n -eq 3 ]; then
+      echo 'dovecot    : Failed to start process' \
+        >> /var/local/services.log
+    fi
+  args:
+    executable: /bin/bash
+  become: yes
+  when: not pgrep_result.stdout

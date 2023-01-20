@@ -1,0 +1,33 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_backup_storage/tasks/stop-bacula-sd.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the bacula-sd process is running
+  ansible.builtin.shell: |-
+    pgrep -f '^bacula-sd -f$' || true
+  register: pgrep_result
+  changed_when: false
+
+- name: Stop the bacula-sd process
+  ansible.builtin.shell: |-
+    echo 'bacula-sd  : Stopping' >> /var/local/services.log
+    pkill -f '^bacula-sd -f$'
+
+    n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      pgrep -f '^bacula-sd -f$' || \
+        echo 'bacula-sd  : Stopped' >> /var/local/services.log && break
+      let n=n+1
+    done
+    
+    if [ $n -eq 3 ]; then
+      echo 'bacula-sd  : Failed to stop process' \
+        >> /var/local/services.log
+    fi
+  args:
+    executable: /bin/bash
+  become: yes
+  when: pgrep_result.stdout

@@ -1,0 +1,23 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_mail_internal/tasks/stop-fetchmail.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the fetchmail process is running
+  ansible.builtin.shell: pgrep -f '^/usr/bin/fetchmail$' || true
+  register: pgrep_result
+  changed_when: false
+
+- name: Stop the fetchmail process if it is running
+  ansible.builtin.shell: |-
+    echo 'fetchmail  : Stopping' >> '/var/local/services.log'
+    pkill -f "^/usr/bin/fetchmail$"
+    while true
+    do
+      sleep 3
+      pgrep -f "^/usr/bin/fetchmail$" || break
+    done
+    echo 'fetchmail  : Stopped' >> '/var/local/services.log'
+  become: yes
+  when: pgrep_result.stdout

@@ -1,0 +1,18 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_mail_external/tasks/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.import_role:
+    name: my_mail
+
+- ansible.builtin.import_role:
+    name: mail_external
+    tasks_from: install
+    vars_from: none
+
+- ansible.builtin.import_role:
+    name: mail_external
+    tasks_from: configure
+    vars_from: none

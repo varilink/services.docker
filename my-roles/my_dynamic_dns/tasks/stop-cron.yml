@@ -1,0 +1,32 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_dynamic_dns/tasks/stop.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the cron process is running
+  ansible.builtin.shell: pgrep -f '^cron -f$' || true
+  register: pgrep_result
+  changed_when: false
+
+- name: Stop the cron process
+  ansible.builtin.shell: |-
+    echo 'cron       : Stopping' >> /var/local/services.log
+    pkill -f '^cron -f$'
+
+    n=0
+    while [ $n -lt 3 ]; do
+      sleep 3
+      pgrep -f '^cron -f$' || \
+        echo 'cron       : Stopped' >> /var/local/services.log && break
+      let n=n+1
+    done
+    
+    if [ $n -eq 3 ]; then
+      echo 'cron       : Failed to stop process' \
+        >> /var/local/services.log
+    fi
+  args:
+    executable: /bin/bash
+  become: yes
+  when: pgrep_result.stdout

@@ -1,0 +1,11 @@
+---
+
+- ansible.builtin.import_role:
+    name: wordpress_apache
+    tasks_from: install
+    handlers_from: none
+
+- ansible.builtin.import_role:
+    name: wordpress_apache
+    tasks_from: configure
+    handlers_from: none

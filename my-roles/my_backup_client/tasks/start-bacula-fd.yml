@@ -1,0 +1,41 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_backup_client/tasks/start-bacula-fd.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the bacula-fd process is running
+  ansible.builtin.shell: pgrep -f '^bacula-fd -f$' || true
+  register: pgrep_result
+  changed_when: false
+
+- block:
+
+    - name: Create the /run/bacula directory
+      ansible.builtin.file:
+        path: /run/bacula
+        state: directory
+
+    - name: Start the bacula-fd process
+      ansible.builtin.shell: |-
+        echo 'bacula-fd  : Starting' >> /var/local/services.log
+        nohup bacula-fd -f 2>&1 | sed 's/^/bacula-fd  : /' \
+          >> /var/local/services.log &
+
+        n=0
+        while [ $n -lt 3 ]; do
+          sleep 3
+          pgrep -f '^bacula-fd -f$' && \
+            echo 'bacula-fd  : Started' >> /var/local/services.log && break
+          let n=n+1
+        done
+
+        if [ $n -eq 3 ]; then
+          echo 'bacula-fd  : Failed to start process' \
+            >> /var/local/services.log
+        fi
+      args:
+        executable: /bin/bash
+
+  become: yes
+  when: not pgrep_result.stdout

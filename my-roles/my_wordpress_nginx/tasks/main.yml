@@ -1,0 +1,5 @@
+---
+
+- ansible.builtin.import_role:
+    name: wordpress_nginx
+    handlers_from: none.yml
