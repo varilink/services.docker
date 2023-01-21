@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 set -e
 
 if [[ ! $@ ]]; then
@@ -13,11 +11,11 @@ shift
 
 if [[ "$scope" == 'external' ]]; then
 
-  exec dig @10.0.0.105 $@
+  exec dig @$EXTERNAL_NAMESERVER $@
 
 elif [[ "$scope" == 'internal' ]]; then
 
-  exec dig @10.0.0.106 $@
+  exec dig @$INTERNAL_NAMESERVER $@
 
 else
 
