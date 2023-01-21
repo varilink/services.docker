@@ -13,8 +13,8 @@ then
 
 	# We are simulating client connection external to the office network.
 	# Update the client's /etc/resolv.conf to use simulated, ISP DNS service.
-	cat <<- 'EOF' > /etc/resolv.conf
-	nameserver 10.0.0.105
+	cat <<- EOF > /etc/resolv.conf
+	nameserver ${EXTERNAL_NAMESERVER}
 	options ndots:0
 	EOF
 
@@ -23,9 +23,9 @@ then
 
 	# We are simulating client connection to the office network.
 	# Update the client's /etc/resolv.conf to use our internal DNS service.
-	cat <<- 'EOF' > /etc/resolv.conf
+	cat <<- EOF > /etc/resolv.conf
 	search home.com
-	nameserver 10.0.0.106
+	nameserver ${INTERNAL_NAMESERVER}
 	options ndots:0
 	EOF
 
