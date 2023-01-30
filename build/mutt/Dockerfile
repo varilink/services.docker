@@ -1,7 +1,5 @@
 FROM debian:bullseye
 
-COPY docker-entrypoint.sh /
-
 RUN                                                                            \
   apt-get update                                                            && \
   apt-get --yes --no-install-recommends install                                \
@@ -11,6 +9,6 @@ RUN                                                                            \
     mutt                                                                       \
     nano
 
-COPY config /config
+COPY docker-entrypoint.sh /
 
 ENTRYPOINT [ "bash", "/docker-entrypoint.sh" ]

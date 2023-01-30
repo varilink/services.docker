@@ -1,3 +1,7 @@
+# ------------------------------------------------------------------------------
+# build/mutt/docker-entrypoint.sh
+# ------------------------------------------------------------------------------
+
 # Entrypoint script for mutt client. It requires two positional parameters:
 # 1. username - username of the mail service user
 # 2. connection - connection to the internal (office) or external network
@@ -24,7 +28,7 @@ then
 	# We are simulating client connection to the office network.
 	# Update the client's /etc/resolv.conf to use our internal DNS service.
 	cat <<- EOF > /etc/resolv.conf
-	search home.com
+	search ${HOME_DOMAIN}
 	nameserver ${INTERNAL_NAMESERVER}
 	options ndots:0
 	EOF
