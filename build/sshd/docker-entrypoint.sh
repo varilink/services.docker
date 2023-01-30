@@ -5,6 +5,9 @@
 # This is launch script for the containers in the repository that simulate hosts
 # that are the targets of our Ansible role deployment in our live environment.
 
+touch /var/local/services.log
+chmod g+w,o+w /var/local/services.log
+
 # Run the sshd without it detaching or becoming a daemon but run it in the
 # background.
 /usr/sbin/sshd -D >> /var/local/services.log &
