@@ -33,10 +33,10 @@
       sleep 3
       {% if lsb_release.stdout == 'buster' %}
       pgrep -f '^/usr/bin/python3 /usr/bin/radicale -f$' || \
-        (( 'radicale   : Stopped' >> /var/local/services.log && break
+        echo 'radicale   : Stopped' >> /var/local/services.log && break
       {% elif lsb_release.stdout == 'bullseye' %}
       pgrep -f '^/usr/bin/python3 /usr/bin/radicale$' || \
-        (( 'radicale   : Stopped' >> /var/local/services.log && break
+        echo 'radicale   : Stopped' >> /var/local/services.log && break
       {% endif %}
       let n=n+1
     done
