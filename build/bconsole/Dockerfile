@@ -5,6 +5,6 @@ RUN                                                                            \
   apt-get --yes --no-install-recommends install                                \
     bacula-console
 
-COPY bconsole.conf /etc/bacula/
+COPY docker-entrypoint.sh /
 
-ENTRYPOINT bconsole
+ENTRYPOINT [ "bash", "/docker-entrypoint.sh" ]
