@@ -1,0 +1,57 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_backup_dropbox/tasks/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the dropboxd process is running
+  ansible.builtin.command: pgrep -f '^/var/lib/bacula/.dropbox-dist/dropbox'
+  register: pgrep_result
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
+  changed_when: false
+
+- block:
+
+    - name: Start the dropboxd process
+      ansible.builtin.shell: |-
+        echo 'dropboxd   : Starting' >> /var/local/services.log
+        nohup gosu bacula bash -c "~/.dropbox-dist/dropboxd 2>/dev/null \
+          | sed -u 's/^/dropboxd   : /' >> /var/local/services.log" &
+
+        n=0
+        while [ $n -lt 3 ]; do
+          sleep 3
+          pgrep -f '^/var/lib/bacula/.dropbox-dist/dropbox' && \
+            echo 'dropboxd   : Started' >> /var/local/services.log && break
+          let n=n+1
+        done
+        
+        if [ $n -eq 3 ]; then
+          echo 'dropboxd   : Failed to start process' >> /var/local/services.log
+        fi
+      args:
+        executable: /bin/bash
+      become: yes
+
+    - name: >-
+        Pause for acknowledgement that container has been linked to Dropbox
+        account
+      ansible.builtin.pause:
+        prompt: >-
+          Link host {{ inventory_hostname }} to your Dropbox account before
+          acknowledging this prompt
+
+    - name: Check Dropbox synchronisation status
+      ansible.builtin.command: gosu bacula ~bacula/dropbox.py status
+      register: dropbox_status
+      until: dropbox_status.stdout | regex_search('^Syncing', multiline=True)
+      retries: 6
+      delay: 10
+      become: yes
+
+    - ansible.builtin.import_role:
+        name: backup_dropbox
+        handlers_from: none
+        tasks_from: exclude
+
+  when: pgrep_result.rc == 1
