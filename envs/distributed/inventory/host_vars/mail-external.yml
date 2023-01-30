@@ -28,3 +28,7 @@ mta_local_interfaces: >-
   <;
   [127.0.0.1]:25;
   [10.0.0.109]:25; [10.0.0.109]:465; [10.0.0.109]:587
+
+# Uncomment 
+#mta_smarthost_hostname: smtp.mailgun.org
+#mta_smarthost_port: '587'
