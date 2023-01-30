@@ -9,6 +9,29 @@
 
 # ------------------------------------------------------------------------------
 
+for arg in "$@"
+do
+
+  if [[ "$arg" =~ ^- ]]; then
+
+    if [[ "$options" ]]; then
+      options="$options $arg"
+    else
+      options="$arg"
+    fi
+
+  else
+
+    if [[ "$services" ]]; then
+      services="$services $arg"
+    else
+      services="$arg"
+    fi
+
+  fi
+
+done
+
 # /usr/src/services.sh is mapped to the services.sh provided for the current
 # environment, which is one of "live", "to-be" or "distributed". It sets MYENV
 # to the name of the current environment and provides the services function -
@@ -19,7 +42,7 @@ source /usr/src/services-to-hosts.sh
 # list of required composite services. An empty list translates to all composite
 # service. This function sets the services variable to the list of Docker
 # Compose services that the composite services map to in this environment.
-services-to-hosts $@
+services-to-hosts $services
 
 # Teardown first, so stop and remove containers and remove volumes that are
 # within the scope of the required composite services.
@@ -59,4 +82,9 @@ fi
 
 # Bring up the service containers for this environment and the required Docker
 # Compose services.
-echo "docker-compose --env-file envs/$MYENV/.env up $hosts"
+
+if [[ "$options" ]]; then
+  echo "docker-compose --env-file envs/$MYENV/.env up $options $hosts"
+else
+  echo "docker-compose --env-file envs/$MYENV/.env up $hosts"
+fi
