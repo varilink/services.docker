@@ -1,7 +1,9 @@
-#!/usr/bin/env bash
-
 set -e
 
-cat /addn-hosts >> /etc/hosts
+cat << EOF > /etc/resolv.conf
+search ${HOME_DOMAIN}
+nameserver ${INTERNAL_NAMESERVER}
+options ndots:0
+EOF
 
-lynx -accept_all_cookies $1
+exec lynx -accept_all_cookies $1
