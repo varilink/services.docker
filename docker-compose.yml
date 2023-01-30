@@ -1,31 +1,97 @@
+# ------------------------------------------------------------------------------
+# docker-compose.yml
+# ------------------------------------------------------------------------------
+
 version: "3.7"
+
+networks:
+
+  # We use the IPAM driver to allocate a subnet. Service hosts are then
+  # allocated fixed IP addresses from 10.0.0.101 and test clients are allowed to
+  # pick up dynamically allocated IP addresses from the Docker DHCP service.
+
+  # The service hosts simulate a hybird server estate, combining on-premise or
+  # office hosted servers (internal) with servers provided by our Cloud, virtual
+  # server hosting provider (external). We don't simulate that network
+  # separation in this Docker Compose project, as to do so would add complexity
+  # without serving any practical purpose.
+
+  default:
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
 
 services:
 
+  # Docker Compose services that are used to create and bring up the Docker
+  # Compose services that emulate hosts in our server estate and deploy
+  # application services to them using Ansible.
+
+  raise-hosts:
+    # Outputs the required dockker and docker-compose commands to bring up the
+    # host emulation Docker Compose services for an environment. These commands
+    # are piped into a shell to execute them.
+    build: ./build/raise-hosts
+    environment:
+      - MYENV
+    volumes:
+      - ./envs/${MYENV}/services-to-hosts.sh:/usr/src/services-to-hosts.sh
+
+  playbook:
+    # Runs the Ansible playbooks that deploy our application services to the
+    # host emulation Docker containers for each environment.
+    build: ./build/playbook
+    environment:
+      - MYENV
+    volumes:
+      # The configuration for the environment we're currently using, which could
+      # be one of "live", "to-be" or "distributed".
+      - ./envs/${MYENV}:/environment
+      # The Varilink library of Ansible roles for our host services.
+      - ./libraries-ansible:/libraries-ansible
+      # A wrapper set of roles that bespoke the Varilink library of Ansible
+      # roles for use with Docker containers.
+      - ./my-roles:/my-roles
+
+  # Docker Compose services that provide clients that can be used to test the
+  # function of the application services that are deployed using Ansible to the
+  # hosts in an environment.
+
   bconsole:
     build: ./build/bconsole
-    image: varilink/services/client/bconsole
+    env_file:
+      - ./envs/${MYENV}/test/dns.env
+    volumes:
+      - ./envs/${MYENV}/test/bconsole.conf:/etc/bacula/bconsole.conf
 
   cadaver:
     build: ./build/cadaver
-    image: varilink/services/client/cadaver
+    env_file:
+      - ./envs/${MYENV}/test/dns.env
 
   dig:
     build: ./build/dig
-    image: varilink/services/client/dig
+    env_file:
+      - ./envs/${MYENV}/test/dns.env
 
   lynx:
     build: ./build/lynx
-    image: varilink/services/client/lynx
+    env_file:
+      - ./envs/${MYENV}/test/dns.env
 
   mutt:
     build: ./build/mutt
-    image: varilink/services/client/mutt
+    env_file:
+      - ./envs/${MYENV}/test/dns.env
+    volumes:
+      - ./envs/${MYENV}/test/mutt;/config
 
   openssl:
     build: ./build/openssl
-    image: varilink/services/client/openssl
+    env_file:
+      - ./envs/${MYENV}/test/dns.env
 
   swaks:
     build: ./build/swaks
-    image: varilink/services/client/swaks
+    env_file:
+      - ./envs/${MYENV}/test/dns.env
