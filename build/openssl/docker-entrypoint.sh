@@ -11,7 +11,7 @@ shift
 
 # Use our own DNS service not the inbuilt Docker one.
 cat <<- EOF > /etc/resolv.conf
-search home.com
+search ${HOME_DOMAIN}
 nameserver ${INTERNAL_NAMESERVER}
 options ndots:0
 EOF
