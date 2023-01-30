@@ -20,7 +20,7 @@
     - name: Start the bacula-sd process
       ansible.builtin.shell: |-
         echo 'bacula-sd  : Starting' >> /var/local/services.log
-        nohup bacula-sd -f 2>&1 | sed 's/^/bacula-sd   : /' \
+        nohup bacula-sd -f 2>&1 | sed -u 's/^/bacula-sd  : /' \
           >> /var/local/services.log &
 
         n=0

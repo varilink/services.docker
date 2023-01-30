@@ -24,7 +24,7 @@
     {% if lsb_release.stdout == 'buster' %}
 
     echo 'mysqld     : Starting' >> /var/local/services.log
-    nohup mysqld_safe 2>&1 | sed 's/^/mysqld     : /' \
+    nohup mysqld_safe 2>&1 | sed -u 's/^/mysqld     : /' \
       >> /var/local/services.log &
 
     n=0
@@ -42,7 +42,7 @@
     {% elif lsb_release.stdout == 'bullseye' %}
 
     echo 'mariadbd   : Starting' >> /var/local/services.log
-    nohup mysqld_safe 2>&1 | sed 's/^/mariadbd   : /' \
+    nohup mysqld_safe 2>&1 | sed -u 's/^/mariadbd   : /' \
       >> /var/local/services.log &
 
     n=0

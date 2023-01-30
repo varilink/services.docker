@@ -12,7 +12,7 @@
 - name: Start the dovecot process
   ansible.builtin.shell: |-
     echo 'dovecot    : Starting' >> '/var/local/services.log'
-    nohup dovecot -F 2>&1 | sed 's/^/dovecot    : /' \
+    nohup dovecot -F 2>&1 | sed -u 's/^/dovecot    : /' \
       >> '/var/local/services.log' &
 
     n=0

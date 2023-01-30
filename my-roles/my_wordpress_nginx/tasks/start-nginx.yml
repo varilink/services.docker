@@ -13,7 +13,7 @@
 - name: Start the nginx process
   ansible.builtin.shell: |-
     echo 'nginx      : Starting' >> '/var/local/services.log'
-    nohup nginx -g 'daemon off;' 2>&1 | sed 's/^/nginx      : /' \
+    nohup nginx -g 'daemon off;' 2>&1 | sed -u 's/^/nginx      : /' \
       >> '/var/local/servies.log' &
 
     n=0

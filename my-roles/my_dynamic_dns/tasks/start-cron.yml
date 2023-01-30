@@ -12,7 +12,7 @@
 - name: Start the cron process
   ansible.builtin.shell: |-
     echo 'cron       : Starting' >> /var/local/services.log
-    nohup cron -f 2>&1 | sed 's/^/cron       : /' \
+    nohup cron -f 2>&1 | sed -u 's/^/cron       : /' \
       >> /var/local/services.log &
 
         n=0

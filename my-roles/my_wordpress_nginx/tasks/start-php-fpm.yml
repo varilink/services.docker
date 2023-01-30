@@ -25,13 +25,13 @@
       ansible.builtin.shell: |-
         echo 'php-fpm    : Starting' >> '/var/local/services.log'
         {% if debian_release == 'bullseye' %}
-        nohup php-fpm7.4 -F 2>&1 | sed 's/^/php-fpm    : /' \
+        nohup php-fpm7.4 -F 2>&1 | sed -u 's/^/php-fpm    : /' \
           >> '/var/local/servies.log' &
         {% elif debian_release == 'buster' %}
-        nohup php-fpm7.3 -F 2>&1 | sed 's/^/php-fpm    : /' \
+        nohup php-fpm7.3 -F 2>&1 | sed -u 's/^/php-fpm    : /' \
           >> '/var/local/servies.log' &
         {% elif debian_release == 'stretch' %}
-        nohup php-fpm7.0 -F 2>&1 | sed 's/^/php-fpm    : /' \
+        nohup php-fpm7.0 -F 2>&1 | sed -u 's/^/php-fpm    : /' \
           >> '/var/local/servies.log' &
         {% endif %}
 
