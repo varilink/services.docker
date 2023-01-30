@@ -30,7 +30,7 @@ for arg in "$@"; do
       # and "tags". The first of those lists is separated by spaces and the
       # second is separated by commas.
 
-      if [ $services ]; then
+      if [[ $services ]]; then
         services="$services $arg"
       else
         services=$arg
@@ -53,39 +53,42 @@ done
 source /environment/services-to-hosts.sh
 services-to-hosts $services
 
-echo "environment=${MYENV}"
-echo "playbook=$playbook"
-echo "services=$services"
-echo "options=$opts"
-echo "hosts=$hosts"
+cols=$(tput cols)
+perl -e "print '-' x $cols, \"\n\""
+echo "About to run the $playbook playbook in the $MYENV environment."
+if [[ "$services" ]]; then
+echo "I was passed this list of services \"$services\" to limit my actions to."
+else
+echo "I was not passed any list of services to limit my actions to."
+fi
+echo "I am going to act on this list of hosts \"$hosts\"."
+if [[ "$@" ]]; then
+echo "I was passed these ansible-playbook options \"$@\"."
+fi
+perl -e "print '-' x $cols, \"\n\""
 
-ANSIBLE_ROLES_PATH=/my-roles:/libraries-ansible
+export ANSIBLE_ROLES_PATH=/my-roles:/libraries-ansible
 
-if [ "$services" ] && [ "$opts" ]; then
+if [ "$services" ] && [ "$@" ]; then
 
-set -x
-
-ansible-playbook --inventory /environment/inventory/hosts.ini \
---limit `echo $hosts | tr ' ' ','` --tags=`echo $services | tr ' ' ','` \
-"$args" /environment/playbooks/$playbook/playbook.yml
+  ansible-playbook --inventory /environment/inventory/hosts.ini \
+    --limit `echo $hosts | tr ' ' ','` --tags=`echo $services | tr ' ' ','` \
+    "$@" /environment/playbooks/$playbook/playbook.yml
 
 elif [ "$services" ] && [ ! "$opts" ]; then
 
-  ANSIBLE_ROLES_PATH=/my-roles:/libraries-ansible ansible-playbook \
-    --inventory /environment/inventory/hosts.ini \
-    --limit=`echo $hosts|tr ' ' ','` --tags=`echo $services|tr ' ' ','` \
+  ansible-playbook --inventory /environment/inventory/hosts.ini \
+    --limit=`echo $hosts|tr ' ' ','` --tags=`echo $services | tr ' ' ','` \
     /environment/playbooks/$playbook/playbook.yml
 
 elif [ ! "$services" ] && [ "$opts" ]; then
 
-  ANSIBLE_ROLES_PATH=/my-roles:/libraries-ansible ansible-playbook \
-    --inventory /environment/inventory/hosts.ini \
-    $opts /environment/playbooks/$playbook/playbook.yml
+  ansible-playbook --inventory /environment/inventory/hosts.ini \
+    "$@" /environment/playbooks/$playbook/playbook.yml
 
 else
 
-  ANSIBLE_ROLES_PATH=/my-roles:/libraries-ansible ansible-playbook \
-    --inventory /environment/inventory/hosts.ini \
+  ansible-playbook --inventory /environment/inventory/hosts.ini \
     /environment/playbooks/$playbook/playbook.yml
 
 fi
