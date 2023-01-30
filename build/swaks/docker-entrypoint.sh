@@ -1,7 +1,8 @@
 set -e
 
 cat << 'EOF' > /etc/resolv.conf
-nameserver 10.0.0.105
+search ${HOME_DOMAIN}
+nameserver ${INTERNAL_NAMESERVER}
 options ndots:0
 EOF
 
