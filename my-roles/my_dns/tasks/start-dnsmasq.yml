@@ -13,8 +13,8 @@
 - name: Start the dnsmasq process
   ansible.builtin.shell: |-
     echo 'dnsmasq    : Starting' >> /var/local/services.log
-    nohup dnsmasq -d 2>&1 | sed 's/^/dnsmasq    : /' \
-      >> /var/local/services.log &
+    nohup dnsmasq -d 2>&1 \
+      | sed -u 's/^\(dnsmasq: \)\?/dnsmasq    : /' >> /var/local/services.log &
 
     n=0
     while [ $n -lt 3 ]; do
