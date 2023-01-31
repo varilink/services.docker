@@ -8,9 +8,6 @@
 
 ---
 
-- ansible.builtin.command: update-exim4.conf
-  listen: Exim configuration changed
-
 - ansible.builtin.include_tasks: stop-exim.yml
   listen: Exim configuration changed
 
