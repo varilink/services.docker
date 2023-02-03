@@ -79,11 +79,6 @@ To use this repository to test the roles in my [Libraries - Ansible](https://git
 3. [Activate Backup Synchronisation with Dropbox](#activate-backup-synchronisation-with-dropbox)
 4. [Deploying the Projects](#deploying-the-projects)
 
-
-
-
-7. [Testing the Deployed Composite Services](#testing-the-deployed-composite-services)
-
 ### Bring up an Environment
 
 To bring up the Docker Compose services that simulate an environment:
@@ -166,26 +161,41 @@ docker-compose run --rm -T raise-hosts backup calendar | bash
 
 As explained above, the *dns* service will come up in all three of these examples.
 
-#### Forcing a Rebuild
+#### Passing options to docker-compose up
 
-When you bring up the Docker Compose services for the first time the required images will a build is required. Subsequently you may wish to rebuild those images. To enable this you can pass the `--build` option to the `docker-compose` command that brings the Docker Compose services up.
+When we run the `raise-hosts` service above, we pipe its output into a shell. If you run it without piping it output into a shell, you will of course see the commands that it generates instead.
 
 For example, running this command in the default, *live* environment:
 ```bash
-docker-compose run --rm -T raise-hosts backup calendar --build
+docker-compose run --rm raise-hosts backup calendar
 ```
 
-Generates the following `docker` and `docker-compose` commands:
+Generates these `docker` and `docker-compose` commands:
 ```
-docker-compose --env-file envs/live/.env stop external-dns hub
-docker-compose --env-file envs/live/.env rm --force external-dns hub
+docker-compose --env-file envs/live/.env stop dns-external hub
+docker-compose --env-file envs/live/.env rm --force dns-external hub
 docker volume rm services_bacula-home
-docker-compose --env-file envs/live/.env up --build external-dns hub
+docker-compose --env-file envs/live/.env up dns-external hub
 ```
 
-You can see that the `--build` option is passed directly through to the last of the generated commands. So, of course if you pipe that output to a shell as before then the images will be forced to build again if they already exist.
+Note there that we've dropped the `-T` option, which disables pseudo-tty allocation. We only need to do this when we pipe the output, which we're not doing here. Of course, not piping the output displays the commands but doesn't run any of them, so it's pointless other than that it let's us see them.
 
-In actual fact, any argument to the `raise-hosts` Docker Compose service that starts with `-` is passed directly through to the last of the generated commands in the same way. So, you can pass through other options to `docker-compose up` in the same way.
+Any argument to the `raise-hosts` Docker Compose service that starts with `-` is passed directly through to the last of the generated commands.
+
+For example, running this command in the default, *live* environment:
+```bash
+docker-compose run --rm raise-hosts backup calendar --build --remove-orphans
+```
+
+Generates these `docker` and `docker-compose` commands:
+```
+docker-compose --env-file envs/live/.env stop dns-external hub
+docker-compose --env-file envs/live/.env rm --force dns-external hub
+docker volume rm services_bacula-home
+docker-compose --env-file envs/live/.env up --build --remove-orphans dns-external hub
+```
+
+Observe that the `--build --remove-orphans` have been passed through to the `docker-compose --env-file envs/live/.env up` command. Normally, you don't have to think about this but if say you had edited the build instructions for the `varilink/services/sshd` image, requiring a rebuild, or altered any Docker Compose services that use it, creating orphans, then you can see that this feature would come in useful.
 
 ### Deploy the Composite Services
 
