@@ -1,10 +1,12 @@
 # ------------------------------------------------------------------------------
-# my-roles/my_dns_client/tasks/main.yml
+# my-roles/my_wordpress/tasks/main.yml
 # ------------------------------------------------------------------------------
 
 ---
 
 - ansible.builtin.import_role:
-    name: dns_client
-  vars:
-    unsafe_writes: true
+    name: my_mta
+
+- ansible.builtin.import_role:
+    name: wordpress
+    tasks_from: install.yml

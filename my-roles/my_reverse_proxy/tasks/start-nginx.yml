@@ -5,30 +5,41 @@
 ---
 
 - name: Test if the nginx process is running
-  ansible.builtin.shell: "\
-    pgrep -f '^nginx: master process nginx -g daemon off;$' || true"
+  ansible.builtin.shell: |-
+    pgrep -f '^nginx: master process nginx -g daemon off;$'
   register: pgrep_result
   changed_when: false
+  failed_when: pgrep_result.rc !=0 and pgrep_result.rc != 1
 
-- name: Start the nginx process
-  ansible.builtin.shell: |-
-    echo 'nginx      : Starting' >> '/var/local/services.log'
-    nohup nginx -g 'daemon off;' 2>&1 | sed -u 's/^/nginx      : /' \
-      >> '/var/local/servies.log' &
+- block:
 
-    n=0
-    while [ $n -lt 3 ]; do
-      sleep 3
-      pgrep -f '^nginx: master process' && \
-        echo 'nginx      : Started' >> '/var/local/services.log' && break
-      let n=n+1
-    done
+    - name: Start the nginx process
+      ansible.builtin.shell: |-
+        echo 'nginx      : Starting' >> '/var/local/services.log'
+        nohup nginx -g 'daemon off;' |& sed -u 's/^/nginx      : /' \
+          &>> '/var/local/servies.log' &
+      args:
+        executable: /bin/bash
+      become: yes
 
-    if [ $n -eq 3 ]; then
-      echo 'nginx      : Failed to start process' \
-        >> /var/local/services.log
-    fi
-  args:
-    executable: /bin/bash
-  become: yes
+    - name: Check the nginx process has started
+      # We do this in a separate shell task to the one that we started the
+      # process in so that we know that the process survived beyond that shell.
+      ansible.builtin.shell: |-
+        n=0
+        while [ $n -lt 3 ]; do
+          sleep 3
+          pgrep -f '^nginx: master process' && \
+            echo 'nginx      : Started' >> '/var/local/services.log' && break
+          let n=n+1
+        done
+
+        if [ $n -eq 3 ]; then
+          echo 'nginx      : Failed to start process' \
+            >> /var/local/services.log
+          exit 1
+        fi
+      args:
+        executable: /bin/bash
+
   when: not pgrep_result.stdout

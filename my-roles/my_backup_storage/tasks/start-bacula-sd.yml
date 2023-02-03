@@ -6,23 +6,38 @@
 
 - name: Test if the bacula-sd process is running
   ansible.builtin.shell: |-
-    pgrep -f '^bacula-sd -f$' || true
+    pgrep -f '^bacula-sd -f$'
   register: pgrep_result
   changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
 
 - block:
+
+    # If I introduce a nested block here for the common 'become: yes' on the
+    # next two tasks, then I get an error with the following message:
+    #
+    # ERROR! Unexpected Exception, this is probably a bug:
+    # 'Block' object has no attribute 'get_name'
 
     - name: Create the /run/bacula directory
       ansible.builtin.file:
         path: /run/bacula
         state: directory
+      become: yes
 
     - name: Start the bacula-sd process
       ansible.builtin.shell: |-
         echo 'bacula-sd  : Starting' >> /var/local/services.log
-        nohup bacula-sd -f 2>&1 | sed -u 's/^/bacula-sd  : /' \
-          >> /var/local/services.log &
+        nohup bacula-sd -f |& sed -u 's/^/bacula-sd  : /' \
+          &>> /var/local/services.log &
+      args:
+        executable: /bin/bash
+      become: yes
 
+    - name: Check the bacula-sd process has started
+      # We do this in a separate shell task to the one that we started the
+      # process in so that we know that the process survived beyond that shell.
+      ansible.builtin.shell: |-
         n=0
         while [ $n -lt 3 ]; do
           sleep 3
@@ -34,9 +49,10 @@
         if [ $n -eq 3 ]; then
           echo 'bacula-sd  : Failed to start process' \
             >> /var/local/services.log
+          exit 1
         fi
       args:
         executable: /bin/bash
 
   become: yes
-  when: not pgrep_result.stdout
+  when: pgrep_result.rc == 1

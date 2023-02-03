@@ -5,29 +5,40 @@
 ---
 
 - name: Test if the exim process is running
-  ansible.builtin.shell: pgrep -f '^/usr/sbin/exim4 -bdf$' || true
+  ansible.builtin.shell: pgrep -f '^/usr/sbin/exim4 -bdf$'
   register: pgrep_result
   changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
 
-- name: Start the exim process
-  ansible.builtin.shell: |-
-    echo 'exim       : Starting' >> /var/local/services.log
-    nohup /usr/sbin/exim4 -bdf 2>&1 | sed -u 's/^/exim       : /' \
-      >> /var/local/services.log &
+- block:
 
-    n=0
-    while [ $n -lt 3 ]; do
-      sleep 3
-      pgrep -f '^/usr/sbin/exim4 -bdf$' && \
-        echo 'exim       : Started' >> /var/local/services.log && break
-    let n=n+1
-    done
-    
-    if [ $n -eq 3 ]; then
-      echo 'exim       : Failed to start process' \
-        >> /var/local/services.log
-    fi
-  args:
-    executable: /bin/bash
-  become: yes
-  when: not pgrep_result.stdout
+    - name: Start the exim process
+      ansible.builtin.shell: |-
+        echo 'exim       : Starting' >> /var/local/services.log
+        nohup /usr/sbin/exim4 -bdf |& sed -u 's/^/exim       : /' \
+          &>> /var/local/services.log &
+      args:
+        executable: /bin/bash
+      become: yes
+
+    - name: Check the exim process has started
+      # We do this in a separate shell task to the one that we started the
+      # process in so that we know that the process survived beyond that shell.
+      ansible.builtin.shell: |-
+        n=0
+        while [ $n -lt 3 ]; do
+          sleep 3
+          pgrep -f '^/usr/sbin/exim4 -bdf$' && \
+            echo 'exim       : Started' >> /var/local/services.log && break
+        let n=n+1
+        done
+        
+        if [ $n -eq 3 ]; then
+          echo 'exim       : Failed to start process' \
+            >> /var/local/services.log
+          exit 1
+        fi
+      args:
+        executable: /bin/bash
+
+  when: pgrep_result.rc == 1

@@ -5,9 +5,10 @@
 ---
 
 - name: Test if the fetchmail process is running
-  ansible.builtin.shell: pgrep -f '^/usr/bin/fetchmail$' || true
+  ansible.builtin.shell: pgrep -f '^/usr/bin/fetchmail$'
   register: pgrep_result
   changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
 
 - name: Test if fetchmail has been configured with mailservers
   ansible.builtin.command: ls /etc/fetchmailrc
@@ -15,15 +16,37 @@
   changed_when: false
   failed_when: fetchmailrc_exists.rc != 0 and fetchmailrc_exists.rc != 2
 
-- name: Start the fetchmail process if it isn't already running
-  ansible.builtin.shell: |-
-    echo 'fetchmail  : Starting' >> '/var/local/services.log'
-    nohup /usr/bin/fetchmail >> '/var/local/services.log' &
-    while true
-    do
-      sleep 3
-      pgrep -f '^/usr/bin/fetchmail$' && break
-    done
-    echo 'fetchmail  : Started' >> '/var/local/services.log'
-  become: yes
-  when: not pgrep_result.stdout and fetchmailrc_exists == 0
+- block:
+
+    - name: >-
+        Start the fetchmail process if it has been configured isn't already
+        running
+      ansible.builtin.shell: |-
+        echo 'fetchmail  : Starting' >> /var/local/services.log
+        nohup fetchmail |& sed -u 's/^/fetchmail  : /' \
+          &>> /var/local/services.log &
+      args:
+        executable: /bin/bash
+      become: yes
+
+    - name: Check the fetchmail process has started
+      # We do this in a separate shell task to the one that we started the
+      # process in so that we know that the process survived beyond that shell.
+      ansible.builtin.shell: |-
+        n=0
+        while [ $n -lt 3 ]; do
+          sleep 3
+          pgrep -f '^fetchmail$' && \
+            echo 'fetchmail  : Started' >> /var/local/services.log && break
+          let n=n+1
+        done
+
+        if [ $n -eq 3 ]; then
+          echo 'fetchmail  : Failed to start process' \
+            >> /var/local/services.log
+          exit 1
+        fi
+      args:
+        executable: /bin/bash
+
+  when: pgrep_result.rc == 1 and fetchmailrc_exists.rc == 0

@@ -5,32 +5,54 @@
 ---
 
 - name: Test if the apache2 process is running
-  ansible.builtin.shell: |-
-    pgrep -f '^apache2 -D FOREGROUND$' || true
+  ansible.builtin.shell: pgrep -f '^apache2 -D FOREGROUND$'
   register: pgrep_result
   changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
 
-- name: Start the apache2 process
-  ansible.builtin.shell: |-
-    source /etc/apache2/envvars
+- block:
 
-    echo 'apache2    : Starting' >> '/var/local/services.log'
-    nohup apache2 -D FOREGROUND 2>&1 | sed -u 's/^/apache2    : /' \
-      >> '/var/local/servies.log' &
+    # If I introduce a nested block here for the common 'become: yes' on the
+    # next two tasks, then I get an error with the following message:
+    #
+    # ERROR! Unexpected Exception, this is probably a bug:
+    # 'Block' object has no attribute 'get_name'
 
-    n=0
-    while [ $n -lt 3 ]; do
-      sleep 3
-      pgrep -f '^apache2 -D FOREGROUND$' && \
-        echo 'apache2    : Started' >> '/var/local/services.log' && break
-      let n=n+1
-    done
+    - name: Create the Apache run directory
+      ansible.builtin.file:
+        path: /var/run/apache2
+        state: directory
+      become: yes
 
-    if [ $n -eq 3 ]; then
-      echo 'apache2    : Failed to start process' \
-        >> /var/local/services.log
-    fi
-  args:
-    executable: /bin/bash
-  become: yes
-  when: not pgrep_result.stdout
+    - name: Start the apache2 process
+      ansible.builtin.shell: |-
+        source /etc/apache2/envvars
+
+        echo 'apache2    : Starting' >> '/var/local/services.log'
+        nohup apache2 -D FOREGROUND |& sed -u 's/^/apache2    : /' \
+          &>> '/var/local/servies.log' &
+      args:
+        executable: /bin/bash
+      become: yes
+
+    - name: Check the apache2 process has started
+      # We do this in a separate shell task to the one that we started the
+      # process in so that we know that the process survived beyond that shell.
+      ansible.builtin.shell: |-
+        n=0
+        while [ $n -lt 3 ]; do
+          sleep 3
+          pgrep -f '^apache2 -D FOREGROUND$' && \
+            echo 'apache2    : Started' >> '/var/local/services.log' && break
+          let n=n+1
+        done
+
+        if [ $n -eq 3 ]; then
+          echo 'apache2    : Failed to start process' \
+            >> /var/local/services.log
+          exit 1
+        fi
+      args:
+        executable: /bin/bash
+
+  when: pgrep_result.rc == 1

@@ -5,29 +5,40 @@
 ---
 
 - name: Test if the cron process is running
-  ansible.builtin.shell: pgrep -f '^cron -f$' || true
+  ansible.builtin.shell: pgrep -f '^cron -f$'
   register: pgrep_result
   changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
 
-- name: Start the cron process
-  ansible.builtin.shell: |-
-    echo 'cron       : Starting' >> /var/local/services.log
-    nohup cron -f 2>&1 | sed -u 's/^/cron       : /' \
-      >> /var/local/services.log &
+- block:
 
+    - name: Start the cron process
+      ansible.builtin.shell: |-
+        echo 'cron       : Starting' >> /var/local/services.log
+        nohup cron -f |& sed -u 's/^/cron       : /' \
+          &>> /var/local/services.log &
+      args:
+        executable: /bin/bash
+      become: yes
+
+    - name: Check the cron process has started
+      # We do this in a separate shell task to the one that we started the
+      # process in so that we know that the process survived beyond that shell.
+      ansible.builtin.shell: |-
         n=0
-    while [ $n -lt 3 ]; do
-      sleep 3
-      pgrep -f '^cron -f$' && \
-        echo 'cron       : Started' >> /var/local/services.log && break
-      let n=n+1
-    done
-    
-    if [ $n -eq 3 ]; then
-      echo 'cron       : Failed to start process' \
-        >> /var/local/services.log
-    fi
-  args:
-    executable: /bin/bash
-  become: yes
-  when: not pgrep_result.stdout
+        while [ $n -lt 3 ]; do
+          sleep 3
+          pgrep -f '^cron -f$' && \
+            echo 'cron       : Started' >> /var/local/services.log && break
+          let n=n+1
+        done
+        
+        if [ $n -eq 3 ]; then
+          echo 'cron       : Failed to start process' \
+            >> /var/local/services.log
+          exit 1
+        fi
+      args:
+        executable: /bin/bash
+
+  when: pgrep_result.rc == 1
