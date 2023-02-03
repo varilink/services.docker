@@ -1,4 +1,4 @@
 - ansible.builtin.import_role:
-    name: backup_client
+    name: dns_client
   vars:
     unsafe_writes: true
