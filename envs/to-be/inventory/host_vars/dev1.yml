@@ -1,0 +1,3 @@
+ansible_host: 10.0.0.101
+backup_client_director_password: 5FO1mmID12mW0M1NidVtQBmestH7oUCxl
+backup_client_monitor_password: FTtNO21263EEOWjv7rbPOZGd2L4gy6Q8p

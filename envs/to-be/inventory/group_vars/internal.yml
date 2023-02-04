@@ -1,0 +1,5 @@
+dns_client_nameservers:
+  - 10.0.0.104
+dns_upstream_nameservers:
+  - 10.0.0.102
+wordpress_site_uses_ssl: false

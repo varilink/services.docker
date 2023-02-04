@@ -1,0 +1,68 @@
+# ------------------------------------------------------------------------------
+# envs/to-be/docker-compose.yml
+# ------------------------------------------------------------------------------
+
+# Host Docker Compose services for the to-be simulation environment.
+
+version: "3.7"
+
+services:
+
+  dev1:
+    build: build/sshd
+    image: varilink/services/sshd:bullseye
+    container_name: services_dev1
+    hostname: dev1
+    networks:
+      default:
+        ipv4_address: 10.0.0.101
+
+  dns-external:
+    build: build/sshd
+    image: varilink/services/sshd:bullseye
+    container_name: services_dns-external
+    hostname: dns-external
+    networks:
+      default:
+        ipv4_address: 10.0.0.102
+
+  gateway:
+    build: build/sshd
+    image: varilink/services/sshd:bullseye
+    container_name: services_gateway
+    hostname: gateway
+    networks:
+      default:
+        ipv4_address: 10.0.0.103
+
+  hub:
+    build: build/sshd
+    image: varilink/services/sshd:bullseye
+    container_name: services_hub
+    hostname: hub
+    volumes:
+      - bacula-home:/var/lib/bacula/
+    networks:
+      default:
+        ipv4_address: 10.0.0.104
+
+  prod1:
+    build: build/sshd
+    image: varilink/services/sshd:bullseye
+    container_name: services_prod1
+    hostname: prod1
+    networks:
+      default:
+        ipv4_address: 10.0.0.105
+
+  prod2:
+    build: build/sshd
+    image: varilink/services/sshd:bullseye
+    container_name: services_prod2
+    hostname: prod2
+    networks:
+      default:
+        ipv4_address: 10.0.0.106
+
+volumes:
+  bacula-home:

@@ -1,0 +1,49 @@
+# ------------------------------------------------------------------------------
+# envs/live/playbooks/home/playbook.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- hosts: dev1
+
+  tasks:
+
+    - block:
+
+        - ansible.builtin.import_role:
+            name: my_wordpress_apache
+            tasks_from: create-site-stack
+
+        - ansible.builtin.import_role:
+            name: my_dns
+            tasks_from: create-site
+          delegate_to: hub
+
+      tags: web
+
+- hosts: gateway
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_mail_certificates
+        tasks_from: domain
+      tags: mail
+      when: mail_uses_ca
+
+- hosts: prod1
+
+  tasks:
+
+    - block:
+
+        - ansible.builtin.import_role:
+            name: my_mail_external
+            tasks_from: domain
+
+        - ansible.builtin.import_role:
+            name: my_dns
+            tasks_from: create-mail
+          delegate_to: dns-external
+
+      tags: mail

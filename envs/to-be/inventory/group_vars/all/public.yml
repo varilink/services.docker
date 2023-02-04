@@ -1,0 +1,67 @@
+# ------------------------------------------------------------------------------
+# envs/live/to-be/group_vars/all/public.yml
+# ------------------------------------------------------------------------------
+
+---
+
+# The admin user
+admin_user: user1fname
+admin_user_email: user1fname.user1lname@home.com
+
+# Ansible connection
+ansible_user: "{{ admin_user }}"
+ansible_ssh_pass: user1passwd
+ansible_ssh_extra_args: >-
+  -o StrictHostKeyChecking=no
+  -o UserKnownHostsFile=/dev/null
+  -o LogLevel=QUIET
+
+# Backup
+backup_copy_folder: bacula-test
+backup_director_console_password: m0Lb5Zn4y1JIjT29NMkbUpVOmnSLbsrLe
+backup_director_monitor_password: c7J2of0vO2mEYfh42qeqnCHOrjBXMb9ot
+backup_director_name: services-dir
+backup_director_schedules_active: false
+backup_monitor_name: services-mon
+backup_storage_director_password: pMj64AD0mLbhcwNNqK66V1FYD7iDX0nOf
+backup_storage_monitor_password: u4R7GjXB4FJVmd2ZvoZ6dvvUUlrO6xiwm
+backup_storage_name: services-sd
+
+# Environment
+home_domain: home.com
+hosts_to_roles_map:
+  dev1:
+    - database
+    - reverse_proxy
+    - wordpress_apache
+    - wordpress_nginx
+  dns-external:
+    - dns
+  gateway:
+    - dynamic_dns
+    - mail_certificates
+  hub:
+    - backup_director
+    - backup_storage
+    - calendar
+    - database
+    - dns
+    - mail_internal
+  prod1:
+    - mail_external
+  prod2:
+    - database
+    - wordpress_nginx
+  prod3:
+    - database
+    - reverse_proxy
+    - wordpress_apache
+office_subnet: 10.0.0.0/24
+
+wordpress_site_admin_user_email: "{{ admin_user_email }}"
+
+# Variables to uncomment as part of enabling integrations, see:
+# https://github.com/varilink/services-docker#enabling-integration-with-third-party-cloud-services 
+#backup_linked_to_dropbox: yes
+#mail_uses_ca: yes
+#wordpress_site_uses_ca: yes

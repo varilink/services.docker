@@ -1,0 +1,7 @@
+dns_client_nameservers:
+  - 10.0.0.102
+dns_host_patterns:
+  - string: external
+    description: External hosts
+dns_upstream_nameservers:
+  - 192.168.1.1

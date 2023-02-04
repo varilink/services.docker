@@ -1,0 +1,135 @@
+# ------------------------------------------------------------------------------
+# envs/live/playbooks/deploy-services.yml
+# ------------------------------------------------------------------------------
+
+# Ansible playbook to deploy services to the containers that comprise the
+# "live" environment.
+
+---
+
+# DNS service (do this first so we know it's being used thereafter)
+
+- hosts: dns-external,hub
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_dns
+      tags: [backup, calendar, dns, dynamic_dns, mail, web]
+
+- hosts: all
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_dns_client
+      tags: [backup, calendar, dns, dynamic_dns, mail, web]
+
+# Backup service
+
+- hosts: hub
+
+  tasks:
+
+    - block:
+
+        - ansible.builtin.import_role:
+            name: my_database
+
+        - ansible.builtin.import_role:
+            name: my_backup_director
+
+        - ansible.builtin.import_role:
+            name: my_backup_storage
+
+        - block:
+
+            - ansible.builtin.include_role:
+                name: my_backup_director
+                tasks_from: dropbox.yml
+
+            - ansible.builtin.include_role:
+                name: my_backup_storage
+                tasks_from: dropbox.yml
+
+          when: >-
+            backup_linked_to_dropbox is defined and backup_linked_to_dropbox
+
+      tags: [backup]
+
+- hosts: backup_clients
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_backup_client
+      tags: backup
+
+# Calendar service
+
+- hosts: hub
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_calendar
+      tags: calendar
+
+# Dynamic DNS service
+
+- hosts: gateway
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_dynamic_dns
+      tags: dynamic_dns
+
+# Mail service
+
+- hosts: gateway
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_mail_certificates
+      tags: mail
+
+- hosts: hub
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_mail_internal
+      tags: [backup, mail]
+
+- hosts: prod1
+
+  tasks:
+
+  - ansible.builtin.import_role:
+      name: my_mail_external
+
+    tags: mail
+
+# Web service
+
+- hosts: dev1,gateway,prod2
+
+  tasks:
+
+    - block:
+
+        - ansible.builtin.import_role:
+            name: my_database
+
+        - ansible.builtin.import_role:
+            name: my_reverse_proxy
+
+        - ansible.builtin.import_role:
+            name: my_wordpress_apache
+
+        - ansible.builtin.import_role:
+            name: my_wordpress_nginx
+
+      tags: web

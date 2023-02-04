@@ -1,0 +1,18 @@
+# ------------------------------------------------------------------------------
+# envs/to-be/playbooks/home/group_vars/all.yml
+# ------------------------------------------------------------------------------
+
+---
+
+domain_name: home.com
+domain_organisation: Home Organisation
+domain_country: GB
+domain_state: Derbyshire
+domain_locality: Long Eaton
+domain_users:
+  - fname: user1fname
+    lname: user1lname
+  - fname: user2fname
+    lname: user2lname
+    password: 'iT540&DccMk#X5s#'
+wordpress_site_reverse_proxy_pass_port: 8082
