@@ -1,9 +1,0 @@
----
-- hosts:
-    - backup-director
-
-  tasks:
-
-    - import_role:
-        name: backup_dropbox
-        tasks_from: exclude.yml
