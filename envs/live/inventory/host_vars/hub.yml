@@ -1,0 +1,5 @@
+ansible_host: 10.0.0.104
+backup_client_director_password: LdsFB0A14P30r0JmMYAGyq34hAkY4Svpe
+backup_client_monitor_password: BE61LpFFABjI97lDHHFW9H0eBOgY3Aypm
+dns_client_nameservers:
+  - 127.0.0.1

@@ -1,0 +1,4 @@
+ansible_host: 10.0.0.103
+backup_client_director_password: c0oOdSJlgxPW17X8zUZlwgB1JTFip6Bvh
+backup_client_monitor_password: rb9WRHj8owfVigjmsNXTrN58pyEcfTnyR
+wordpress_site_uses_ssl: false

@@ -1,0 +1,19 @@
+# ------------------------------------------------------------------------------
+# envs/live/playbooks/customer/group_vars/all/public.yml
+# ------------------------------------------------------------------------------
+
+---
+
+domain_name: customer.com
+domain_organisation: Customer Organisation
+domain_country: GB
+domain_state: Derbyshire
+domain_locality: Long Eaton
+domain_users:
+  # A user with a personal email address
+  - email: "userfname.userlname@{{ domain_name }}"
+    password: 'dN398*gDd00O7@6V'
+  # A user with a role email address
+  - email: rolename@{{ domain_name }}
+    password: 'V8m89r%D#Q&oq41y'
+wordpress_site_reverse_proxy_pass_port: 8081
