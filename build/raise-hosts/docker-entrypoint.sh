@@ -70,7 +70,8 @@ then
 
     # The backup_director and backup_storage roles are on separate hosts, each
     # with its own volume mapped to the bacula home directory.
-    echo 'docker volume rm services_dir-bacula-home services_sd-bacula-home'
+    vols='services_director-bacula-home services_storage-bacula-home'
+    echo "docker volume rm $vols"
 
   else
 
