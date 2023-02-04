@@ -12,9 +12,9 @@
 - name: Test if the radicale process is running
   ansible.builtin.shell: |-
     {% if lsb_release.stdout == 'buster' %}
-    pgrep -f '^python3 /usr/bin/radicale -f$'
+    pgrep -f '^/usr/bin/python3 /usr/bin/radicale -f$'
     {% elif lsb_release.stdout == 'bullseye' %}
-    pgrep -f '^python3 /usr/bin/radicale$'
+    pgrep -f '^/usr/bin/python3 /usr/bin/radicale$'
     {% endif %}
   register: pgrep_result
   changed_when: false
