@@ -11,7 +11,7 @@
 
 - name: Test if the php-fpm process is running
   ansible.builtin.shell: |-
-    pgrep -f '^php-fpm: master process$'
+    pgrep -f '^php-fpm: master process'
   register: pgrep_result
   changed_when: false
   failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1

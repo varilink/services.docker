@@ -5,10 +5,10 @@
 ---
 
 - name: Test if the apache2 process is running
-  ansible.builtin.shell: |-
-    pgrep -f '^apache2 -D FOREGROUND$' || true
+  ansible.builtin.shell: pgrep -f '^apache2 -D FOREGROUND$'
   register: pgrep_result
   changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
 
 - name: Stop the apache2 process
   ansible.builtin.shell: |-
@@ -30,4 +30,4 @@
   args:
     executable: /bin/bash
   become: yes
-  when: pgrep_result.stdout
+  when: pgrep_result.rc == 0

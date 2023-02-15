@@ -5,9 +5,10 @@
 ---
 
 - name: Test if the bacula-dir process is running
-  ansible.builtin.shell: pgrep -f '^bacula-dir -f$' || true
+  ansible.builtin.shell: pgrep -f '^bacula-dir -f$'
   register: pgrep_result
   changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
 
 - name: Stop the bacula-dir process
   ansible.builtin.shell: |-
@@ -28,4 +29,4 @@
   args:
     executable: /bin/bash
   become: yes
-  when: pgrep_result.stdout
+  when: pgrep_result.rc == 0

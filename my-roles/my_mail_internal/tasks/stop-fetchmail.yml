@@ -5,9 +5,10 @@
 ---
 
 - name: Test if the fetchmail process is running
-  ansible.builtin.shell: pgrep -f '^/usr/bin/fetchmail$' || true
+  ansible.builtin.shell: pgrep -f '^/usr/bin/fetchmail$'
   register: pgrep_result
   changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
 
 - name: Stop the fetchmail process if it is running
   ansible.builtin.shell: |-
@@ -20,4 +21,4 @@
     done
     echo 'fetchmail  : Stopped' >> '/var/local/services.log'
   become: yes
-  when: pgrep_result.stdout
+  when: pgrep_result.rc == 0

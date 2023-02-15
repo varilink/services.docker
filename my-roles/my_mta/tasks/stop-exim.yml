@@ -5,9 +5,10 @@
 ---
 
 - name: Test if the exim process is running
-  ansible.builtin.shell: pgrep -f '^/usr/sbin/exim4 -bdf$' || true
+  ansible.builtin.shell: pgrep -f '^/usr/sbin/exim4 -bdf$'
   register: pgrep_result
   changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
 
 - name: Stop exim process
   ansible.builtin.shell: |-
@@ -29,4 +30,4 @@
   args:
     executable: /bin/bash
   become: yes
-  when: pgrep_result.stdout
+  when: pgrep_result.rc == 0

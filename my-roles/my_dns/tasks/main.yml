@@ -1,4 +1,6 @@
+# ------------------------------------------------------------------------------
 # my-roles/my_dns/tasks/main.yml
+# ------------------------------------------------------------------------------
 
 ---
 
@@ -8,6 +10,65 @@
     handlers_from: none.yml
 
 - ansible.builtin.import_tasks: start-dnsmasq.yml
+
+- block:
+
+    # The --limit option was passed to the ansible-playbook command. That makes
+    # it likely that not all - block:
+
+    # The --limit option was passed to the ansible-playbook command. That makes
+    # it likely that not all the containers configured in the test environment
+    # are up.
+    #
+    # The DNS role connects to every host that it is configured to provide a DNS
+    # lookup for. If the associated container in the test environment isn't up,
+    # this will produce a host unreachable result. The tasks in this block avoid
+    # this eventuality.- block:
+
+    # The --limit option was passed to the ansible-playbook command. That makes
+    # it likely that not all the containers configured in the test environment
+    # are up.
+    #
+    # The DNS role connects to every host that it is configured to provide a DNS
+    # lookup for. If the associated container in the test environment isn't up,
+    # this will produce a host unreachable result. The tasks in this block avoid
+    # this eventuality.
+
+    - name: >-
+        Create an inventory group "limit_hosts" that contains the hosts in the
+        --limit option
+      ansible.builtin.add_host:
+        name: "{{ limit_host }}"
+        groups: limit_hosts
+      loop: "{{ ansible_limit.split(',') }}"
+      loop_control:
+        loop_var: limit_host
+
+    - name: >-
+        Modify the dns_host_patterns variable by adding an intersection with the
+        hosts_in_scope group that we just created
+      ansible.builtin.set_fact:
+        dns_host_patterns: "{{ modified_patterns | from_yaml }}"
+      vars:
+        # The number of patterns defined by the dns_host_patterns variable.
+        num_patterns: "{{ dns_host_patterns | length }}"
+        # A YAML string that is used to set the modified value of the
+        # dns_host-patterns variable.
+        modified_patterns: |-
+          [
+          {% for pattern in dns_host_patterns %}
+            {
+            "description": "{{ pattern.description }}",
+            "string": "{{ pattern.string}}:&limit_hosts"
+            }
+            {%- if num_patterns | int > 1 and loop.index < num_patterns | int %}
+            ,
+            {%- endif %}
+          {% endfor %}
+
+          ]
+
+  when: ansible_limit
 
 - ansible.builtin.import_role:
     name: dns

@@ -29,7 +29,7 @@
         source /etc/apache2/envvars
 
         echo 'apache2    : Starting' >> '/var/local/services.log'
-        nohup apache2 -D FOREGROUND |& sed -u 's/^/apache2    : /' \
+        nohup bash -c "apache2 -D FOREGROUND |& sed -u 's/^/apache2    : /'" \
           &>> '/var/local/servies.log' &
       args:
         executable: /bin/bash

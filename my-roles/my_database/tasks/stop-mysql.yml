@@ -12,12 +12,13 @@
 - name: Test if the mysqld (buster) or mariadb (bullseye) process is running
   ansible.builtin.shell: |-
     {% if lsb_release.stdout == 'buster' %}
-    pgrep -f '^/usr/sbin/mysqld' || true
+    pgrep -f '^/usr/sbin/mysqld'
     {% elif lsb_release.stdout == 'bullseye' %}
-    pgrep -f '^/usr/sbin/mariadbd' || true
+    pgrep -f '^/usr/sbin/mariadbd'
     {% endif %}
   register: pgrep_result
   changed_when: false
+  failed_when: pgrep_result.rc !=0 and pgrep_result.rc != 1
 
 - name: Stop mysqld (buster) or mariadb (bullseye) process
   # NOTE: The mysqld_safe command creates a process whose "CMD" in ps output
@@ -28,37 +29,37 @@
   ansible.builtin.shell: |-
     {% if lsb_release.stdout == 'buster '%}
 
-    echo 'mysqld      : Stopping' >> /var/local/services.log
+    echo 'mysqld     : Stopping' >> /var/local/services.log
     pkill -f '^/usr/sbin/mysqld'
 
     n=0
     while [ $n -lt 3 ]; do
       sleep 3
       pgrep -f '^/usr/sbin/mysqld' || \
-        echo 'mysqld      : Stopped' >> /var/local/services.log && break
+        echo 'mysqld     : Stopped' >> /var/local/services.log && break
       let n=n+1
     done
     
     if [ $n -eq 3 ]; then
-      echo 'mysqld      : Failed to stop process' \
+      echo 'mysqld     : Failed to stop process' \
         >> /var/local/services.log
     fi
 
     {% elif lsb_release.stdout == 'bullseye' %}
 
-    echo 'mariadbd    : Stopping' >> /var/local/services.log
+    echo 'mariadbd   : Stopping' >> /var/local/services.log
     pkill -f '^/usr/sbin/mariadbd'
 
     n=0
     while [ $n -lt 3 ]; do
       sleep 3
       pgrep -f '^/usr/sbin/mariadbd' || \
-        echo 'mariadbd    : Stopped' >> /var/local/services.log && break
+        echo 'mariadbd   : Stopped' >> /var/local/services.log && break
       let n=n+1
     done
 
     if [ $n -eq 3 ]; then
-      echo 'mariadbd    : Failed to stop process' \
+      echo 'mariadbd   : Failed to stop process' \
         >> /var/local/services.log
     fi
 
@@ -66,4 +67,4 @@
   args:
     executable: /bin/bash
   become: yes
-  when: pgrep_result.stdout
+  when: pgrep_result.rc == 0

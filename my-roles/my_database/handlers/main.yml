@@ -9,7 +9,7 @@
 ---
 
 - ansible.builtin.include_tasks: stop-mysql.yml
-  listen: Mariadb configuration changed
+  listen: MariaDB configuration changed
 
 - ansible.builtin.include_tasks: start-mysql.yml
-  listen: Mariadb configuration changed
+  listen: MariaDB configuration changed

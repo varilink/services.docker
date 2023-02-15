@@ -16,7 +16,8 @@
     - name: Start the dnsmasq process
       ansible.builtin.shell: |-
         echo 'dnsmasq    : Starting' >> /var/local/services.log
-        nohup dnsmasq -d |& \ sed -u 's/^\(dnsmasq: \)\?/dnsmasq    : /' \
+        nohup bash -c \
+          "dnsmasq -d |& sed -u 's/^\(dnsmasq: \)\?/dnsmasq    : /'" \
           &>> /var/local/services.log &
       args:
         executable: /bin/bash
