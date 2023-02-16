@@ -18,7 +18,7 @@
     {% endif %}
   register: pgrep_result
   changed_when: false
-  failed_when: pgrep_result !=0 and pgrep_result != 1
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
 
 - name: Stop the radicale process
   ansible.builtin.shell: |-
