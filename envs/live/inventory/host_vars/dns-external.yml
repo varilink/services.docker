@@ -1,3 +1,12 @@
+# ------------------------------------------------------------------------------
+# envs/live/inventory/host_vars/dns-external.yml
+# ------------------------------------------------------------------------------
+
+---
+
 ansible_host: 10.0.0.102
+
+# The dns-external host is a DNS service host and so can use itself for DNS
+# lookups.
 dns_client_nameservers:
   - 127.0.0.1

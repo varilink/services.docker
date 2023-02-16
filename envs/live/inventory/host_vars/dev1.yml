@@ -1,3 +1,12 @@
+# ------------------------------------------------------------------------------
+# envs/live/inventory/host_vars/dev1.yml
+# ------------------------------------------------------------------------------
+
+---
+
 ansible_host: 10.0.0.101
+
+# Backup client passwords, which of course would be sensitive data in a true,
+# live environment.
 backup_client_director_password: LdGYBSmadQ5JQCUJkVy6vS9U9eBlM5rRx
 backup_client_monitor_password: zwbDrGNgpc92ns2JNtk3RYi5GIRLcCjCB

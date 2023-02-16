@@ -1,4 +1,16 @@
+# ------------------------------------------------------------------------------
+# envs/live/inventory/host_vars/gateway.yml
+# ------------------------------------------------------------------------------
+
+---
+
 ansible_host: 10.0.0.103
+
+# Backup client passwords, which of course would be sensitive data in a true,
+# live environment.
 backup_client_director_password: c0oOdSJlgxPW17X8zUZlwgB1JTFip6Bvh
 backup_client_monitor_password: rb9WRHj8owfVigjmsNXTrN58pyEcfTnyR
-wordpress_site_uses_ssl: false
+
+# The gateway host is on the internal network but it exposes WordPress websites
+# externally, so it's the only internal host that's enabled for SSL.
+host_enabled_for_ssl: yes

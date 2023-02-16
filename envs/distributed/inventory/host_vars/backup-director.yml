@@ -1,18 +1,12 @@
-#-------------------------------------------------------------------------------
-# Ansible connection variables and arguments
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# envs/distributed/inventory/host_vars/prod1.yml
+# ------------------------------------------------------------------------------
+
+---
 
 ansible_host: 10.0.0.101
 
-#-------------------------------------------------------------------------------
-# Variables used by the roles in my Libraries - Ansible repository
-# See the README for that repository at:
-# https://github.com/varilink/libraries-ansible#readme
-# for documentation about these variables.
-#-------------------------------------------------------------------------------
-
-# Mandatory
-# ---------
-
+# Backup client passwords, which of course would be sensitive data in a true,
+# live environment.
 backup_client_director_password: TKPyZEHh9NBzpMKcumaXeBdZvwZwsn68j
 backup_client_monitor_password: RgqXhfvEdemarurfnbSpAeJ66ewfWr66A

@@ -1,26 +1,12 @@
-#-------------------------------------------------------------------------------
-# Ansible connection variables and arguments
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# envs/distributed/inventory/host_vars/wordpress-external.yml
+# ------------------------------------------------------------------------------
 
-ansible_host: 10.0.0.113
+---
 
-#-------------------------------------------------------------------------------
-# Variables used by the roles in my Libraries - Ansible repository
-# See the README for that repository at:
-# https://github.com/varilink/libraries-ansible#readme
-# for documentation about these variables.
-#-------------------------------------------------------------------------------
+ansible_host: 10.0.0.115
 
-# Mandatory
-# ---------
-
+# Backup client passwords, which of course would be sensitive data in a true,
+# live environment.
 backup_client_director_password: GKLwgpLjqrFFMTH5NMR9DFMdwDqrwVpgw
 backup_client_monitor_password: gCzjzV6Amkz9S9uTFm8mM6ky5ks9f2Dz9
-
-# Optional
-# --------
-
-wordpress_expose_externally: true
-wordpress_ports:
-  - 8080 # www.varilink.co.uk
-  - 8081 # www.client.com
