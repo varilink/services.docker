@@ -1,7 +1,24 @@
+# ------------------------------------------------------------------------------
+# envs/live/inventory/group_vars/external.yml
+# ------------------------------------------------------------------------------
+
+# Variables that apply to all hosts in the external group. These are those hosts
+# located outside of the office network.
+
+---
+
+# DNS clients in this group use the dns-external host as a nameserver
 dns_client_nameservers:
   - 10.0.0.102
+
+# The dns-external nameserver provides lookups for hosts and services on the
+# external network, and so in the external group.
 dns_host_patterns:
   - string: external
     description: External hosts
+
+# The dns-external nameserver uses the Google public DNS nameservers for
+# upstream resolution.
 dns_upstream_nameservers:
-  - 192.168.1.1
+  - 8.8.8.8
+  - 8.8.4.4

@@ -1,19 +1,20 @@
-#-------------------------------------------------------------------------------
-# Variables used by the roles in my Libraries - Ansible repository
-# See the README for that repository at:
-# https://github.com/varilink/libraries-ansible#readme
-# for documentation about these variables.
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# envs/distributed/inventory/group_vars/internal.yml
+# ------------------------------------------------------------------------------
 
-# Mandatory
-#----------
+# Variables that apply to all hosts in the internal group. These are those hosts
+# located on the office network.
 
-# All hosts on the internal office network use our DNS service on that network.
-dns_client_nameservers: [10.0.0.106]
-# All hosts on the internal, office network with the exception of the internal
-# mail server use the internal mail server as a smarthost. The internal mail
-# server itself uses the external mail server as a smarthost.
-mta_smarthost:
-  hostname: mail-internal
-  username: username1
-  userpass: userpass1
+---
+
+# DNS clients in this group use the dns-internal host as a nameserver
+dns_client_nameservers:
+  - 10.0.0.107
+
+# The dns-internal nameserver uses the dns-external nameserver for upstream
+# resolution.
+dns_upstream_nameservers:
+  - 10.0.0.106
+
+# Hosts on the internal network are not enabled for SSL by default.
+host_enabled_for_ssl: no

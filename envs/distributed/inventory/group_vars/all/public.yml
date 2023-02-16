@@ -1,85 +1,89 @@
-#-------------------------------------------------------------------------------
-# Ansible connection variables and arguments
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# envs/distributed/inventory/group_vars/all/public.yml
+# ------------------------------------------------------------------------------
 
-ansible_user: user1fname
-# TODO: Use SSH certificates for live deployment so convert to that here.
+# Variables that apply to all hosts. Note that many that are listed here would
+# be sensitive data in a true, live environment. They can be included here as
+# making them public is not a problem in this container use case.
 
+---
+
+# The admin user, which is created in build/sshd/Dockerfile.
+admin_user: user1fname
+admin_user_email: user1fname.user1lname@home.com
+
+# Ansible connection. We use the admin user (see above) with a password that is
+# not sensitive data in this use case. Also, we set some extra args for
+# convenience. In our true live environment we use an SSH key to connect and we
+# don't suppress these SSH security features.
+ansible_user: "{{ admin_user }}"
 ansible_ssh_pass: user1passwd
-
 ansible_ssh_extra_args: >-
   -o StrictHostKeyChecking=no
   -o UserKnownHostsFile=/dev/null
   -o LogLevel=QUIET
 
-#-------------------------------------------------------------------------------
-# Variables used by the roles in my Libraries - Ansible repository
-# See the README for that repository at:
-# https://github.com/varilink/libraries-ansible#readme
-# for documentation about these variables.
-#-------------------------------------------------------------------------------
-
-# Mandatory
-# ---------
-
-backup_database_host: database-internal
-
-backup_database_password: bacula
-
-backup_database_username: bacula
-
-backup_director_console_password: TcDZJfHhmC8CkEe7bAVcAPfPkGgYrpXp7
-
-backup_director_name: services_backup_director
-
-backup_monitor_name:  services_backup_monitor
-
-# The backup storage daemon is actually colocated with the backup director
-backup_storage_host: backup_director
-
-backup_storage_name: services_backup_storage
-
-# The password that must be supplied to connect to the bacula storage daemon.
-backup_storage_password: Ffjqa8w4TuNyLhKbFcht8aJeK5EcRYAn5
-
-# My dns_linode_key is in a private file that is not tracked in this repository
-# for security reasons.
-
-dns_client_options:
-  - "ndots:0"
-
-home_domain: home.com
-
-home_domain_admin_user: user1fname
-home_domain_admin_user_passwd: user1passwd
-
-office_subnet: 10.0.0.0/24
-
-# There is also a variable dns_linode_key defined in the "all" group. However
-# that variable is sensitive and so is not tracked in this Git repository.
-
-# Optional
-# --------
-
-# Override the default folder for off-site copies to keep my test backups
-# separated from my live backups within my Dropbox account.
+# Backup related variables. Of course all the passwords are senstive data in a
+# true live environment.
 backup_copy_folder: bacula-test
-
-# Override the default whereby scheduled jobs would be automatically run. I want
-# to manually initiate all backups in the testing environment.
+backup_database_host: database-internal
+backup_director_console_password: TcDZJfHhmC8CkEe7bAVcAPfPkGgYrpXp7
+backup_director_host: backup-director
+backup_director_monitor_password: b7V665U1dbRJfENzwUQuhObsVxLh0et6f
+backup_director_name: services-dir
 backup_director_schedules_active: false
+backup_monitor_name:  services-mon
+backup_storage_director_password: Ffjqa8w4TuNyLhKbFcht8aJeK5EcRYAn5
+backup_storage_monitor_password: W90MbkHCVPkEXFzbm8njySfekuMLXqO0z
+backup_storage_name: services-sd
 
-# Set the Dynamic DNS script to run much more frequently than the default as I
-# don't want to wait to see things happen when I'm testing.
-dynamic_dns_crontab_stride: 1
+# Setting that in broad terms define this environment.
+home_domain: home.com
+hosts_to_roles_map:
+  backup-director:
+    - backup_director
+  backup-storage:
+    - backup_storage
+  caldav:
+    - calendar
+  database-external:
+    - database
+  database-internal:
+    - database
+  dns-external:
+    - dns
+  dns-internal:
+    - dns
+  dynamic-dns:
+    - dynamic_dns
+  mail-certificates:
+    - mail_certificates
+  mail-external:
+    - mail_external
+  mail-internal:
+    - mail_internal
+  reverse-proxy-external:
+    - reverse_proxy
+  reverse-proxy-internal:
+    - reverse_proxy
+  wordpress-external:
+    - wordpress_apache
+    - wordpress_nginx
+  wordpress-internal:
+    - wordpress_apache
+    - wordpress_nginx
+office_subnet: 10.0.0.0/24
+# Uniquely amongst our test environment, the distributed environment requires
+# these settings due to its "one host = one service" nature.
+database_expose_externally: true
+wordpress_expose_externally: true
 
-# When testing uses containers, we often tear-down and recreate the containers
-# over and over again. If we're integrating with Let's Encrypt, this can easily
-# lead to hitting their usage constraints. For this reason we override the
-# default behaviour of the mail_certificates and domain_mail_certificates roles,
-# which is to integrate with Let's Encrypt.
-mail_uses_ca: false
+# Common settings for WordPress sites in this environment.
+wordpress_site_admin_user_email: "{{ admin_user_email }}"
+wordpress_site_uses_ca: no
 
-# Since we're testing in a container environment we need to enable unsafe writes
-# for overwriting the /etc/hosts and /etc/resolv.conf file.s
-unsafe_writes: yes
+# Variables to uncomment as part of enabling integrations, see:
+# https://github.com/varilink/services-docker#enabling-integration-with-third-party-cloud-services 
+#backup_linked_to_dropbox: yes
+#mail_uses_ca: yes
+#wordpress_site_uses_ca: yes

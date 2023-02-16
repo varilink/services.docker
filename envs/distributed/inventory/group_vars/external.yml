@@ -1,21 +1,24 @@
-#-------------------------------------------------------------------------------
-# Variables used by the roles in my Libraries - Ansible repository
-# See the README for that repository at:
-# https://github.com/varilink/libraries-ansible#readme
-# for documentation about these variables.
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# envs/distributed/inventory/group_vars/external.yml
+# ------------------------------------------------------------------------------
 
-# Mandatory
-# ---------
+# Variables that apply to all hosts in the external group. These are those hosts
+# located outside of the office network.
 
-# All hosts on the external to office network (Internet) use a third-party DNS
-# service, which we simulate here in this Docker container environment.
-dns_client_nameservers: [10.0.0.105]
-# All hosts that are external to the office network with the exception of the
-# external mail server use the external mail server as a smarthost. The external
-# mail server uses another services providers mail gateway server as a
-# smarthost.
-mta_smarthost:
-  hostname: mail-external
-  username: username1
-  userpass: userpass1
+---
+
+# DNS clients in this group use the dns-external host as a nameserver
+dns_client_nameservers:
+  - 10.0.0.106
+
+# The dns-external nameserver provides lookups for hosts and services on the
+# external network, and so in the external group.
+dns_host_patterns:
+  - string: external
+    description: External hosts
+
+# The dns-external nameserver uses the Google public DNS nameservers for
+# upstream resolution.
+dns_upstream_nameservers:
+  - 8.8.8.8
+  - 8.8.4.4

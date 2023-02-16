@@ -2,13 +2,20 @@
 # envs/live/inventory/group_vars/all/public.yml
 # ------------------------------------------------------------------------------
 
+# Variables that apply to all hosts. Note that many that are listed here would
+# be sensitive data in a true, live environment. They can be included here as
+# making them public is not a problem in this container use case.
+
 ---
 
-# The admin user
+# The admin user, which is created in build/sshd/Dockerfile.
 admin_user: user1fname
 admin_user_email: user1fname.user1lname@home.com
 
-# Ansible connection
+# Ansible connection. We use the admin user (see above) with a password that is
+# not sensitive data in this use case. Also, we set some extra args for
+# convenience. In our true live environment we use an SSH key to connect and we
+# don't suppress these SSH security features.
 ansible_user: "{{ admin_user }}"
 ansible_ssh_pass: user1passwd
 ansible_ssh_extra_args: >-
@@ -16,7 +23,8 @@ ansible_ssh_extra_args: >-
   -o UserKnownHostsFile=/dev/null
   -o LogLevel=QUIET
 
-# Backup
+# Backup related variables. Of course all the passwords are senstive data in a
+# true live environment.
 backup_copy_folder: bacula-test
 backup_director_console_password: lNXIMABzbKTwFek7HO3eyof6T4dmMNclh
 backup_director_monitor_password: A8KBTE19dsc75hrP5LUtvqswbuEmeqN8f
@@ -27,7 +35,7 @@ backup_storage_director_password: JaQECFKtBPZTHxgY5DFbKYEAbRPzMokyH
 backup_storage_monitor_password: 8cTIn7fv1i3iKrOw7AREAQGgzlCeKQUK0
 backup_storage_name: services-sd
 
-# Environment
+# Setting that in broad terms define this environment.
 home_domain: home.com
 hosts_to_roles_map:
   dev1:
@@ -58,7 +66,9 @@ hosts_to_roles_map:
     - wordpress_apache
 office_subnet: 10.0.0.0/24
 
+# Common settings for WordPress sites in this environment.
 wordpress_site_admin_user_email: "{{ admin_user_email }}"
+wordpress_site_uses_ca: no
 
 # Variables to uncomment as part of enabling integrations, see:
 # https://github.com/varilink/services-docker#enabling-integration-with-third-party-cloud-services 
