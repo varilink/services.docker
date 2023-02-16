@@ -8,19 +8,43 @@
 # options.
 
 # The first command line argument is always present and is the name of the
-# playbook to run, which is one of "services", "customer" or "home".
-playbook=$1
-shift
+# project to run a playbook for, which is one of "services", "customer" or
+# "home".
+if [ "$1" == 'services' ] \
+|| [ "$1" == 'customer' ] \
+|| [ "$1" == 'home' ]; then
+
+  project=$1
+  shift
+
+else
+
+  echo 'The first argument must be one of "services", or "customer" or "home"'
+  exit 1
+
+fi
+
+# If the next positional argument is "delete" then run the delete playbook,
+# which does teardown actions, otherwise run the create playbook, which is
+# therefore the default but if "create" has been passed as the next positional
+# argument then skip by it.
+if [ "$1" == 'delete' ]; then
+
+  playbook='delete'
+  shift
+
+else
+
+  playbook='create'
+  [ "$1" == 'create' ] && shift
+
+fi
 
 for arg in "$@"; do
 
-  # The remaining args after the playbook name, which we've already dealt with,
-  # consist of an optional (can be omitted) list of one or more services. If
-  # services are provided they are used to limit what the playbook has to do
-  # using the ansible-playbook --limit and --tags options. This optional list of
-  # services is then followe by another optional (again, can be omitted) list of
-  # one or more ansible-playbook options, which are to be passed directly to the
-  # ansible-playbook command.
+  # The remaining arguments start with an optional (can be omitted) list of one
+  # or more services. If services are provided they are used to limit what the
+  # playbook has to do using the ansible-playbook --limit and --tags options.
 
   case $arg in
 
@@ -55,40 +79,47 @@ services-to-hosts $services
 
 cols=$(tput cols)
 perl -e "print '-' x $cols, \"\n\""
-echo "About to run the $playbook playbook in the $MYENV environment."
+
+echo "Playbook $playbook for Project $project in Environment $MYENV"
+
 if [[ "$services" ]]; then
-echo "I was passed this list of services \"$services\" to limit my actions to."
+echo "Passed Services \"$services\" to limit actions"
 else
-echo "I was not passed any list of services to limit my actions to."
+echo "Not passed any services to limit actions"
 fi
-echo "I am going to act on this list of hosts \"$hosts\"."
+
+echo "Will act on hosts \"$hosts\""
+
 if [[ "$@" ]]; then
-echo "I was passed these ansible-playbook options \"$@\"."
+echo "Passed ansible-playbook options \"$@\""
 fi
+
 perl -e "print '-' x $cols, \"\n\""
 
 export ANSIBLE_ROLES_PATH=/my-roles:/libraries-ansible
 
-if [ "$services" ] && [ "$@" ]; then
+if [ "$services" ] && [[ "$@" ]]; then
 
   ansible-playbook --inventory /environment/inventory/hosts.ini \
-    --limit `echo $hosts | tr ' ' ','` --tags=`echo $services | tr ' ' ','` \
-    "$@" /environment/playbooks/$playbook/playbook.yml
+    --limit `echo $hosts | tr ' ' ','` \
+    --tags=`echo $services | tr ' ' ','` \
+    "$@" /environment/playbooks/$project/$playbook.yml
 
-elif [ "$services" ] && [ ! "$opts" ]; then
-
-  ansible-playbook --inventory /environment/inventory/hosts.ini \
-    --limit=`echo $hosts|tr ' ' ','` --tags=`echo $services | tr ' ' ','` \
-    /environment/playbooks/$playbook/playbook.yml
-
-elif [ ! "$services" ] && [ "$opts" ]; then
+elif [ "$services" ] && [[ ! "$@" ]]; then
 
   ansible-playbook --inventory /environment/inventory/hosts.ini \
-    "$@" /environment/playbooks/$playbook/playbook.yml
+    --limit=`echo $hosts|tr ' ' ','` \
+    --tags=`echo $services | tr ' ' ','` \
+    /environment/playbooks/$project/$playbook.yml
+
+elif [ ! "$services" ] && [[ "$@" ]]; then
+
+  ansible-playbook --inventory /environment/inventory/hosts.ini \
+    "$@" /environment/playbooks/$project/$playbook.yml
 
 else
 
   ansible-playbook --inventory /environment/inventory/hosts.ini \
-    /environment/playbooks/$playbook/playbook.yml
+    /environment/playbooks/$project/$playbook.yml
 
 fi
