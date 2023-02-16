@@ -9,7 +9,7 @@
 
 # DNS service (do this first so we know it's being used thereafter)
 
-- hosts: dns-external,hub
+- hosts: dns
 
   tasks:
 
@@ -33,9 +33,8 @@
 
     - block:
 
-        - ansible.builtin.import_role:
-            name: my_database
-
+        # Since backup_database_host is not set in this environment, importing
+        # the backup_director role will also create the backup database locally.
         - ansible.builtin.import_role:
             name: my_backup_director
 
