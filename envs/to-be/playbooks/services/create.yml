@@ -1,15 +1,22 @@
 # ------------------------------------------------------------------------------
-# envs/live/playbooks/deploy-services.yml
+# envs/to-be/playbooks/deploy-services.yml
 # ------------------------------------------------------------------------------
 
 # Ansible playbook to deploy services to the containers that comprise the
-# "live" environment.
+# "to-be" environment.
 
 ---
 
-# DNS service (do this first so we know it's being used thereafter)
+# ---
+# DNS
+# ---
+
+# We setup this service first so that any custom, required DNS lookups are
+# available during the installation of subsequent services.
 
 - hosts: dns
+
+  # DNS resolution providers.
 
   tasks:
 
@@ -19,25 +26,41 @@
 
 - hosts: all
 
+  # The client resolve settings for every host.
+
   tasks:
 
     - ansible.builtin.import_role:
         name: my_dns_client
       tags: [backup, calendar, dns, dynamic_dns, mail, web]
 
-# Backup service
+# ------
+# Backup
+# ------
 
 - hosts: hub
+
+  # The backup service provider, which in this environment is a single host.
 
   tasks:
 
     - block:
 
-        # Since backup_database_host is not set in this environment, importing
-        # the backup_director role will also create the backup database locally.
+        # Install database service to host the bacula database.
+        - ansible.builtin.import_role:
+            name: my_database
+
+        # Create the bacula database and the user account to access it.
+        - ansible.builtin.import_role:
+            name: my_backup_director
+            tasks_from: database
+
+        # Install and configure the backup director, which will also start the
+        # service.
         - ansible.builtin.import_role:
             name: my_backup_director
 
+        # Install the backup storage service.
         - ansible.builtin.import_role:
             name: my_backup_storage
 
@@ -56,7 +79,7 @@
 
       tags: [backup]
 
-- hosts: backup_clients
+- hosts: all:!backup_exceptions
 
   tasks:
 
@@ -106,12 +129,18 @@
 
   tasks:
 
-  - ansible.builtin.import_role:
-      name: my_mail_external
+    - ansible.builtin.import_role:
+        name: my_mail_external
+      tags: mail
 
-    tags: mail
+# ---
+# Web
+# ---
 
-# Web service
+# We deploy the web service to three hosts:
+# dev1 - development (doesn't use HTTPS as it's only accessible internally).
+# gateway - staging or test, which both face externally and so use HTTPS.
+# prod2 - www, i.e. live, which obviously uses HTTPS.
 
 - hosts: dev1,gateway,prod2
 
