@@ -23,7 +23,7 @@
 - name: Stop the radicale process
   ansible.builtin.shell: |-
     echo 'radicale   : Stopping' >> /var/local/services.log
-    {% if lsb_release.stdout == 'buster'%}
+    {% if lsb_release.stdout == 'buster' %}
     pkill -f '^/usr/bin/python3 /usr/bin/radicale -f$'
     {% elif lsb_release.stdout == 'bullseye' %}
     pkill -f '^/usr/bin/python3 /usr/bin/radicale$'
