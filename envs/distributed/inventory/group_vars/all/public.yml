@@ -23,17 +23,18 @@ ansible_ssh_extra_args: >-
   -o UserKnownHostsFile=/dev/null
   -o LogLevel=QUIET
 
-# Backup related variables. Of course all the passwords are senstive data in a
+# Backup related variables. Of course all the passwords are sensitive data in a
 # true live environment.
 backup_copy_folder: bacula-test
 backup_database_host: database-internal
 backup_director_console_password: TcDZJfHhmC8CkEe7bAVcAPfPkGgYrpXp7
-backup_director_host: backup-director
+backup_director_host: backup-director.home.com
 backup_director_monitor_password: b7V665U1dbRJfENzwUQuhObsVxLh0et6f
 backup_director_name: services-dir
 backup_director_schedules_active: false
 backup_monitor_name:  services-mon
 backup_storage_director_password: Ffjqa8w4TuNyLhKbFcht8aJeK5EcRYAn5
+backup_storage_host: backup-storage
 backup_storage_monitor_password: W90MbkHCVPkEXFzbm8njySfekuMLXqO0z
 backup_storage_name: services-sd
 
@@ -63,6 +64,8 @@ hosts_to_roles_map:
   mail-internal:
     - mail_internal
   reverse-proxy-external:
+    - reverse_proxy
+  reverse-proxy-gateway:
     - reverse_proxy
   reverse-proxy-internal:
     - reverse_proxy

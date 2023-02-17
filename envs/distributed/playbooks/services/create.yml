@@ -1,45 +1,180 @@
+# ------------------------------------------------------------------------------
+# envs/distributed/playbooks/create.yml
+# ------------------------------------------------------------------------------
+
+# Ansible playbook to deploy services to the containers that comprise the
+# "distributed" environment.
+
 ---
 
-# Deploy to the dns-api host first. The mail_certificates role uses ssh-keygen
-# to generate an SSH key for connecting to the host of the mail-external role
-# for the purposes of deploying SSL certificates for IMAP and SMTP client
-# connections. When the mail-external role is deployed it must have the
-# generated public key.
+# ---
+# DNS
+# ---
 
-- hosts: mail-certificates
-  roles: [mail_certificates]
-
-# Deploy roles where there is no inter-host dependency so all
-
-- hosts: all
-  roles: [backup_client, mta]
-
-- hosts: backup-director
-  roles: [backup_director, backup_storage]
-
-- hosts: caldav
-  roles: [calendar]
-
-- hosts: database
-  roles: [database]
+# We setup this service first so that any custom, required DNS lookups are
+# available during the installation of subsequent services.
 
 - hosts: dns
-  roles: [dns]
+
+  # DNS resolution providers.
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_dns
+      tags: [backup, calendar, dns, dynamic_dns, mail, web]
+
+- hosts: all
+
+  # The client resolve settings for every host.
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_dns_client
+      tags: [backup, calendar, dns, dynamic_dns, mail, web]
+
+# ------
+# Backup
+# ------
+
+- hosts: database-internal
+
+  tasks:
+
+    - block:
+
+        - ansible.builtin.import_role:
+            name: my_database
+
+        - ansible.builtin.import_role:
+            name: my_backup_director
+            tasks_from: database
+
+      tags: backup
+
+- hosts: backup-director
+
+  tasks:
+
+    - block:
+
+        - ansible.builtin.import_role:
+            name: my_backup_director
+
+        - ansible.builtin.include_role:
+            name: my_backup_director
+            tasks_from: dropbox.yml
+          when: backup_linked_to_dropbox is defined and backup_linked_to_dropbox
+
+      tags: backup
+
+- hosts: backup-storage
+
+  tasks:
+
+    - block:
+
+        - ansible.builtin.import_role:
+            name: my_backup_storage
+
+        - ansible.builtin.include_role:
+            name: my_backup_storage
+            tasks_from: dropbox.yml
+          when: backup_linked_to_dropbox is defined and backup_linked_to_dropbox
+
+      tags: backup
+
+- hosts: all:!backup_exceptions
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_backup_client
+      tags: backup
+
+# --------
+# Calendar
+# --------
+
+- hosts: caldav
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_calendar
+      tags: calendar
+
+# -----------
+# Dynamic DNS
+# -----------
 
 - hosts: dynamic-dns
-  roles: [dynamic_dns]
 
-- hosts: mail-external:mail-internal
-  roles: [mail]
+  tasks:
 
-- hosts: mail-external
-  roles: [mail_external]
+    - ansible.builtin.import_role:
+        name: my_dynamic_dns
+      tags: dynamic_dns
+
+# ----
+# Mail
+# ----
+
+- hosts: mail-certificates
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_mail_certificates
+      tags: mail
 
 - hosts: mail-internal
-  roles: [mail_internal]
 
-- hosts: reverse_proxy
-  roles: [reverse_proxy]
+  tasks:
 
-- hosts: wordpress
-  roles: [wordpress]
+    - ansible.builtin.import_role:
+        name: my_mail_internal
+      tags: [backup, mail]
+
+- hosts: mail-external
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_mail_external
+      tags: mail
+
+# ---
+# Web
+# ---
+
+- hosts: database-external,database-internal
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_database
+      tags: web
+
+- hosts: wordpress-external,wordpress-internal
+
+  tasks:
+
+    - block:
+
+      - ansible.builtin.import_role:
+          name: my_wordpress_apache
+
+      - ansible.builtin.import_role:
+          name: my_wordpress_nginx
+
+      tags: web
+
+- hosts: reverse-proxy-external,reverse-proxy-gateway,reverse-proxy-internal
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_reverse_proxy
+      tags: web
