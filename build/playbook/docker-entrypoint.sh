@@ -7,6 +7,11 @@
 # line arguments passed to the Docker Compose service into ansible-playbook
 # options.
 
+
+# The playbook Docker Compose service connects to the office network so it needs
+# to know where to go in order to connect to hosts on the internt network.
+ip route add 10.0.1.0/24 via 10.0.0.254
+
 # The first command line argument is always present and is the name of the
 # project to run a playbook for, which is one of "services", "customer" or
 # "home".

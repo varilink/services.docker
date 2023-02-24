@@ -2,10 +2,9 @@ FROM debian:bullseye
 
 RUN                                                                            \
   apt-get update                                                            && \
-  apt-get --yes --no-install-recommends install                                \
-    ansible                                                                    \
+  apt-get install --yes --no-install-recommends                                \
     iproute2                                                                   \
-    sshpass
+    squid
 
 COPY docker-entrypoint.sh /
 

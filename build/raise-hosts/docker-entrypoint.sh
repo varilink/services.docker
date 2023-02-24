@@ -48,8 +48,10 @@ services-to-hosts $services
 # within the scope of the required composite services.
 
 cat << EOF
-docker-compose --env-file envs/$MYENV/.env stop $hosts
-docker-compose --env-file envs/$MYENV/.env rm --force $hosts
+docker-compose --env-file envs/$MYENV/.env stop \
+$hosts proxy-external proxy-internal router
+docker-compose --env-file envs/$MYENV/.env rm --force \
+$hosts proxy-external proxy-internal router
 EOF
 
 if [ $# -eq 0 ] || [ `echo "$@" | tr ' ' '\n' | grep backup` ]
@@ -85,7 +87,11 @@ fi
 # Compose services.
 
 if [[ "$options" ]]; then
+  echo -n "docker-compose --env-file envs/$MYENV/.env up --detach $options"
+  echo ' proxy-external proxy-internal router'
   echo "docker-compose --env-file envs/$MYENV/.env up $options $hosts"
 else
+  echo -n "docker-compose --env-file envs/$MYENV/.env up --detach"
+  echo ' proxy-external proxy-internal router'
   echo "docker-compose --env-file envs/$MYENV/.env up $hosts"
 fi

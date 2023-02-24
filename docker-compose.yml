@@ -16,10 +16,15 @@ networks:
   # separation in this Docker Compose project, as to do so would add complexity
   # without serving any practical purpose.
 
-  default:
+  office:
     ipam:
       config:
         - subnet: 10.0.0.0/24
+
+  internet:
+    ipam:
+      config:
+        - subnet: 10.0.1.0/24
 
 services:
 
@@ -53,6 +58,18 @@ services:
       # A wrapper set of roles that bespoke the Varilink library of Ansible
       # roles for use with Docker containers.
       - ./my-roles:/my-roles
+    networks:
+      office:
+    cap_add:
+      - NET_ADMIN
+
+  router:
+    build: ./build/router
+    networks:
+      internet:
+        ipv4_address: 10.0.1.254
+      office:
+        ipv4_address: 10.0.0.254
 
   # Docker Compose services that provide clients that can be used to test the
   # function of the application services that are deployed using Ansible to the
@@ -91,6 +108,30 @@ services:
     build: ./build/openssl
     env_file:
       - ./envs/${MYENV}/test/dns.env
+
+  proxy-internal:
+    build: ./build/proxy
+    env_file:
+      - ./envs/${MYENV}/test/dns.env
+    command: internal
+    ports:
+      - "3128:3128"
+    networks:
+      office:
+    cap_add:
+      - NET_ADMIN
+
+  proxy-external:
+    build: ./build/proxy
+    env_file:
+      - ./envs/${MYENV}/test/dns.env
+    command: external
+    ports:
+      - "3129:3128"
+    networks:
+      internet:
+    cap_add:
+      - NET_ADMIN
 
   swaks:
     build: ./build/swaks
