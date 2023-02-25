@@ -8,6 +8,8 @@ version: "3.7"
 
 services:
 
+  # office network
+
   dev1:
     build:
       context: build/sshd
@@ -17,17 +19,10 @@ services:
     container_name: services_dev1
     hostname: dev1
     networks:
-      default:
+      office:
         ipv4_address: 10.0.0.101
-
-  dns-external:
-    build: build/sshd
-    image: varilink/services/sshd:bullseye
-    container_name: services_dns-external
-    hostname: dns-external
-    networks:
-      default:
-        ipv4_address: 10.0.0.102
+    cap_add:
+      - NET_ADMIN
 
   gateway:
     build: build/sshd
@@ -35,8 +30,10 @@ services:
     container_name: services_gateway
     hostname: gateway
     networks:
-      default:
-        ipv4_address: 10.0.0.103
+      office:
+        ipv4_address: 10.0.0.102
+    cap_add:
+      - NET_ADMIN
 
   hub:
     build:
@@ -49,8 +46,23 @@ services:
     volumes:
       - bacula-home:/var/lib/bacula/
     networks:
-      default:
-        ipv4_address: 10.0.0.104
+      office:
+        ipv4_address: 10.0.0.103
+    cap_add:
+      - NET_ADMIN
+
+  # internet
+
+  dns-external:
+    build: build/sshd
+    image: varilink/services/sshd:bullseye
+    container_name: services_dns-external
+    hostname: dns-external
+    networks:
+      internet:
+        ipv4_address: 10.0.1.101
+    cap_add:
+      - NET_ADMIN
 
   prod1:
     build:
@@ -61,8 +73,10 @@ services:
     container_name: services_prod1
     hostname: prod1
     networks:
-      default:
-        ipv4_address: 10.0.0.105
+      internet:
+        ipv4_address: 10.0.1.102
+    cap_add:
+      - NET_ADMIN
 
   prod2:
     build:
@@ -73,8 +87,10 @@ services:
     container_name: services_prod2
     hostname: prod2
     networks:
-      default:
-        ipv4_address: 10.0.0.106
+      internet:
+        ipv4_address: 10.0.1.103
+    cap_add:
+      - NET_ADMIN
 
 volumes:
   bacula-home:

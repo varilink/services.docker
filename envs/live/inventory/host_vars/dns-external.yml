@@ -4,7 +4,7 @@
 
 ---
 
-ansible_host: 10.0.0.102
+ansible_host: 10.0.1.101
 
 # The dns-external host is a DNS service host and so can use itself for DNS
 # lookups.
