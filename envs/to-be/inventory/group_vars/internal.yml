@@ -9,11 +9,11 @@
 
 # DNS clients in this group use the hub host as a nameserver
 dns_client_nameservers:
-  - 10.0.0.104
+  - 10.0.0.103
 
 # The hub nameserver uses the dns-external nameserver for upstream resolution.
 dns_upstream_nameservers:
-  - 10.0.0.102
+  - 10.0.1.101
 
 # Hosts on the internal network are not enabled for SSL by default.
 wordpress_site_uses_ssl: false
