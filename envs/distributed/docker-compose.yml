@@ -8,6 +8,8 @@ version: "3.7"
 
 services:
 
+  # office network
+
   backup-director:
     build: build/sshd
     image: varilink/services/ssh:bullseye
@@ -16,8 +18,10 @@ services:
     volumes:
       - director-bacula-home:/var/lib/bacula/
     networks:
-      default:
+      office:
         ipv4_address: 10.0.0.101
+    cap_add:
+      - NET_ADMIN
 
   backup-storage:
     build: build/sshd
@@ -27,8 +31,10 @@ services:
     volumes:
       - storage-bacula-home:/var/lib/bacula/
     networks:
-      default:
+      office:
         ipv4_address: 10.0.0.102
+    cap_add:
+      - NET_ADMIN
 
   caldav:
     build: build/sshd
@@ -36,17 +42,10 @@ services:
     container_name: services_caldav
     hostname: caldav
     networks:
-      default:
+      office:
         ipv4_address: 10.0.0.103
-
-  database-external:
-    build: build/sshd
-    image: varilink/services/ssh:bullseye
-    container_name: services_database-external
-    hostname: database-external
-    networks:
-      default:
-        ipv4_address: 10.0.0.104
+    cap_add:
+      - NET_ADMIN
 
   database-internal:
     build: build/sshd
@@ -54,17 +53,10 @@ services:
     container_name: services_database-internal
     hostname: database-internal
     networks:
-      default:
-        ipv4_address: 10.0.0.105
-
-  dns-external:
-    build: build/sshd
-    image: varilink/services/ssh:bullseye
-    container_name: services_dns-external
-    hostname: dns-external
-    networks:
-      default:
-        ipv4_address: 10.0.0.106
+      office:
+        ipv4_address: 10.0.0.104
+    cap_add:
+      - NET_ADMIN
 
   dns-internal:
     build: build/sshd
@@ -72,8 +64,10 @@ services:
     container_name: services_dns-internal
     hostname: dns-internal
     networks:
-      default:
-        ipv4_address: 10.0.0.107
+      office:
+        ipv4_address: 10.0.0.105
+    cap_add:
+      - NET_ADMIN
 
   dynamic-dns:
     build: build/sshd
@@ -81,8 +75,10 @@ services:
     container_name: services_dynamic-dns
     hostname: dynamic-dns
     networks:
-      default:
-        ipv4_address: 10.0.0.108
+      office:
+        ipv4_address: 10.0.0.106
+    cap_add:
+      - NET_ADMIN
 
   mail-certificates:
     build: build/sshd
@@ -90,17 +86,10 @@ services:
     container_name: services_mail-certificates
     hostname: mail-certificates
     networks:
-      default:
-        ipv4_address: 10.0.0.109
-
-  mail-external:
-    build: build/sshd
-    image: varilink/services/ssh:bullseye
-    container_name: services_mail-external
-    hostname: mail-external
-    networks:
-      default:
-        ipv4_address: 10.0.0.110
+      office:
+        ipv4_address: 10.0.0.107
+    cap_add:
+      - NET_ADMIN
 
   mail-internal:
     build: build/sshd
@@ -108,17 +97,10 @@ services:
     hostname: mail-internal
     container_name: services_mail-internal
     networks:
-      default:
-        ipv4_address: 10.0.0.111
-
-  reverse-proxy-external:
-    build: build/sshd
-    image: varilink/services/ssh:bullseye
-    container_name: services_reverse-proxy-external
-    hostname: reverse-proxy-external
-    networks:
-      default:
-        ipv4_address: 10.0.0.112
+      office:
+        ipv4_address: 10.0.0.108
+    cap_add:
+      - NET_ADMIN
 
   reverse-proxy-gateway:
     build: build/sshd
@@ -126,8 +108,10 @@ services:
     container_name: services_reverse-proxy-gateway
     hostname: reverse-proxy-gateway
     networks:
-      default:
-        ipv4_address: 10.0.0.113
+      office:
+        ipv4_address: 10.0.0.109
+    cap_add:
+      - NET_ADMIN
 
   reverse-proxy-internal:
     build: build/sshd
@@ -135,17 +119,10 @@ services:
     container_name: services_reverse-proxy-internal
     hostname: reverse-proxy-internal
     networks:
-      default:
-        ipv4_address: 10.0.0.114
-
-  wordpress-external:
-    build: build/sshd
-    image: varilink/services/ssh:bullseye
-    container_name: services_wordpress-external
-    hostname: wordpress-external
-    networks:
-      default:
-        ipv4_address: 10.0.0.115
+      office:
+        ipv4_address: 10.0.0.110
+    cap_add:
+      - NET_ADMIN
 
   wordpress-internal:
     build: build/sshd
@@ -153,8 +130,67 @@ services:
     image: varilink/services/ssh:bullseye
     hostname: wordpress-internal
     networks:
-      default:
-        ipv4_address: 10.0.0.116
+      office:
+        ipv4_address: 10.0.0.111
+    cap_add:
+      - NET_ADMIN
+
+  # internet
+
+  database-external:
+    build: build/sshd
+    image: varilink/services/ssh:bullseye
+    container_name: services_database-external
+    hostname: database-external
+    networks:
+      internet:
+        ipv4_address: 10.0.1.101
+    cap_add:
+      - NET_ADMIN
+
+  dns-external:
+    build: build/sshd
+    image: varilink/services/ssh:bullseye
+    container_name: services_dns-external
+    hostname: dns-external
+    networks:
+      internet:
+        ipv4_address: 10.0.1.102
+    cap_add:
+      - NET_ADMIN
+
+  mail-external:
+    build: build/sshd
+    image: varilink/services/ssh:bullseye
+    container_name: services_mail-external
+    hostname: mail-external
+    networks:
+      internet:
+        ipv4_address: 10.0.1.103
+    cap_add:
+      - NET_ADMIN
+
+  reverse-proxy-external:
+    build: build/sshd
+    image: varilink/services/ssh:bullseye
+    container_name: services_reverse-proxy-external
+    hostname: reverse-proxy-external
+    networks:
+      internet:
+        ipv4_address: 10.0.1.104
+    cap_add:
+      - NET_ADMIN
+
+  wordpress-external:
+    build: build/sshd
+    image: varilink/services/ssh:bullseye
+    container_name: services_wordpress-external
+    hostname: wordpress-external
+    networks:
+      internet:
+        ipv4_address: 10.0.1.105
+    cap_add:
+      - NET_ADMIN
 
 volumes:
   director-bacula-home:

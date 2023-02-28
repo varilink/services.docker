@@ -9,7 +9,7 @@
 
 # DNS clients in this group use the dns-external host as a nameserver
 dns_client_nameservers:
-  - 10.0.0.106
+  - 10.0.1.102
 
 # The dns-external nameserver provides lookups for hosts and services on the
 # external network, and so in the external group.

@@ -9,12 +9,12 @@
 
 # DNS clients in this group use the dns-internal host as a nameserver
 dns_client_nameservers:
-  - 10.0.0.107
+  - 10.0.0.105
 
 # The dns-internal nameserver uses the dns-external nameserver for upstream
 # resolution.
 dns_upstream_nameservers:
-  - 10.0.0.106
+  - 10.0.1.102
 
 # Hosts on the internal network are not enabled for SSL by default.
 host_enabled_for_ssl: no
