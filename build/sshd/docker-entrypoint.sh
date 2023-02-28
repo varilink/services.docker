@@ -5,6 +5,12 @@
 # This is launch script for the containers in the repository that simulate hosts
 # that are the targets of our Ansible role deployment in our live environment.
 
+# Silently (unless anything it output to STDERR) update the APT cache. This can
+# get so out of date that APT tasks start failing and an image rebuild does not
+# solve the problem since the Dockerfile RUN is not rerun when the cached layer
+# in the initial image build is reused.
+apt-get update 1>/dev/null
+
 touch /var/local/services.log
 chmod g+w,o+w /var/local/services.log
 
