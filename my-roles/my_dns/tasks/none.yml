@@ -1,0 +1,8 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_dns/tasks/none.yml
+# ------------------------------------------------------------------------------
+
+# An empty task list for the my_dns role so that this role can be imported for
+# its handlers without bringing any tasks with it.
+
+---
