@@ -18,6 +18,7 @@
         nohup bash -c \
           "/usr/sbin/exim4 -bdf |& sed -u 's/^/exim       : /'" \
           &>> /var/local/services.log &
+        sleep 3
       args:
         executable: /bin/bash
       become: yes
@@ -28,10 +29,10 @@
       ansible.builtin.shell: |-
         n=0
         while [ $n -lt 3 ]; do
-          sleep 3
           pgrep -f '^/usr/sbin/exim4 -bdf$' && \
             echo 'exim       : Started' >> /var/local/services.log && break
-        let n=n+1
+          let n=n+1
+          sleep 3
         done
         
         if [ $n -eq 3 ]; then

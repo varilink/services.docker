@@ -41,6 +41,7 @@
               "php-fpm7.0 -F |& sed -u 's/^/php-fpm    : /'" \
               &>> '/var/local/servies.log' &
             {% endif %}
+            sleep 3
           args:
             executable: /bin/bash
           vars:
@@ -54,10 +55,10 @@
       ansible.builtin.shell: |-
         n=0
         while [ $n -lt 3 ]; do
-          sleep 3
           pgrep -f '^php-fpm: master process' && \
             echo 'php-fpm    : Started' >> '/var/local/services.log' && break
           let n=n+1
+          sleep 3
         done
 
         if [ $n -eq 3 ]; then

@@ -33,6 +33,7 @@
         nohup bash -c "mysqld_safe |& sed -u 's/^/mysqld     : /'" \
           &>> /var/local/services.log &
         {% endif %}
+        sleep 3
       args:
         executable: /bin/bash
       become: yes
@@ -44,10 +45,10 @@
         {% if lsb_release.stdout == 'bullseye' %}
         n=0
         while [ $n -lt 3 ]; do
-          sleep 3
           pgrep -f '^/usr/sbin/mariadbd' && \
             echo 'mariadbd   : Started' >> /var/local/services.log && break
           let n=n+1
+          sleep 3
         done
 
         if [ $n -eq 3 ]; then
@@ -57,10 +58,10 @@
         {% else %}{# buster or stretch #}
         n=0
         while [ $n -lt 3 ]; do
-          sleep 3
           pgrep -f '^/usr/sbin/mysqld' && \
             echo 'mysqld     : Started' >> /var/local/services.log && break
           let n=n+1
+          sleep 3
         done
 
         if [ $n -eq 3 ]; then

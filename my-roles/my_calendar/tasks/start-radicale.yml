@@ -34,6 +34,7 @@
           "radicale |& sed -u 's/^/radicale   : /'" \
           &>> /var/local/services.log &
         {% endif %}
+        sleep 3
       args:
         executable: /bin/bash
       become: yes
@@ -44,7 +45,6 @@
       ansible.builtin.shell: |
         n=0
         while [ $n -lt 3 ]; do
-          sleep 3
           {% if lsb_release.stdout == 'buster' %}
           pgrep -f '^/usr/bin/python3 /usr/bin/radicale -f$' && \
             echo 'radicale   : Started' >> /var/local/services.log && break
@@ -53,6 +53,7 @@
             echo 'radicale   : Started' >> /var/local/services.log && break
           {% endif %}
           let n=n+1
+          sleep 3
         done
 
         if [ $n -eq 3 ]; then

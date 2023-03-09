@@ -19,6 +19,7 @@
         nohup bash -c \
           "dnsmasq -d |& sed -u 's/^\(dnsmasq: \)\?/dnsmasq    : /'" \
           &>> /var/local/services.log &
+        sleep 3
       args:
         executable: /bin/bash
       become: yes
@@ -29,10 +30,10 @@
       ansible.builtin.shell: |-
         n=0
         while [ $n -lt 3 ]; do
-          sleep 3
           pgrep -f '^dnsmasq -d$' && 
             echo 'dnsmasq    : Started' >> /var/local/services.log && break
           let n=n+1
+          sleep 3
         done
         
         if [ $n -eq 3 ]; then

@@ -32,6 +32,7 @@
         nohup bash -c \
           "apache2 -D FOREGROUND |& sed -u 's/^/apache2    : /'" \
           &>> '/var/local/servies.log' &
+        sleep 3
       args:
         executable: /bin/bash
       become: yes
@@ -42,10 +43,10 @@
       ansible.builtin.shell: |-
         n=0
         while [ $n -lt 3 ]; do
-          sleep 3
           pgrep -f '^apache2 -D FOREGROUND$' && \
             echo 'apache2    : Started' >> '/var/local/services.log' && break
           let n=n+1
+          sleep 3
         done
 
         if [ $n -eq 3 ]; then
