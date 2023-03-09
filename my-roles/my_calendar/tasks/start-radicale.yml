@@ -26,10 +26,12 @@
       ansible.builtin.shell: |-
         echo 'radicale   : Starting' >> /var/local/services.log
         {% if lsb_release.stdout == 'buster' %}
-        nohup radicale -f |& sed -u 's/^/radicale   : /' \
+        nohup bash -c \
+          "radicale -f |& sed -u 's/^/radicale   : /'" \
           &>> /var/local/services.log &
         {% elif lsb_release.stdout == 'bullseye' %}
-        nohup radicale |& sed -u 's/^/radicale   : /' \
+        nohup bash -c \
+          "radicale |& sed -u 's/^/radicale   : /'" \
           &>> /var/local/services.log &
         {% endif %}
       args:

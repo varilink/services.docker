@@ -15,7 +15,8 @@
     - name: Start the exim process
       ansible.builtin.shell: |-
         echo 'exim       : Starting' >> /var/local/services.log
-        nohup /usr/sbin/exim4 -bdf |& sed -u 's/^/exim       : /' \
+        nohup bash -c \
+          "/usr/sbin/exim4 -bdf |& sed -u 's/^/exim       : /'" \
           &>> /var/local/services.log &
       args:
         executable: /bin/bash

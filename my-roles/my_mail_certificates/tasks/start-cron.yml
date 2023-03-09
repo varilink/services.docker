@@ -15,7 +15,8 @@
     - name: Start the cron process
       ansible.builtin.shell: |-
         echo 'cron       : Starting' >> /var/local/services.log
-        nohup cron -f |& sed -u 's/^/cron       : /' \
+        nohup bash -c \
+          "cron -f |& sed -u 's/^/cron       : /'" \
           &>> /var/local/services.log &
       args:
         executable: /bin/bash

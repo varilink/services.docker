@@ -27,7 +27,8 @@
     - name: Start the bacula-fd process
       ansible.builtin.shell: |-
         echo 'bacula-fd  : Starting' >> /var/local/services.log
-        nohup bacula-fd -f |& sed -u 's/^/bacula-fd  : /' \
+        nohup bash -c \
+          "bacula-fd -f |& sed -u 's/^/bacula-fd  : /'" \
           &>> /var/local/services.log &
       args:
         executable: /bin/bash

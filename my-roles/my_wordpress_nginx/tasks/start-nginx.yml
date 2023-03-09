@@ -16,7 +16,8 @@
     - name: Start the nginx process
       ansible.builtin.shell: |-
         echo 'nginx      : Starting' >> '/var/local/services.log'
-        nohup nginx -g 'daemon off;' |& sed -u 's/^/nginx      : /' \
+        nohup bash -c \
+          "nginx -g 'daemon off;' |& sed -u 's/^/nginx      : /'" \
           &>> '/var/local/servies.log' &
       args:
         executable: /bin/bash

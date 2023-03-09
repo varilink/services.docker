@@ -23,7 +23,8 @@
         running
       ansible.builtin.shell: |-
         echo 'fetchmail  : Starting' >> /var/local/services.log
-        nohup fetchmail |& sed -u 's/^/fetchmail  : /' \
+        nohup bash -c \
+          "fetchmail |& sed -u 's/^/fetchmail  : /'" \
           &>> /var/local/services.log &
       args:
         executable: /bin/bash
