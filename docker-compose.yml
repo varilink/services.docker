@@ -91,6 +91,10 @@ services:
     build: ./build/dig
     env_file:
       - ./envs/${MYENV}/test/network.env
+    networks:
+      office:
+    cap_add:
+      - NET_ADMIN
 
   lynx:
     build: ./build/lynx
