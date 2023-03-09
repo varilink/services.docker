@@ -78,41 +78,41 @@ services:
   bconsole:
     build: ./build/bconsole
     env_file:
-      - ./envs/${MYENV}/test/dns.env
+      - ./envs/${MYENV}/test/network.env
     volumes:
       - ./envs/${MYENV}/test/bconsole.conf:/etc/bacula/bconsole.conf
 
   cadaver:
     build: ./build/cadaver
     env_file:
-      - ./envs/${MYENV}/test/dns.env
+      - ./envs/${MYENV}/test/network.env
 
   dig:
     build: ./build/dig
     env_file:
-      - ./envs/${MYENV}/test/dns.env
+      - ./envs/${MYENV}/test/network.env
 
   lynx:
     build: ./build/lynx
     env_file:
-      - ./envs/${MYENV}/test/dns.env
+      - ./envs/${MYENV}/test/network.env
 
   mutt:
     build: ./build/mutt
     env_file:
-      - ./envs/${MYENV}/test/dns.env
+      - ./envs/${MYENV}/test/network.env
     volumes:
       - ./envs/${MYENV}/test/mutt;/config
 
   openssl:
     build: ./build/openssl
     env_file:
-      - ./envs/${MYENV}/test/dns.env
+      - ./envs/${MYENV}/test/network.env
 
   proxy-internal:
     build: ./build/proxy
     env_file:
-      - ./envs/${MYENV}/test/dns.env
+      - ./envs/${MYENV}/test/network.env
     command: internal
     ports:
       - "3128:3128"
@@ -124,7 +124,7 @@ services:
   proxy-external:
     build: ./build/proxy
     env_file:
-      - ./envs/${MYENV}/test/dns.env
+      - ./envs/${MYENV}/test/network.env
     command: external
     ports:
       - "3129:3128"
@@ -136,4 +136,4 @@ services:
   swaks:
     build: ./build/swaks
     env_file:
-      - ./envs/${MYENV}/test/dns.env
+      - ./envs/${MYENV}/test/network.env
