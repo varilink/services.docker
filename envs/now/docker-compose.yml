@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------
-# envs/live/docker-compose.yml
+# envs/now/docker-compose.yml
 # ------------------------------------------------------------------------------
 
-# Host Docker Compose services for the live simulation environment.
+# Host Docker Compose services for the now simulation environment.
 
 version: "3.7"
 

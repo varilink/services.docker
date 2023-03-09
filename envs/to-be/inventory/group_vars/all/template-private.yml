@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# envs/live/inventory/group_vars/all/template-private.yml
+# envs/now/inventory/group_vars/all/template-private.yml
 # ------------------------------------------------------------------------------
 
 # If you enable Linode integration then you will need to uncomment this line

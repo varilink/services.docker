@@ -6,8 +6,8 @@
 
 ansible_host: 10.0.0.105
 
-# Backup client passwords, which of course would be sensitive data in a true,
-# live environment.
+# Backup client passwords, which of course would be sensitive data in a live
+# environment.
 backup_client_director_password: F95SHRgJYGMpZnjKe6u5rj4Es97atgXYC
 backup_client_monitor_password: TY594Lug5Ztqf55PMPJPpha4gcFVtrXNj
 

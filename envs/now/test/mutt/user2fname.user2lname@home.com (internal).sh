@@ -1,11 +1,11 @@
 # ------------------------------------------------------------------------------
-# envs/live/test/mutt/user2fname.user2lname@home.com (internal).sh
+# envs/now/test/mutt/user2fname.user2lname@home.com (internal).sh
 # ------------------------------------------------------------------------------
 
 # Mutt configuration file for the user user2fname.user2lname@home.com making a
 # connection from an email client that is internal to the office network.
 # Password used for IMAP connection must match that set for the user in:
-# envs/live/playbooks/home/group_vars/all.yml
+# envs/now/playbooks/home/group_vars/all.yml
 
 # IMAP
 set folder    = 'imap://imap:143/'

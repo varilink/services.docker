@@ -1,9 +1,9 @@
 # ------------------------------------------------------------------------------
-# envs/live/playbooks/deploy-services.yml
+# envs/now/playbooks/create.yml
 # ------------------------------------------------------------------------------
 
 # Ansible playbook to deploy services to the containers that comprise the
-# "live" environment.
+# "now" environment.
 
 ---
 

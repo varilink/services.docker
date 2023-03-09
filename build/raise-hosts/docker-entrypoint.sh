@@ -33,7 +33,7 @@ do
 done
 
 # /usr/src/services.sh is mapped to the services.sh provided for the current
-# environment, which is one of "live", "to-be" or "distributed". It sets MYENV
+# environment, which is one of "now", "to-be" or "distributed". It sets MYENV
 # to the name of the current environment and provides the services function -
 # see the next comment.
 source /usr/src/services-to-hosts.sh
@@ -59,7 +59,7 @@ then
 
   # The backup composite services is included with the scope.
 
-  if [[ $MYENV == 'live' || $MYENV == 'to-be' ]]
+  if [[ $MYENV == 'now' || $MYENV == 'to-be' ]]
   then
 
     # The backup_director and backup_storage roles share the same host and

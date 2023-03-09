@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# envs/live/to-be/group_vars/all/public.yml
+# envs/now/to-be/group_vars/all/public.yml
 # ------------------------------------------------------------------------------
 
 # Variables that apply to all hosts. Note that many that are listed here would
@@ -23,8 +23,8 @@ ansible_ssh_extra_args: >-
   -o UserKnownHostsFile=/dev/null
   -o LogLevel=QUIET
 
-# Backup related variables. Of course all the passwords are senstive data in a
-# true live environment.
+# Backup related variables. Of course all the passwords are sensitive data in a
+# live environment.
 backup_copy_folder: bacula-test
 backup_director_console_password: m0Lb5Zn4y1JIjT29NMkbUpVOmnSLbsrLe
 backup_director_monitor_password: c7J2of0vO2mEYfh42qeqnCHOrjBXMb9ot

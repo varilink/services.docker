@@ -51,7 +51,7 @@ services:
       - MYENV
     volumes:
       # The configuration for the environment we're currently using, which could
-      # be one of "live", "to-be" or "distributed".
+      # be one of "now", "to-be" or "distributed".
       - ./envs/${MYENV}:/environment
       # The Varilink library of Ansible roles for our host services.
       - ./libraries-ansible:/libraries-ansible

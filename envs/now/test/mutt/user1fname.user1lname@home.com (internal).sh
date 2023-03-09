@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# envs/live/test/mutt/user1fname.user1lname@home.com (internal).sh
+# envs/now/test/mutt/user1fname.user1lname@home.com (internal).sh
 # ------------------------------------------------------------------------------
 
 # Mutt configuration file for the user user1fname.user1lname@home.com making a

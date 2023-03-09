@@ -1,12 +1,12 @@
 # ------------------------------------------------------------------------------
-# envs/live/inventory/host_vars/prod2.yml
+# envs/now/inventory/host_vars/prod2.yml
 # ------------------------------------------------------------------------------
 
 ---
 
 ansible_host: 10.0.1.103
 
-# Backup client passwords, which of course would be sensitive data in a true,
-# live environment.
+# Backup client passwords, which of course would be sensitive data in a live
+# environment.
 backup_client_director_password: dUp3M5Vg86fOuZtcUBjBXdheaqj6ClVBC
 backup_client_monitor_password: R2ghdfbzKwIoYJrc3Tz84ba56lT4umYxZ

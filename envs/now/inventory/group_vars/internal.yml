@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# envs/live/inventory/group_vars/internal.yml
+# envs/now/inventory/group_vars/internal.yml
 # ------------------------------------------------------------------------------
 
 # Variables that apply to all hosts in the internal group. These are those hosts

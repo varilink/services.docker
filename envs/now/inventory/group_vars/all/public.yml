@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
-# envs/live/inventory/group_vars/all/public.yml
+# envs/now/inventory/group_vars/all/public.yml
 # ------------------------------------------------------------------------------
 
 # Variables that apply to all hosts. Note that many that are listed here would
-# be sensitive data in a true, live environment. They can be included here as
-# making them public is not a problem in this container use case.
+# be sensitive data in a live environment. They can be included here as making
+# them public is not a problem in this container use case.
 
 ---
 
@@ -14,8 +14,8 @@ admin_user_email: user1fname.user1lname@home.com
 
 # Ansible connection. We use the admin user (see above) with a password that is
 # not sensitive data in this use case. Also, we set some extra args for
-# convenience. In our true live environment we use an SSH key to connect and we
-# don't suppress these SSH security features.
+# convenience. In our live environment we use an SSH key to connect and we don't
+# suppress these SSH security features.
 ansible_user: "{{ admin_user }}"
 ansible_ssh_pass: user1passwd
 ansible_ssh_extra_args: >-
@@ -23,8 +23,8 @@ ansible_ssh_extra_args: >-
   -o UserKnownHostsFile=/dev/null
   -o LogLevel=QUIET
 
-# Backup related variables. Of course all the passwords are senstive data in a
-# true live environment.
+# Backup related variables. Of course all the passwords are sensitive data in a
+# live environment.
 backup_copy_folder: bacula-test
 backup_director_console_password: lNXIMABzbKTwFek7HO3eyof6T4dmMNclh
 backup_director_monitor_password: A8KBTE19dsc75hrP5LUtvqswbuEmeqN8f

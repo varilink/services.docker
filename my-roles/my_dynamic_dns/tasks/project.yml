@@ -3,9 +3,9 @@
 # ------------------------------------------------------------------------------
 
 # A spoofing of the creation of dynamic DNS entries that happens via Linode API
-# integration in a true live environment. In our test environments the same
-# effect is achieved by adding DNS entries to the host that simulates our ISP's
-# DNS service.
+# integration in a live environment. In our test environments the same effect
+# is achieved by adding DNS entries to the host that simulates our ISP's DNS
+# service.
 
 ---
 

@@ -1,12 +1,12 @@
 # ------------------------------------------------------------------------------
-# envs/live/inventory/host_vars/wordpress-internal.yml
+# envs/now/inventory/host_vars/wordpress-internal.yml
 # ------------------------------------------------------------------------------
 
 ---
 
 ansible_host: 10.0.0.111
 
-# Backup client passwords, which of course would be sensitive data in a true,
-# live environment.
+# Backup client passwords, which of course would be sensitive data in a live
+# environment.
 backup_client_director_password: ppm4teJeQwfnANBVQWqLWYjbBqx6XDr9c
 backup_client_monitor_password: Vb8fAAAuPm9TrhU4yQCCUVCMR8kP9VdXR

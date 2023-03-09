@@ -1,11 +1,11 @@
 # ------------------------------------------------------------------------------
-# envs/live/test/mutt/rolename@customer.com (external).sh
+# envs/now/test/mutt/rolename@customer.com (external).sh
 # ------------------------------------------------------------------------------
 
 # Mutt configuration file for the user rolename@customer.com making a connection
 # from an email client that is external to the office network. Password used for
 # IMAP and SMTP connection must match that set for the user in:
-# envs/live/playbooks/customer/group_vars/all/public.yml
+# envs/now/playbooks/customer/group_vars/all/public.yml
 
 # IMAP
 set folder    = 'imaps://imap.customer.com:993/'
