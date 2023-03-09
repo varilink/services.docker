@@ -141,6 +141,20 @@ services:
     cap_add:
       - NET_ADMIN
 
+  traceroute-internal:
+    build: ./build/traceroute
+    networks:
+      office:
+    cap_add:
+      - NET_ADMIN
+
+  traceroute-external:
+    build: ./build/traceroute
+    networks:
+      internet:
+    cap_add:
+      - NET_ADMIN
+
   swaks:
     build: ./build/swaks
     env_file:
