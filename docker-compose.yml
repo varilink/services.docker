@@ -65,6 +65,10 @@ services:
 
   router:
     build: ./build/router
+    env_file:
+      - ./envs/${MYENV}/test/network.env
+    volumes:
+      - ./build/router/templates:/etc/nginx/templates
     networks:
       internet:
         ipv4_address: 10.0.1.254

@@ -1,0 +1,24 @@
+stream {
+
+  server {
+
+    listen 10.0.1.254:80;
+    proxy_pass $REVERSE_PROXY_GATEWAY:80;
+
+  }
+
+  server {
+
+    listen 10.0.1.254:443;
+    proxy_pass $REVERSE_PROXY_GATEWAY:443;
+
+  }
+
+  server {
+
+    listen 10.0.1.254:9103;
+    proxy_pass $BACKUP_STORAGE:9103;
+
+  }
+
+}
