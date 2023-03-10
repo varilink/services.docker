@@ -14,5 +14,10 @@
 
 - ansible.builtin.import_role:
     name: backup_director
+    tasks_from: catalog
+    handlers_from: none
+
+- ansible.builtin.import_role:
+    name: backup_director
     tasks_from: configure
     handlers_from: none
