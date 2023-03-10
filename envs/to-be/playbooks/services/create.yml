@@ -87,6 +87,15 @@
         name: my_backup_client
       tags: backup
 
+- hosts: dns-external
+
+  tasks:
+
+    - ansible.builtin.import_role:
+        name: my_dynamic_dns
+        tasks_from: project
+      tags: backup
+
 # --------
 # Calendar
 # --------
