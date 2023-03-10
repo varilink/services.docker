@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# envs/now/inventory/group_vars/external.yml
+# envs/to-be/inventory/group_vars/external.yml
 # ------------------------------------------------------------------------------
 
 # Variables that apply to all hosts in the external group. These are those hosts

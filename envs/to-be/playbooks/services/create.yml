@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# envs/to-be/playbooks/deploy-services.yml
+# envs/to-be/playbooks/create.yml
 # ------------------------------------------------------------------------------
 
 # Ansible playbook to deploy services to the containers that comprise the
@@ -87,7 +87,9 @@
         name: my_backup_client
       tags: backup
 
-# Calendar service
+# --------
+# Calendar
+# --------
 
 - hosts: hub
 
@@ -97,7 +99,9 @@
         name: my_calendar
       tags: calendar
 
-# Dynamic DNS service
+# -----------
+# Dynamic DNS
+# -----------
 
 - hosts: gateway
 
@@ -107,7 +111,9 @@
         name: my_dynamic_dns
       tags: dynamic_dns
 
-# Mail service
+# ----
+# Mail
+# ----
 
 - hosts: gateway
 

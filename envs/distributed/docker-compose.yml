@@ -2,7 +2,7 @@
 # envs/distributed/docker-compose.yml
 # ------------------------------------------------------------------------------
 
-# Host Docker Compose services for the distributed simulation environment.
+# Host Docker Compose services for the "distributed" test environment.
 
 version: "3.7"
 

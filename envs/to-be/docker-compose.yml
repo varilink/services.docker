@@ -2,7 +2,7 @@
 # envs/to-be/docker-compose.yml
 # ------------------------------------------------------------------------------
 
-# Host Docker Compose services for the to-be simulation environment.
+# Host Docker Compose services for the "to-be" test environment.
 
 version: "3.7"
 

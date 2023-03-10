@@ -2,7 +2,7 @@
 # envs/now/docker-compose.yml
 # ------------------------------------------------------------------------------
 
-# Host Docker Compose services for the now simulation environment.
+# Host Docker Compose services for the "now" test environment.
 
 version: "3.7"
 
