@@ -10,12 +10,10 @@
 - ansible.builtin.import_role:
     name: wordpress_apache
     tasks_from: install
-    handlers_from: none
 
 - ansible.builtin.import_role:
     name: wordpress_apache
     tasks_from: configure
-    handlers_from: none
 
 # Starting apache2 is delayed until after the configure step because we need to
 # change the port that apache2 is listening on from 80 to 8080 before starting

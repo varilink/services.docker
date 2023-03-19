@@ -3,7 +3,6 @@
 - ansible.builtin.import_role:
     name: backup_client
     tasks_from: install.yml
-    handlers_from: none.yml
 
 - ansible.builtin.import_tasks:
     file: start-bacula-fd.yml
@@ -11,4 +10,3 @@
 - ansible.builtin.import_role:
     name: backup_client
     tasks_from: configure.yml
-    handlers_from: none.yml

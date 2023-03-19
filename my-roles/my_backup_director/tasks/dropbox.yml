@@ -7,7 +7,6 @@
 - ansible.builtin.import_role:
     name: backup_director
     tasks_from: dropbox.yml
-    handlers_from: none.yml
 
 - ansible.builtin.import_role:
     name: my_backup_dropbox

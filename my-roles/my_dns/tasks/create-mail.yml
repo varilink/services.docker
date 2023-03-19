@@ -1,4 +1,3 @@
 - ansible.builtin.import_role:
     name: dns
     tasks_from: create-mail
-    handlers_from: none

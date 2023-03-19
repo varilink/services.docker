@@ -3,4 +3,3 @@
 - ansible.builtin.import_role:
     name: mail_certificates
     tasks_from: domain
-    handlers_from: none

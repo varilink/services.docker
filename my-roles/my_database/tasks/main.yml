@@ -7,11 +7,9 @@
 - ansible.builtin.import_role:
     name: database
     tasks_from: install.yml
-    handlers_from: none.yml
 
 - ansible.builtin.include_tasks: start-mysql.yml
 
 - ansible.builtin.import_role:
     name: database
     tasks_from: configure.yml
-    handlers_from: none.yml

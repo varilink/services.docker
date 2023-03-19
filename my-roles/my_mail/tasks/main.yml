@@ -10,11 +10,9 @@
 - ansible.builtin.import_role:
     name: mail
     tasks_from: install
-    handlers_from: none
 
 - ansible.builtin.import_tasks: ./start-dovecot.yml
 
 - ansible.builtin.import_role:
     name: mail
     tasks_from: configure
-    handlers_from: none

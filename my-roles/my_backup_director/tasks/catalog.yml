@@ -7,4 +7,3 @@
 - ansible.builtin.import_role:
     name: backup_director
     tasks_from: catalog.yml
-    handlers_from: none.yml

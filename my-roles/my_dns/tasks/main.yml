@@ -7,7 +7,6 @@
 - ansible.builtin.import_role:
     name: dns
     tasks_from: install.yml
-    handlers_from: none.yml
 
 - ansible.builtin.import_tasks: start-dnsmasq.yml
 
@@ -73,4 +72,3 @@
 - ansible.builtin.import_role:
     name: dns
     tasks_from: configure.yml
-    handlers_from: none.yml

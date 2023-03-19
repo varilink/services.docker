@@ -7,11 +7,9 @@
 - ansible.builtin.import_role:
     name: reverse_proxy
     tasks_from: install.yml
-    handlers_from: none.yml
 
 - ansible.builtin.include_tasks: start-nginx.yml
 
 - ansible.builtin.import_role:
     name: reverse_proxy
     tasks_from: configure.yml
-    handlers_from: none.yml

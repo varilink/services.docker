@@ -7,4 +7,3 @@
 - ansible.builtin.import_role:
     name: database
     tasks_from: bacula.yml
-    handlers_from: none.yml

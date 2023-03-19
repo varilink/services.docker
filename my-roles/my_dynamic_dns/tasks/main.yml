@@ -2,4 +2,3 @@
 
 - ansible.builtin.import_role:
     name: dynamic_dns
-    handlers_from: none.yml

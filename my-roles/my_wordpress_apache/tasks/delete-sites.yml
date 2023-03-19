@@ -1,4 +1,3 @@
 - ansible.builtin.import_role:
     name: wordpress_apache
     tasks_from: delete-sites
-    handlers_from: none

@@ -10,7 +10,6 @@
 - ansible.builtin.import_role:
     name: wordpress_nginx
     tasks_from: install
-    handlers_from: none.yml
 
 - ansible.builtin.import_tasks: start-php-fpm.yml
 
@@ -19,4 +18,3 @@
 - ansible.builtin.import_role:
     name: wordpress_nginx
     tasks_from: configure
-    handlers_from: none

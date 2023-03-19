@@ -51,7 +51,6 @@
 
     - ansible.builtin.import_role:
         name: backup_dropbox
-        handlers_from: none
         tasks_from: exclude
 
   when: pgrep_result.rc == 1
