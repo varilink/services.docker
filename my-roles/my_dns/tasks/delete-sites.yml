@@ -1,4 +1,0 @@
-- ansible.builtin.import_role:
-    name: dns
-    tasks_from: delete-sites
-    handlers_from: none
