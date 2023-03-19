@@ -10,14 +10,14 @@ services:
 
   # office network
 
-  dev1:
+  dev:
     build:
       context: build/sshd
       args:
         RELEASE: buster
     image: varilink/services/sshd:buster
-    container_name: services_dev1
-    hostname: dev1
+    container_name: services_dev
+    hostname: dev
     networks:
       office:
         ipv4_address: 10.0.0.101
@@ -64,28 +64,28 @@ services:
     cap_add:
       - NET_ADMIN
 
-  prod1:
+  mail-external:
     build:
       context: build/sshd
       args:
         RELEASE: stretch
     image: varilink/services/sshd:stretch
-    container_name: services_prod1
-    hostname: prod1
+    container_name: services_mail-external
+    hostname: mail-external
     networks:
       internet:
         ipv4_address: 10.0.1.102
     cap_add:
       - NET_ADMIN
 
-  prod2:
+  prod:
     build:
       context: build/sshd
       args:
         RELEASE: buster
     image: varilink/services/sshd:buster
-    container_name: services_prod2
-    hostname: prod2
+    container_name: services_prod
+    hostname: prod
     networks:
       internet:
         ipv4_address: 10.0.1.103

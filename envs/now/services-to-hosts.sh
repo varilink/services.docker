@@ -8,8 +8,8 @@ function services-to-hosts {
   calendar='dns-external hub'
   dns='dns-external hub'
   dynamic_dns='dns-external gateway hub'
-  mail='dns-external gateway hub prod1'
-  web='dev1 dns-external gateway hub prod2'
+  mail='dns-external gateway hub mail-external'
+  web='dev dns-external gateway hub prod'
 
   if [[ $# -eq 0 ]]
   then
