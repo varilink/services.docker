@@ -4,7 +4,7 @@
 
 function services-to-hosts {
 
-  backup='dns-external hub'
+  backup='dns-external hub mail-external'
   calendar='dns-external hub'
   dns='dns-external hub'
   dynamic_dns='dns-external gateway hub'

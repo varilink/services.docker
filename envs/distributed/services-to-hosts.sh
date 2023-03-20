@@ -5,7 +5,7 @@
 function services-to-hosts {
 
   backup='backup-director backup-storage database-internal'
-  backup="$backup dns-external dns-internal mail-internal"
+  backup="$backup dns-external dns-internal mail-internal mail-external"
   calendar='caldav dns-external dns-internal'
   dns='dns-external dns-internal'
   dynamic_dns='dns-external dns-internal dynamic-dns mail-internal'
