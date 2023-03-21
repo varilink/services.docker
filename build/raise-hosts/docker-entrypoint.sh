@@ -87,11 +87,9 @@ fi
 # Compose services.
 
 if [[ "$options" ]]; then
-  echo -n "docker-compose --env-file envs/$MYENV/.env up --detach $options"
-  echo ' proxy-external proxy-internal router'
-  echo "docker-compose --env-file envs/$MYENV/.env up $options $hosts"
+  echo -n "docker-compose --env-file envs/$MYENV/.env up $options"
+  echo " proxy-external proxy-internal router $hosts"
 else
-  echo -n "docker-compose --env-file envs/$MYENV/.env up --detach"
-  echo ' proxy-external proxy-internal router'
-  echo "docker-compose --env-file envs/$MYENV/.env up $hosts"
+  echo -n "docker-compose --env-file envs/$MYENV/.env up"
+  echo " proxy-external proxy-internal router $hosts"
 fi
