@@ -13,18 +13,6 @@
 - block:
 
     # The --limit option was passed to the ansible-playbook command. That makes
-    # it likely that not all - block:
-
-    # The --limit option was passed to the ansible-playbook command. That makes
-    # it likely that not all the containers configured in the test environment
-    # are up.
-    #
-    # The DNS role connects to every host that it is configured to provide a DNS
-    # lookup for. If the associated container in the test environment isn't up,
-    # this will produce a host unreachable result. The tasks in this block avoid
-    # this eventuality.- block:
-
-    # The --limit option was passed to the ansible-playbook command. That makes
     # it likely that not all the containers configured in the test environment
     # are up.
     #
@@ -67,7 +55,7 @@
 
           ]
 
-  when: ansible_limit
+  when: ansible_limit is defined
 
 - ansible.builtin.import_role:
     name: dns
