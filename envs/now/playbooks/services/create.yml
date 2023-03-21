@@ -140,7 +140,7 @@
         name: my_mail_internal
       tags: [backup, mail]
 
-- hosts: prod1
+- hosts: mail-external
 
   tasks:
 
@@ -157,7 +157,7 @@
 # gateway - staging or test, which both face externally and so use HTTPS.
 # prod2 - www, i.e. live, which obviously uses HTTPS.
 
-- hosts: dev1,gateway,prod2
+- hosts: wordpress
 
   tasks:
 
@@ -171,8 +171,5 @@
 
         - ansible.builtin.import_role:
             name: my_wordpress_apache
-
-        - ansible.builtin.import_role:
-            name: my_wordpress_nginx
 
       tags: web

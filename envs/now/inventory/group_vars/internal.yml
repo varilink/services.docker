@@ -11,9 +11,18 @@
 dns_client_nameservers:
   - 10.0.0.103
 
+# The hub nameserver provides lookups for hosts and services on the internal
+# network, and so in the internal group.
+dns_host_patterns:
+  - string: internal
+    description: Internal hosts
+
 # The hub nameserver uses the dns-external nameserver for upstream resolution.
 dns_upstream_nameservers:
   - 10.0.1.101
 
 # Hosts on the internal network are not enabled for SSL by default.
 host_enabled_for_ssl: no
+
+wordpress_site_dns_host: hub
+wordpress_site_uses_ssl: no

@@ -1,13 +1,13 @@
 # ------------------------------------------------------------------------------
-# envs/now/playbooks/customer/host_vars/dev1.yml
+# envs/now/playbooks/customer/host_vars/prod2.yml
 # ------------------------------------------------------------------------------
 
 ---
 
 wordpress_sites:
-  - subdomain: dev
+  - subdomain: www
 
 wordpress_sites_private:
-  - subdomain: dev
-    admin_password: 'gCP8e86&2#^!wvQO'
-    database_password: 'oF748&S*V&*U$fEo'
+  - subdomain: www
+    admin_password: 'Oc1mK9#5fx!8gfXf'
+    database_password: 'Ja11&2ooXzz81VD7'

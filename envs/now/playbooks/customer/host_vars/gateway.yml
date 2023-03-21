@@ -1,0 +1,19 @@
+# ------------------------------------------------------------------------------
+# envs/now/playbooks/customer/host_vars/gateway.yml
+# ------------------------------------------------------------------------------
+
+---
+
+wordpress_site_uses_ssl: yes
+
+wordpress_sites:
+  - subdomain: test
+  - subdomain: staging
+
+wordpress_sites_private:
+  - subdomain: test
+    admin_password: 'n#N068pk21nmi56F'
+    database_password: 'Kh32!7*k9k$MWUgQ'
+  - subdomain: staging
+    admin_password: 'Dz15W@%6iyvQ%O&y'
+    database_password: 'Gm1066eP%E2mmJaQ'

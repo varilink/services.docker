@@ -38,7 +38,7 @@ backup_storage_name: services-sd
 # Setting that in broad terms define this environment.
 home_domain: home.com
 hosts_to_roles_map:
-  dev1:
+  dev:
     - database
     - reverse_proxy
     - wordpress_apache
@@ -55,12 +55,9 @@ hosts_to_roles_map:
     - database
     - dns
     - mail_internal
-  prod1:
+  mail-external:
     - mail_external
-  prod2:
-    - database
-    - wordpress_nginx
-  prod3:
+  prod:
     - database
     - reverse_proxy
     - wordpress_apache

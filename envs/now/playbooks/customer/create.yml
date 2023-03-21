@@ -1,49 +1,38 @@
 # ------------------------------------------------------------------------------
-# envs/live/playbooks/customer/playbook.yml
+# envs/now/playbooks/customer/create.yml
 # ------------------------------------------------------------------------------
 
 ---
 
-- hosts: dev1
+# This playbook creates WordPress websites and an email service for the dummy
+# domain customer.com in the now testing environment. It is a simulation of
+# a playbook for a live web development project.
+
+- hosts: web
 
   tasks:
 
-    - block:
-
-        - ansible.builtin.import_role:
-            name: my_wordpress_apache
-            tasks_from: create-site-stack
-
-        - ansible.builtin.import_role:
-            name: my_dns
-            tasks_from: create-site
-          delegate_to: hub
-
+    - ansible.builtin.set_fact:
+        playbook_subdomains: ['dev','staging','test','www']
       tags: web
 
-- hosts: gateway
+- hosts: wordpress
 
   tasks:
 
     - ansible.builtin.import_role:
-        name: my_mail_certificates
-        tasks_from: domain
-      tags: mail
-      when: mail_uses_ca
+        name: my_wordpress_apache
+        tasks_from: create-sites
+      tags: web
 
-- hosts: prod1
+- hosts: dns-external
 
   tasks:
 
-    - block:
-
-        - ansible.builtin.import_role:
-            name: my_mail_external
-            tasks_from: domain
-
-        - ansible.builtin.import_role:
-            name: my_dns
-            tasks_from: create-mail
-          delegate_to: dns-external
-
-      tags: mail
+    - ansible.builtin.import_role:
+        name: my_dynamic_dns
+        tasks_from: project
+      vars:
+        dynamic_dns_records: "\
+          {{ playbook_subdomains | intersect(project_dynamic_dns_records) }}"
+      tags: web
