@@ -100,10 +100,19 @@ services:
     cap_add:
       - NET_ADMIN
 
-  lynx:
+  lynx-external:
     build: ./build/lynx
     env_file:
       - ./envs/${MYENV}/test/network.env
+    networks:
+      internet:
+
+  lynx-internal:
+    build: ./build/lynx
+    env_file:
+      - ./envs/${MYENV}/test/network.env
+    networks:
+      office:
 
   mutt:
     build: ./build/mutt
