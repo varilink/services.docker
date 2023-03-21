@@ -1,0 +1,13 @@
+# ------------------------------------------------------------------------------
+# envs/distributed/playbooks/customer/group_vars/external.yml
+# ------------------------------------------------------------------------------
+
+---
+
+wordpress_sites:
+  - subdomain: www
+
+wordpress_sites_private:
+  - subdomain: www
+    admin_password: '1sR5d^39Eq$T2%UX'
+    database_password: 'pE9780*3iAZ!6HVW'

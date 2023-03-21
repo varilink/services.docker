@@ -1,0 +1,25 @@
+# ------------------------------------------------------------------------------
+# envs/distributed/playbooks/customer/group_vars/internal.yml
+# ------------------------------------------------------------------------------
+
+---
+
+wordpress_sites:
+  - subdomain: dev
+  - subdomain: test
+  - subdomain: staging
+
+wordpress_sites_private:
+  - subdomain: dev
+    admin_password: '03Jh9#z^VFP1Z&nH'
+    database_password: 'zP97$q5XyvOOWC5V'
+  - subdomain: test
+    admin_password: 'q9N19^9ZPm2PILU#'
+    database_password: '3j4T#Hy0*X3d#bjY'
+    reverse_proxy_host: reverse-proxy-gateway
+    uses_ssl: yes
+  - subdomain: staging
+    admin_password: '54xE9^3hFhh61^8X'
+    database_password: 'Um!6R42tTi4Qn86%'
+    reverse_proxy_host: reverse-proxy-gateway
+    uses_ssl: yes

@@ -1,40 +1,36 @@
-name: customer.com
-organisation: Mock-Up Customer Organisation
+# ------------------------------------------------------------------------------
+# envs/distributed/playbooks/customer/group_vars/all/public.yml
+# ------------------------------------------------------------------------------
 
-# Default reverse proxy pass port to use when configuring this domain's web
-# services. This can be overridden for an individual webhost below.
-reverse_proxy_pass_port: 8081
+---
 
-# Details of each webhost that a web service for which a web service is to be
-# deployed for this domain.
-webhosts:
-  - name: dev
-    reverse_proxy_host: wordpress-stack-internal
-    wordpress_host: wordpress-stack-internal
-    wordpress_database_host: wordpress-stack-internal
-    wordpress_database_password: 'z!dhn4vmJbe$N_JJ'
-  - name: test
-    reverse_proxy_host: wordpress-stack-internal
-    reverse_proxy_pass_port: 8082
-    wordpress_host: wordpress-stack-internal
-    wordpress_database_host: wordpress-stack-internal
-    wordpress_database_password: 'KD_y2Q*&*Ca-XLt@'
-  - name: www
-    reverse_proxy_host: reverse-proxy-external
-    wordpress_host: wordpress-external
-    wordpress_database_host: database-external
-    wordpress_database_password: '*AtEz?dpfg^m3aw@'
+# These are the variables for a dummy project for the pretend customer.com
+# domain. They illustrate the variables required for project playbooks.
 
-# Details for Dynamic DNS updates for this domain.
-linode_domain_id: 1878505
-linode_dynamic_dns_domain_records:
-  - 21912263 # test
+# Mandatory domain information
+domain_name: customer.com
+domain_organisation: Customer Organisation
 
-# Users for which to configure a mail service for this domain.
-users:
-  # A personal email address in the form userfname.userlname
-  - email: userfname.userlname
-    passwd: userpasswd
-  # A role (e.g. 'chair') in the form rolename
-  - email: rolename
-    passwd: rolepasswd
+# Optional domain information that if provided is used in any self-signed
+# certificates that are generated.
+domain_country: GB
+domain_state: Derbyshire
+domain_locality: Long Eaton
+
+# Users associated with the domain. In a real project this would of course be
+# sensitive data.
+domain_users:
+  # A user with a personal email address
+  - email: "userfname.userlname@{{ domain_name }}"
+    password: '2I2&3hQ5ajYTTe*a'
+  # A user with a role email address
+  - email: rolename@{{ domain_name }}
+    password: '4c5yE0%PZTwFKd9%'
+
+project_dynamic_dns_records:
+  - staging
+  - test
+
+# Port reserved for WordPress websites for this project when they sit behind a
+# reverse proxy.
+wordpress_site_reverse_proxy_pass_port: 8081

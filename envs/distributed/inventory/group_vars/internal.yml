@@ -18,3 +18,10 @@ dns_upstream_nameservers:
 
 # Hosts on the internal network are not enabled for SSL by default.
 host_enabled_for_ssl: no
+
+# These variables are required because of the one-host to one-service nature of
+# the distributed environment.
+wordpress_site_database_host: database-internal
+wordpress_site_dns_host: dns-internal
+wordpress_site_reverse_proxy_host: reverse-proxy-internal
+wordpress_site_uses_ssl: no

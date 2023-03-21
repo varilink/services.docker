@@ -22,3 +22,9 @@ dns_host_patterns:
 dns_upstream_nameservers:
   - 8.8.8.8
   - 8.8.4.4
+
+# These variables are required because of the one-host to one-service nature of
+# the distributed environment.
+wordpress_site_database_host: database-external
+wordpress_site_dns_host: dns-external
+wordpress_site_reverse_proxy_host: reverse-proxy-external

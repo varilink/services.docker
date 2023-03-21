@@ -180,7 +180,7 @@
 
       tags: web
 
-- hosts: reverse-proxy-external,reverse-proxy-gateway,reverse-proxy-internal
+- hosts: reverse_proxy
 
   tasks:
 
