@@ -62,7 +62,13 @@ You **must** maintain the association between a commit of [Services - Docker](ht
 
 Once you have downloaded both zip files, you must unzip them both and ensure that the contents of [Libraries - Ansible](https://github.com/varilink/libraries-ansible) are in the `libraries-ansible` folder of the contents of [Services - Docker](https://github.com/varilink/services-docker).
 
-I will publish releases of [Services - Docker](https://github.com/varilink/services-docker) corresponding to the points at which I have tested everything published in posts on [my blog site](https://www.varilink.co.uk) to date. So you can isolate yourself from any instability in this repository by using the latest release of [Services - Docker](https://github.com/varilink/services-docker) rather than the latest commit on the main branch.
+This repository is still under active development so:
+
+- Be on the lookout for new commits on the main branch and refresh your local copy when you see them.
+
+- Feel free to contact me at anytime to let me know if something isn't working for you and I'll help you out. My contact details are in my GitHub profile.
+
+I will shortly start to publish releases of [Services - Docker](https://github.com/varilink/services-docker) corresponding to the points at which I have tested everything published in posts on [my blog site](https://www.varilink.co.uk) to date. So you will be able to isolate yourself from any instability in this repository by using the latest release of [Services - Docker](https://github.com/varilink/services-docker) rather than the latest commit on the main branch.
 
 Using this repository then entails running `docker-compose` commands, referring to the instructions that follow. All commands shown in this README should be invoked in this repository's root folder on your host machine.
 
@@ -204,7 +210,7 @@ Since we must run the above command in a different shell to the one that we used
 
 By contrast, if you edited the value of the `MYENV` variable in the `.env` file instead, then this will take effect in any and all shells that you open.
 
-The `[SERVICES...]` argument(s) work exactly as they did in the previous step. Here you **must** use the `[SERVICES...]` argument to either limit the `playbook` command to the same list of services you used in the `raise-hosts` command or a subset thereof. You can't run the `playbook` command for services that you didn't include when you ran the `raise-hosts` command because not all the containers that are targets of the `playbook` command will be running.
+The `[SERVICES...]` argument(s) work exactly as they did in the previous step. Here you **must** use the `[SERVICES...]` argument to limit the `playbook` command to the same list of services you used in the `raise-hosts` command. You can't run the `playbook` command for services that you didn't include when you ran the `raise-hosts` command and you mustn't omit services when you run the `playbook` command that you included when you ran the `raise-hosts` command.
 
 In this way it's possible to run `raise-hosts` for several services and then run `playbook` multiple times to deploy those services one-by-one or in other subsets to the running containers. Of course, you could omit a list of services for both the `raise-hosts` and `playbook` commands in which case you're running all the containers and deploying all the services at once.
 
@@ -234,3 +240,6 @@ The [SERVICES...] and [OPTIONS...] arguments above work in exactly the same way 
 
 ## Testing the Services
 
+The goal of this repository is to test the Ansible roles in my [Libraries - Ansible](https://github.com/varilink/libraries-ansible) repository. That equates to testing the services that those roles define and which are briefly described at the start fo the README for [Libraries - Ansible](https://github.com/varilink/libraries-ansible).
+
+I will publish a services of posts in my blog, containing instructions for testing those services uses this repository and what the expected results of those tests are - see [https://www.varilink.co.uk/testing-ansible-roles-using-containers/#multiple-test-environments-and-testing-clients](https://www.varilink.co.uk/testing-ansible-roles-using-containers/#multiple-test-environments-and-testing-clients) in my blog post [Testing Ansible Roles Using Containers](https://www.varilink.co.uk/testing-ansible-roles-using-containers/).
