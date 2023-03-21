@@ -85,11 +85,15 @@ services:
       - ./envs/${MYENV}/test/network.env
     volumes:
       - ./envs/${MYENV}/test/bconsole.conf:/etc/bacula/bconsole.conf
+    networks:
+      office:
 
   cadaver:
     build: ./build/cadaver
     env_file:
       - ./envs/${MYENV}/test/network.env
+    networks:
+      office:
 
   dig:
     build: ./build/dig
@@ -120,11 +124,19 @@ services:
       - ./envs/${MYENV}/test/network.env
     volumes:
       - ./envs/${MYENV}/test/mutt:/config
+    networks:
+      office:
+    cap_add:
+      - NET_ADMIN
 
   openssl:
     build: ./build/openssl
     env_file:
       - ./envs/${MYENV}/test/network.env
+    networks:
+      office:
+    cap_add:
+      - NET_ADMIN
 
   proxy-external:
     build: ./build/proxy
@@ -168,3 +180,7 @@ services:
     build: ./build/swaks
     env_file:
       - ./envs/${MYENV}/test/network.env
+    networks:
+      office:
+    cap_add:
+      - NET_ADMIN
