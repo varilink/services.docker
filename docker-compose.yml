@@ -119,7 +119,7 @@ services:
     env_file:
       - ./envs/${MYENV}/test/network.env
     volumes:
-      - ./envs/${MYENV}/test/mutt;/config
+      - ./envs/${MYENV}/test/mutt:/config
 
   openssl:
     build: ./build/openssl
