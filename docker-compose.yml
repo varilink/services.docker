@@ -117,18 +117,6 @@ services:
     env_file:
       - ./envs/${MYENV}/test/network.env
 
-  proxy-internal:
-    build: ./build/proxy
-    env_file:
-      - ./envs/${MYENV}/test/network.env
-    command: internal
-    ports:
-      - "3128:3128"
-    networks:
-      office:
-    cap_add:
-      - NET_ADMIN
-
   proxy-external:
     build: ./build/proxy
     env_file:
@@ -138,6 +126,18 @@ services:
       - "3129:3128"
     networks:
       internet:
+    cap_add:
+      - NET_ADMIN
+
+  proxy-internal:
+    build: ./build/proxy
+    env_file:
+      - ./envs/${MYENV}/test/network.env
+    command: internal
+    ports:
+      - "3128:3128"
+    networks:
+      office:
     cap_add:
       - NET_ADMIN
 
