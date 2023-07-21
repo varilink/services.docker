@@ -1,3 +1,3 @@
-[submodule "libraries-ansible"]
+[submodule "libraries-ansible_roles"]
 	path = roles
 	url = git@github.com:varilink/libraries-ansible_roles.git
