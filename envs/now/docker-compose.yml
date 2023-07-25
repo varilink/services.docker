@@ -64,28 +64,28 @@ services:
     cap_add:
       - NET_ADMIN
 
-  mail-external:
+  prod1:
     build:
       context: build/sshd
       args:
         RELEASE: stretch
     image: varilink/services/sshd:stretch
-    container_name: services_mail-external
-    hostname: mail-external
+    container_name: services_prod1
+    hostname: prod1
     networks:
       internet:
         ipv4_address: 10.0.1.102
     cap_add:
       - NET_ADMIN
 
-  prod:
+  prod4:
     build:
       context: build/sshd
       args:
         RELEASE: buster
     image: varilink/services/sshd:buster
-    container_name: services_prod
-    hostname: prod
+    container_name: services_prod4
+    hostname: prod4
     networks:
       internet:
         ipv4_address: 10.0.1.103
