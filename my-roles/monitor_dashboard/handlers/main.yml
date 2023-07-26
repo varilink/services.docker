@@ -1,0 +1,5 @@
+- ansible.builtin.include_tasks: stop-grafana.yml
+  listen: Grafana configuration changed
+
+- ansible.builtin.include_tasks: start-grafana.yml
+  listen: Grafana configuration changed

@@ -1,0 +1,47 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_monitor_client/tasks/start-telegraf.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the telegraf process is running
+  ansible.builtin.shell: pgrep -f '^/usr/bin/telegraf$'
+  register: pgrep_result
+  changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
+
+- block:
+
+    - name: Start the telegraf process
+      ansible.builtin.shell: |-
+        echo 'telegraf   : Starting' >> '/var/local/services.log'
+        nohup bash -c \
+          "/usr/bin/telegraf |& sed -u 's/^/telegraf   : /'" \
+          &>> '/var/local/services.log' &
+        sleep 3
+      args:
+        executable: /bin/bash
+      become: yes
+
+    - name: Check the telegraf process has started
+      # We do this in a separate shell task to the one that we started the
+      # process in so that we know that the process survived beyond that shell.
+      ansible.builtin.shell: |-
+        n=0
+        while [ $n -lt 3 ]; do
+          pgrep -f '^/usr/bin/telegraf$' && \
+            echo 'telegraf   : Started' >> '/var/local/services.log' && break
+          let n=n+1
+          sleep 3
+        done
+
+        if [ $n -eq 3 ]; then
+          echo 'telegraf   : Failed to start process' \
+            >> /var/local/services.log
+          exit 1
+        fi
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+  when: pgrep_result.rc == 1

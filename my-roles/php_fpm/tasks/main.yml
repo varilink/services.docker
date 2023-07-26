@@ -1,0 +1,11 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_php_fpm/tasks/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.import_role:
+    name: /libraries-ansible_roles/php_fpm
+    handlers_from: none
+
+- ansible.builtin.import_tasks: start-php-fpm.yml

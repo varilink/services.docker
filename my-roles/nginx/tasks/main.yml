@@ -1,0 +1,11 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_nginx/tasks/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.import_role:
+    name: /libraries-ansible_roles/nginx
+    handlers_from: none
+
+- ansible.builtin.import_tasks: start-nginx.yml

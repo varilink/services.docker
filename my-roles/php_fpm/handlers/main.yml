@@ -1,0 +1,11 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_php_fpm/handlers/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.include_tasks: stop-php-fpm.yml
+  listen: PHP FPM configuration changed
+
+- ansible.builtin.include_tasks: start-php-fpm.yml
+  listen: PHP FPM configuration changed

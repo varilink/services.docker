@@ -1,0 +1,17 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_monitor_dashboard/tasks/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.import_role:
+    name: /libraries-ansible_roles/monitor_dashboard
+    tasks_from: install-service
+    handlers_from: none
+
+- ansible.builtin.import_tasks: start-grafana.yml
+
+- ansible.builtin.import_role:
+    name: /libraries-ansible_roles/monitor_dashboard
+    tasks_from: configure-service
+    handlers_from: none

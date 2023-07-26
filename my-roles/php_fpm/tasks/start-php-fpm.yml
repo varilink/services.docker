@@ -1,0 +1,71 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_wordpress_nginx/tasks/start-php-fpm.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Get the codename of the Debian release on this host
+  ansible.builtin.command: lsb_release --codename --short
+  register: lsb_release
+  changed_when: false
+
+- name: Test if the php-fpm process is running
+  ansible.builtin.shell: |-
+    pgrep -f '^php-fpm: master process'
+  register: pgrep_result
+  changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
+
+- block:
+
+    - name: Create the /run/php directory
+      ansible.builtin.file:
+        path: /run/php
+        state: directory
+      become: yes
+
+    - name: Start the php-fpm process if it isn't already running
+      ansible.builtin.shell: |-
+        echo 'php-fpm    : Starting' >> '/var/local/services.log'
+        {% if debian_release == 'bullseye' %}
+        nohup bash -c \
+          "php-fpm7.4 -F |& sed -u 's/^/php-fpm    : /'" \
+          &>> '/var/local/servies.log' &
+        {% elif debian_release == 'buster' %}
+        nohup bash -c \
+          "php-fpm7.3 -F |& sed -u 's/^/php-fpm    : /'" \
+          &>> '/var/local/servies.log' &
+        {% elif debian_release == 'stretch' %}
+        nohup bash -c \
+          "php-fpm7.0 -F |& sed -u 's/^/php-fpm    : /'" \
+          &>> '/var/local/servies.log' &
+        {% endif %}
+        sleep 3
+      args:
+        executable: /bin/bash
+      vars:
+        debian_release: "{{ lsb_release.stdout }}"
+      become: yes
+
+    - name: Check the php-fpm process has started
+      # We do this in a separate shell task to the one that we started the
+      # process in so that we know that the process survived beyond that shell.
+      ansible.builtin.shell: |-
+        n=0
+        while [ $n -lt 3 ]; do
+          pgrep -f '^php-fpm: master process' && \
+            echo 'php-fpm    : Started' >> '/var/local/services.log' && break
+          let n=n+1
+          sleep 3
+        done
+
+        if [ $n -eq 3 ]; then
+          echo 'php-fpm    : Failed to start process' \
+            >> /var/local/services.log
+          exit 1
+        fi
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+  when: pgrep_result.rc == 1

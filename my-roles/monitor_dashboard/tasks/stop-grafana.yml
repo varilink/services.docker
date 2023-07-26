@@ -1,0 +1,24 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_monitor_dashboard/tasks/stop-grafana.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the grafana process is running
+  ansible.builtin.shell: pgrep -f '^/usr/share/grafana/bin/grafana server'
+  register: pgrep_result
+  changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
+
+- name: Stop the grafana process if it is running
+  ansible.builtin.shell: |-
+    echo 'grafana    : Stopping' >> '/var/local/services.log'
+    pkill -f '^/usr/share/grafana/bin/grafana server'
+    while true
+    do
+      sleep 3
+      pgrep -f '^/usr/share/grafana/bin/grafana server' || break
+    done
+    echo 'grafana    : Stopped' >> '/var/local/services.log'
+  become: yes
+  when: pgrep_result.rc == 0
