@@ -65,7 +65,9 @@ then
     # The backup_director and backup_storage roles share the same host and
     # thus the same bacula-home volume.
 
-    echo 'docker volume rm services_bacula-home'
+    cmd1='docker volume ls --quiet | grep services_bacula-home'
+    cmd2='docker volume rm services_bacula-home'
+    echo "$cmd1 && $cmd2"
 
   elif [[ $MYENV == 'distributed' ]]
   then
