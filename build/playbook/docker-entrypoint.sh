@@ -85,7 +85,7 @@ for arg in "$@"; do
 
   case $arg in
 
-    'backup'|'calendar'|'dns'|'dynamic_dns'|'mail'|'web')
+    'backup'|'calendar'|'dns'|'dynamic_dns'|'mail'|'monitor'|'web')
 
       # The arg is a valid service name, so add it to the lists of "services"
       # and "tags". The first of those lists is separated by spaces and the
