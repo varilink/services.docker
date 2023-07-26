@@ -5,11 +5,13 @@
 ---
 
 - ansible.builtin.import_role:
-    name: database
-    tasks_from: install.yml
+    name: /libraries-ansible_roles/database
+    tasks_from: install-service
+    handlers_from: none
 
 - ansible.builtin.include_tasks: start-mysql.yml
 
 - ansible.builtin.import_role:
-    name: database
-    tasks_from: configure.yml
+    name: /libraries-ansible_roles/database
+    tasks_from: configure-service
+    handlers_from: none

@@ -6,10 +6,10 @@
 
 - ansible.builtin.import_role:
     name: reverse_proxy
-    tasks_from: install.yml
+    tasks_from: install-service
 
 - ansible.builtin.include_tasks: start-nginx.yml
 
 - ansible.builtin.import_role:
     name: reverse_proxy
-    tasks_from: configure.yml
+    tasks_from: configure-service

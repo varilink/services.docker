@@ -3,12 +3,13 @@
 ---
 
 - ansible.builtin.import_role:
-    name: mta
-    tasks_from: install
+    name: /libraries-ansible_roles/mta
+    tasks_from: install-service
     handlers_from: common
 
 - ansible.builtin.import_tasks: start-exim.yml
 
 - ansible.builtin.import_role:
-    name: mta
-    tasks_from: configure
+    name: /libraries-ansible_roles/mta
+    tasks_from: configure-service
+    handlers_from: none

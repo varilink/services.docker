@@ -9,4 +9,4 @@
 
 - ansible.builtin.import_role:
     name: wordpress
-    tasks_from: install.yml
+    tasks_from: install-service

@@ -5,16 +5,22 @@
 ---
 
 - ansible.builtin.import_role:
-    name: my_mta
+    name: "/libraries-ansible_roles/backup"
 
 - ansible.builtin.import_role:
-    name: backup_director
-    tasks_from: install
+    name: "{{ role_path }}/../mta"
 
 - ansible.builtin.import_role:
-    name: backup_director
-    tasks_from: catalog
+    name: "/libraries-ansible_roles/backup_director"
+    tasks_from: install-service
+    handlers_from: none
 
 - ansible.builtin.import_role:
-    name: backup_director
-    tasks_from: configure
+    name: "/libraries-ansible_roles/backup_director"
+    tasks_from: create-catalog
+    handlers_from: none
+
+- ansible.builtin.import_role:
+    name: "/libraries-ansible_roles/backup_director"
+    tasks_from: configure-service
+    handlers_from: none

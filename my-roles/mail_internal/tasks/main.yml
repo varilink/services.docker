@@ -9,8 +9,8 @@
 
 - ansible.builtin.import_role:
     name: mail_internal
-    tasks_from: install.yml
+    tasks_from: install-service
 
 - ansible.builtin.import_role:
     name: mail_internal
-    tasks_from: configure.yml
+    tasks_from: configure-service
