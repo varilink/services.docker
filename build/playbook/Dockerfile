@@ -5,6 +5,7 @@ RUN                                                                            \
   apt-get --yes --no-install-recommends install                                \
     ansible                                                                    \
     iproute2                                                                   \
+    python3-jmespath                                                           \
     sshpass                                                                 && \
     mkdir /project
 
