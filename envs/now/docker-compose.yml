@@ -95,8 +95,8 @@ services:
     build:
       context: build/sshd
       args:
-        RELEASE: buster
-    image: varilink/services/sshd:buster
+        RELEASE: bullseye
+    image: varilink/services/sshd:bullseye
     container_name: services_prod4
     hostname: prod4
     networks:
