@@ -7,6 +7,8 @@
 # line arguments passed to the Docker Compose service into ansible-playbook
 # options.
 
+RED='\033[0;31m'
+NC='\033[0m' # No Color
 
 # The playbook Docker Compose service connects to the office network so it needs
 # to know where to go in order to connect to hosts on the internt network.
@@ -17,31 +19,61 @@ ip route add 10.0.1.0/24 via 10.0.0.254
 # "home".
 if [ "$1" == 'services' ] \
 || [ "$1" == 'customer' ] \
-|| [ "$1" == 'home' ]; then
+|| [ "$1" == 'home'     ]; then
 
   project=$1
+  echo "Project=$project"
   shift
 
 else
 
-  echo 'The first argument must be one of "services", or "customer" or "home"'
+  message='The first arg must be given as "services" or "customer" or "home"'
+  echo -e "${RED}$message${NC}"
   exit 1
 
 fi
 
-# If the next positional argument is "delete" then run the delete playbook,
-# which does teardown actions, otherwise run the create playbook, which is
-# therefore the default but if "create" has been passed as the next positional
-# argument then skip by it.
-if [ "$1" == 'delete' ]; then
+if [ "$MYENV" == 'now'   ] \
+|| [ "$MYENV" == 'to-be' ] \
+|| [ "$MYENV" == 'distributed' ]; then
 
-  playbook='delete'
-  shift
+  echo "Environment=$MYENV"
+
+  [ $(ls -A /environment/projects/$project/) ]                                 \
+    && cp -r /environment/projects/$project/* /project/.
+
+  if [ ! "$MYENV" == 'distributed' ]; then
+
+    cp /playbooks/*.yml /project/.
+
+  fi
 
 else
 
-  playbook='create'
-  [ "$1" == 'create' ] && shift
+  message='MYENV must be set to "now" or "to-be" or "distributed"'
+  echo -e "${RED}$message${NC}"
+  exit 1
+
+fi
+
+if [ "$1" ]; then
+
+  playbook="$1"
+  shift
+
+  if [ ! -f "/project/$playbook" ]; then
+
+    message='That playbook is not present in the project'
+    echo -e "${RED}$message${NC}"
+    exit 1
+
+  fi
+
+else
+
+  message="The second arg must be given as one of the project's playbooks"
+  echo -e "${RED}$message${NC}"
+  exit 1
 
 fi
 
@@ -101,30 +133,30 @@ fi
 
 perl -e "print '-' x $cols, \"\n\""
 
-export ANSIBLE_ROLES_PATH=/my-roles:/libraries-ansible
+export ANSIBLE_ROLES_PATH=/my-roles
 
 if [ "$services" ] && [[ "$@" ]]; then
 
   ansible-playbook --inventory /environment/inventory/hosts.ini \
     --limit `echo $hosts | tr ' ' ','` \
     --tags=`echo $services | tr ' ' ','` \
-    "$@" /environment/playbooks/$project/$playbook.yml
+    "$@" /project/$playbook
 
 elif [ "$services" ] && [[ ! "$@" ]]; then
 
   ansible-playbook --inventory /environment/inventory/hosts.ini \
     --limit=`echo $hosts|tr ' ' ','` \
     --tags=`echo $services | tr ' ' ','` \
-    /environment/playbooks/$project/$playbook.yml
+    /project/$playbook
 
 elif [ ! "$services" ] && [[ "$@" ]]; then
 
   ansible-playbook --inventory /environment/inventory/hosts.ini \
-    "$@" /environment/playbooks/$project/$playbook.yml
+    "$@" /project/$playbook
 
 else
 
   ansible-playbook --inventory /environment/inventory/hosts.ini \
-    /environment/playbooks/$project/$playbook.yml
+    /project/$playbook
 
 fi

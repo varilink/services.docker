@@ -5,7 +5,8 @@ RUN                                                                            \
   apt-get --yes --no-install-recommends install                                \
     ansible                                                                    \
     iproute2                                                                   \
-    sshpass
+    sshpass                                                                 && \
+    mkdir /project
 
 COPY docker-entrypoint.sh /
 

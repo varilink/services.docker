@@ -50,14 +50,10 @@ services:
     environment:
       - MYENV
     volumes:
-      # The configuration for the environment we're currently using, which could
-      # be one of "now", "to-be" or "distributed".
-      - ./envs/${MYENV}:/environment
-      # The Varilink library of Ansible roles for our host services.
-      - ./libraries-ansible:/libraries-ansible
-      # A wrapper set of roles that bespoke the Varilink library of Ansible
-      # roles for use with Docker containers.
-      - ./my-roles:/my-roles
+      - ./envs/${MYENV}/:/environment/:ro
+      - ./playbooks/:/playbooks/:ro
+      - ./my-roles/:/my-roles:ro
+      - ./roles/:/libraries-ansible_roles/:ro
     networks:
       office:
     cap_add:
