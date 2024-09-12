@@ -4,11 +4,11 @@
 
 function services-to-hosts {
 
-  backup='dns-external hub mail-external'
+  backup='dns-external hub mail'
   calendar='dns-external hub'
   dns='dns-external hub'
   dynamic_dns='dns-external gateway hub'
-  mail='dns-external gateway hub mail-external'
+  mail='dns-external gateway hub mail'
   web='dev dns-external gateway hub prod'
 
   if [[ $# -eq 0 ]]

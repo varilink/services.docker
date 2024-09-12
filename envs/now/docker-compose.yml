@@ -35,17 +35,6 @@ services:
     cap_add:
       - NET_ADMIN
 
-  home:
-    build: build/sshd
-    image: varilink/services/sshd:bullseye
-    container_name: services_home
-    hostname: home
-    networks:
-      office:
-        ipv4_address: 10.0.0.103
-    cap_add:
-      - NET_ADMIN
-
   hub:
     build:
       context: build/sshd
@@ -58,7 +47,7 @@ services:
       - bacula-home:/var/lib/bacula/
     networks:
       office:
-        ipv4_address: 10.0.0.104
+        ipv4_address: 10.0.0.103
     cap_add:
       - NET_ADMIN
 
@@ -75,14 +64,14 @@ services:
     cap_add:
       - NET_ADMIN
 
-  prod1:
+  mail:
     build:
       context: build/sshd
       args:
         RELEASE: stretch
     image: varilink/services/sshd:stretch
-    container_name: services_prod1
-    hostname: prod1
+    container_name: services_mail
+    hostname: mail
     volumes:
       - ./envs/now/sources.list:/etc/apt/sources.list
     networks:
@@ -91,14 +80,14 @@ services:
     cap_add:
       - NET_ADMIN
 
-  prod4:
+  prod:
     build:
       context: build/sshd
       args:
         RELEASE: bullseye
     image: varilink/services/sshd:bullseye
-    container_name: services_prod4
-    hostname: prod4
+    container_name: services_prod
+    hostname: prod
     networks:
       internet:
         ipv4_address: 10.0.1.103

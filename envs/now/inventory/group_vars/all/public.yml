@@ -55,7 +55,7 @@ hosts_to_roles_map:
     - database
     - dns
     - mail_internal
-  mail-external:
+  mail:
     - mail_external
   prod:
     - database
