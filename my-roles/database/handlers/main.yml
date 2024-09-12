@@ -8,8 +8,8 @@
 
 ---
 
-- ansible.builtin.include_tasks: stop-mysql.yml
+- ansible.builtin.include_tasks: stop-mariadbd.yml
   listen: MariaDB configuration changed
 
-- ansible.builtin.include_tasks: start-mysql.yml
+- ansible.builtin.include_tasks: start-mariadbd.yml
   listen: MariaDB configuration changed
