@@ -5,7 +5,7 @@
 # This Dockerfile creates a bare minimum image containing only what is necessary
 # for Ansible to start building out containers based on this image.
 
-ARG RELEASE=bullseye
+ARG RELEASE=bookworm
 FROM debian:$RELEASE
 
 # Install base required Debian packages, create a user for Ansible connections
