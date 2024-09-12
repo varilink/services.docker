@@ -59,6 +59,6 @@
   when: ansible_limit is defined
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/dns
+    name: /roles/dns
     tasks_from: configure-service
     handlers_from: none

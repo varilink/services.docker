@@ -5,14 +5,14 @@
 ---
 
 - ansible.builtin.import_role:
-    name: my_mail
+    name: mail
 
 - ansible.builtin.import_role:
-    name: mail_external
     tasks_from: install
     vars_from: none
+    name: /roles/mail_external
 
 - ansible.builtin.import_role:
-    name: mail_external
     tasks_from: configure
     vars_from: none
+    name: /roles/mail_external

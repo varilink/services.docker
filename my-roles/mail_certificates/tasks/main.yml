@@ -1,4 +1,4 @@
 ---
 
 - ansible.builtin.import_role:
-    name: mail_certificates
+    name: /roles/mail_certificates

@@ -5,11 +5,11 @@
 ---
 
 - ansible.builtin.import_role:
-    name: calendar
+    name: /roles/calendar
     tasks_from: install-service
 
 - ansible.builtin.import_tasks: start-radicale.yml
 
 - ansible.builtin.import_role:
-    name: calendar
+    name: /roles/calendar
     tasks_from: configure-service

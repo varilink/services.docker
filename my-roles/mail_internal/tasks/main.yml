@@ -5,12 +5,14 @@
 ---
 
 - ansible.builtin.import_role:
-    name: my_mail
+    name: mail
 
 - ansible.builtin.import_role:
-    name: mail_internal
+    name: /roles/mail_internal
     tasks_from: install-service
+    handlers_from: none
 
 - ansible.builtin.import_role:
-    name: mail_internal
+    name: /roles/mail_internal
     tasks_from: configure-service
+    handlers_from: none

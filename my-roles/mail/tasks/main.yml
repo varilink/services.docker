@@ -4,15 +4,17 @@
 
 ---
 
-- ansible.builtin.include_role:
-    name: my_mta
+- ansible.builtin.import_role:
+    name: mta
 
 - ansible.builtin.import_role:
-    name: mail
     tasks_from: install
+    name: /roles/mail
+    handlers_from: none
 
 - ansible.builtin.import_tasks: ./start-dovecot.yml
 
 - ansible.builtin.import_role:
-    name: mail
     tasks_from: configure
+    name: /roles/mail
+    handlers_from: none
