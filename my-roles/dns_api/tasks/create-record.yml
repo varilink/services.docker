@@ -1,0 +1,22 @@
+# ------------------------------------------------------------------------------
+# my-roles/dns_api/tasks/create-record.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.import_role:
+    name: dns
+    tasks_from: create-record
+  delegate_to: dns-external
+  vars:
+    dns_record_type: |-
+      {% if dns_record_hostname in [ 'imap', 'smtp' ] %}
+      service
+      {% endif %}
+    dns_record_hostname: "{{ dns_records[0].hostname.split('.') | first }}"
+  when: dns_linode_api_token is not defined
+
+- ansible.builtin.import_role:
+    name: /roles/dns_api
+    tasks_from: create-record
+  when: dns_linode_api_token is defined

@@ -1,0 +1,22 @@
+# ------------------------------------------------------------------------------
+# my-roles/dns_api/tasks/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.import_role:
+    name: /roles/dns_api
+  when: dns_linode_api_token is defined
+
+- block:
+
+    - ansible.builtin.import_role:
+        name: dns
+      delegate_to: dns-external
+      vars:
+        dns_hosts_group: ''
+        dns_upstream_nameservers:
+          - 8.8.8.8
+          - 8.8.4.4
+
+  when: dns_linode_api_token is not defined

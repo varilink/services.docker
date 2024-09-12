@@ -1,0 +1,7 @@
+- ansible.builtin.import_role:
+    name: /roles/file_share
+    tasks_from: install
+
+- ansible.builtin.import_role:
+    name: /roles/file_share
+    tasks_from: configure
