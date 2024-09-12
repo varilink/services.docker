@@ -1,0 +1,31 @@
+# ------------------------------------------------------------------------------
+# internet.yml
+# ------------------------------------------------------------------------------
+
+# Docker Compose file that is used to extend services in the docker-compose.yml
+# file that provide testing clients to make connection to the Docker internet
+# network.
+
+---
+
+services:
+
+  dig:
+    networks:
+      internet:
+
+  lynx:
+    networks:
+      internet:
+
+  mutt:
+    networks:
+      internet:
+
+  swaks:
+    networks:
+      internet:
+
+  traceroute:
+    networks:
+      internet:

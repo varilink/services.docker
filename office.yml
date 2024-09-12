@@ -1,0 +1,31 @@
+# ------------------------------------------------------------------------------
+# office.yml
+# ------------------------------------------------------------------------------
+
+# Docker Compose file that is used to extend services in the docker-compose.yml
+# file that provide testing clients to make connection to the Docker office
+# network.
+
+---
+
+services:
+
+  dig:
+    networks:
+      office:
+
+  lynx:
+    networks:
+      office:
+
+  mutt:
+    networks:
+      office:
+
+  swaks:
+    networks:
+      office:
+
+  traceroute:
+    networks:
+      office:
