@@ -4,10 +4,7 @@
 
 ---
 
-wordpress_sites:
-  - subdomain: dev
-
-wordpress_sites_private:
-  - subdomain: dev
-    admin_password: 'gCP8e86&2#^!wvQO'
-    database_password: 'oF748&S*V&*U$fEo'
+wp_subdomain: dev
+wp_admin_password: 'gCP8e86&2#^!wvQO'
+wp_database_password: 'oF748&S*V&*U$fEo'
+wp_reverse_proxy_pass_port: 8081

@@ -21,10 +21,11 @@ domain_locality: Long Eaton
 # sensitive data.
 domain_users:
   # A user with a personal email address
-  - email: "userfname.userlname@{{ domain_name }}"
+  - fname: userfname
+    lname: userlname
     password: 'dN398*gDd00O7@6V'
   # A user with a role email address
-  - email: rolename@{{ domain_name }}
+  - rname: rolename
     password: 'V8m89r%D#Q&oq41y'
 
 project_dynamic_dns_records:
