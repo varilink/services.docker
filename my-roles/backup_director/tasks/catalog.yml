@@ -1,9 +1,0 @@
-# ------------------------------------------------------------------------------
-# my-roles/my_backup_director/tasks/catalog.yml
-# ------------------------------------------------------------------------------
-
----
-
-- ansible.builtin.import_role:
-    name: backup_director
-    tasks_from: catalog.yml

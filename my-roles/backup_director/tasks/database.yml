@@ -1,3 +1,0 @@
-- ansible.builtin.import_role:
-    name: backup_director
-    tasks_from: database
