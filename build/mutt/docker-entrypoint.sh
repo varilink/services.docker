@@ -8,12 +8,15 @@
 
 set -e
 
+ip_address=$(hostname -i)
+
 # Set named variables to positional values for greater readability further down:
 username=$1
-connection=$2
 
-if [[ $connection == 'external' ]]
+if [[ $ip_address =~ ^10\.0\.1 ]]
 then
+
+	connection=external
 
 	# We are simulating client connection external to the office network.
 	# Update the client's /etc/resolv.conf to use simulated, ISP DNS service.
@@ -22,8 +25,10 @@ then
 	options ndots:0
 	EOF
 
-elif [[ $connection == 'internal' ]]
+elif [[ $ip_address =~ ^10\.0\.0 ]]
 then
+
+	connection=internal
 
 	# We are simulating client connection to the office network.
 	# Update the client's /etc/resolv.conf to use our internal DNS service.

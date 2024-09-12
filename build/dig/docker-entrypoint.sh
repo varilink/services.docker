@@ -1,26 +1,13 @@
 set -e
 
+ipaddr=`hostname -I`
 
-if [[ ! $@ ]]; then
-
-  echo 'The lookup scope, "external" or "internal" must be provided'
-
-fi
-
-scope=$1
-shift
-
-if [[ "$scope" == 'external' ]]; then
-
-  exec dig @$EXTERNAL_NAMESERVER $@
-
-elif [[ "$scope" == 'internal' ]]; then
+if [[ $ipaddr =~ ^10\.0\.0 ]]; then
 
   exec dig @$INTERNAL_NAMESERVER $@
 
-else
+elif [[ $ipaddr =~ ^10\.0\.1 ]]; then
 
-  echo 'The first parameter must be the lookup scope, "external" or "internal"'
-  exit 1
+  exec dig @$EXTERNAL_NAMESERVER $@
 
 fi
