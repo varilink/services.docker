@@ -16,6 +16,8 @@ FROM debian:$RELEASE
 RUN                                                                            \
   apt-get update                                                            && \
   apt-get --yes --no-install-recommends install                                \
+    acl                                                                        \
+    gosu                                                                       \
     iproute2                                                                   \
     lsb-release                                                                \
     openssh-server                                                             \
