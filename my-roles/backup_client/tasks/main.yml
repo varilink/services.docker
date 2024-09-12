@@ -2,10 +2,10 @@
 ---
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/backup
+    name: /roles/backup
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/backup_client
+    name: /roles/backup_client
     tasks_from: install-service
     handlers_from: none
 
@@ -13,6 +13,6 @@
     file: start-bacula-fd.yml
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/backup_client
+    name: /roles/backup_client
     tasks_from: configure-service
     handlers_from: none

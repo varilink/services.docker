@@ -11,9 +11,9 @@
     name: "{{ role_path }}/../php_fpm"
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/backup_web
+    name: /roles/backup_web
     tasks_from: install-service
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/backup_web
+    name: /roles/backup_web
     tasks_from: configure-service

@@ -53,7 +53,7 @@ services:
       - ./envs/${MYENV}/:/environment/:ro
       - ./playbooks/:/playbooks/:ro
       - ./my-roles/:/my-roles:ro
-      - ./roles/:/libraries-ansible_roles/:ro
+      - ./roles/:/roles/:ro
     networks:
       office:
     cap_add:

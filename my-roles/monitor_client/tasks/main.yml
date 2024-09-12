@@ -5,11 +5,11 @@
 ---
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/monitor_client
+    name: /roles/monitor_client
     tasks_from: install-service
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/monitor_client
+    name: /roles/monitor_client
     tasks_from: configure-service
 
 - ansible.builtin.import_tasks: start-telegraf.yml

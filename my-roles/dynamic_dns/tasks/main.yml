@@ -1,5 +1,5 @@
 ---
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/dynamic_dns
+    name: /roles/dynamic_dns
     handlers_from: none

@@ -5,14 +5,14 @@
 ---
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/backup
+    name: /roles/backup
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/backup_storage
+    name: /roles/backup_storage
     tasks_from: install-service
     handlers_from: none
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/backup_storage
+    name: /roles/backup_storage
     tasks_from: configure-service
     handlers_from: none

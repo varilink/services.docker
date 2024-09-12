@@ -8,5 +8,5 @@
     name: "{{ role_path }}/../nginx"
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/monitor_gateway
+    name: /roles/monitor_gateway
     tasks_from: create-site

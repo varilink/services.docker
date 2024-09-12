@@ -5,7 +5,7 @@
 ---
 
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/php_fpm
+    name: /roles/php_fpm
     handlers_from: none
 
 - ansible.builtin.import_tasks: start-php-fpm.yml

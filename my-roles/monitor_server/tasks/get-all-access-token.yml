@@ -1,3 +1,3 @@
 - ansible.builtin.import_role:
-    name: /libraries-ansible_roles/monitor_server
+    name: /roles/monitor_server
     tasks_from: get-all-access-token
