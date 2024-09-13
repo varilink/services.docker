@@ -1,52 +1,21 @@
 # ------------------------------------------------------------------------------
-# my-roles/my_database/tasks/stop.yml
+# my-roles/my_database/tasks/stop-mariadbd.yml
 # ------------------------------------------------------------------------------
 
 ---
 
-- name: Get the codename of the Debian release on this host
-  ansible.builtin.command: lsb_release --codename --short
-  register: lsb_release
-  changed_when: false
-
-- name: Test if the mysqld (buster) or mariadb (bullseye) process is running
-  ansible.builtin.shell: |-
-    {% if lsb_release.stdout == 'buster' %}
-    pgrep -f '^/usr/sbin/mysqld'
-    {% elif lsb_release.stdout == 'bullseye' %}
-    pgrep -f '^/usr/sbin/mariadbd'
-    {% endif %}
+- name: Test if the mariadbd process is running
+  ansible.builtin.command: "pgrep -f '^/usr/sbin/mariadbd'"
   register: pgrep_result
   changed_when: false
   failed_when: pgrep_result.rc !=0 and pgrep_result.rc != 1
 
-- name: Stop mysqld (buster) or mariadb (bullseye) process
+- name: Stop the mariadbd process
   # NOTE: The mysqld_safe command creates a process whose "CMD" in ps output
   # is "/bin/sh /usr/bin/mysqld_safe". That process does not respond to a
   # SIGKILL. The process that accepts a SIGKILL is a child of this process
-  # whose "CMD" starts with "/usr/sbin/mariadbd" in Debian bullseye and
-  # "/usr/sbin/mysqld" in Debian buster.
+  # whose "CMD" starts with "/usr/sbin/mariadbd".
   ansible.builtin.shell: |-
-    {% if lsb_release.stdout == 'buster '%}
-
-    echo 'mysqld     : Stopping' >> /var/local/services.log
-    pkill -f '^/usr/sbin/mysqld'
-
-    n=0
-    while [ $n -lt 3 ]; do
-      sleep 3
-      pgrep -f '^/usr/sbin/mysqld' || \
-        echo 'mysqld     : Stopped' >> /var/local/services.log && break
-      let n=n+1
-    done
-    
-    if [ $n -eq 3 ]; then
-      echo 'mysqld     : Failed to stop process' \
-        >> /var/local/services.log
-    fi
-
-    {% elif lsb_release.stdout == 'bullseye' %}
-
     echo 'mariadbd   : Stopping' >> /var/local/services.log
     pkill -f '^/usr/sbin/mariadbd'
 
@@ -62,8 +31,6 @@
       echo 'mariadbd   : Failed to stop process' \
         >> /var/local/services.log
     fi
-
-    {% endif %}
   args:
     executable: /bin/bash
   become: yes

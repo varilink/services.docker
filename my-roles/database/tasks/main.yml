@@ -9,7 +9,7 @@
     tasks_from: install-service
     handlers_from: none
 
-- ansible.builtin.include_tasks: start-mysql.yml
+- ansible.builtin.import_tasks: start-mariadbd.yml
 
 - ansible.builtin.import_role:
     name: /roles/database
