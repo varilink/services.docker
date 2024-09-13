@@ -180,3 +180,98 @@ services:
       office:
     cap_add:
       - NET_ADMIN
+
+# There follows a noop service corresponding to all of the services that are
+# defined in the now, to-be and distributed environment. These are present so
+# that whenever we run the docker-compose command without specifying an
+# environment files, and so Docker Compose defaults to the configuration within
+# this file, we won't get any orphan container messages and docker-compose
+# actions such as stop and rm will be default always affect all this project's
+# containers.
+
+  backup-director:
+    build: ./build/noop
+    image: varilink/noop
+
+  backup-storage:
+    build: ./build/noop
+    image: varilink/noop
+
+  caldav:
+    build: ./build/noop
+    image: varilink/noop
+
+  database-external:
+    build: ./build/noop
+    image: varilink/noop
+
+  database-internal:
+    build: ./build/noop
+    image: varilink/noop
+
+  dev:
+    image: scratch
+
+  dns-external:
+    build: ./build/noop
+    image: varilink/noop
+
+  dns-internal:
+    build: ./build/noop
+    image: varilink/noop
+
+  dynamic-dns:
+    build: ./build/noop
+    image: varilink/noop
+
+  hub:
+    build: ./build/noop
+    image: varilink/noop
+
+  gateway:
+    build: ./build/noop
+    image: varilink/noop
+
+  mail:
+    build: ./build/noop
+    image: varilink/noop
+
+  mail-certificates:
+    build: ./build/noop
+    image: varilink/noop
+
+  mail-external:
+    build: ./build/noop
+    image: varilink/noop
+
+  mail-internal:
+    build: ./build/noop
+    image: varilink/noop
+
+  monitor-gateway:
+    build: ./build/noop
+    image: varilink/noop
+
+  prod:
+    build: ./build/noop
+    image: varilink/noop
+
+  reverse-proxy-gateway:
+    build: ./build/noop
+    image: varilink/noop
+
+  reverse-proxy-external:
+    build: ./build/noop
+    image: varilink/noop
+
+  reverse-proxy-internal:
+    build: ./build/noop
+    image: varilink/noop
+
+  wordpress-external:
+    build: ./build/noop
+    image: varilink/noop
+
+  wordpress-internal:
+    build: ./build/noop
+    image: varilink/noop
