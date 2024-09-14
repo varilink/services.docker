@@ -16,6 +16,13 @@ stream {
 
   server {
 
+    listen 10.0.1.254:8086;
+    proxy_pass $MONITOR_GATEWAY:8086;
+
+  }
+
+  server {
+
     listen 10.0.1.254:9103;
     proxy_pass $BACKUP_STORAGE:9103;
 
