@@ -1,0 +1,60 @@
+# ------------------------------------------------------------------------------
+# my-roles/mail_external/tasks/start-clamd.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the clamd process is running
+  ansible.builtin.shell: pgrep -f '^clamd --foreground$'
+  register: pgrep_result
+  changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
+
+- block:
+
+# Note that Using a nested block to apply `become: yes` to the next two tasks
+# results in an error with the message:
+# 'Block' object has no attribute 'get_name'
+# I think that this is an Ansible limitation when using blocks within task lists
+# invoked by handlers.
+
+    - name: Create the run directory for clamav
+      ansible.builtin.file:
+        path: /run/clamav
+        state: directory
+        owner: clamav
+        group: root
+      become: yes
+
+    - name: Start the clamd process
+      ansible.builtin.shell: |-
+        echo 'clamd      : Starting' >> '/var/local/services.log'
+        nohup bash -c \
+          "clamd --foreground |& sed -u 's/^/clamd      : /'" \
+          &>> '/var/local/services.log' &
+        sleep 3
+      args:
+        executable: /bin/bash
+      become: yes
+
+    - name: Check the clamd process has started
+      # We do this in a separate shell task to the one that we started the
+      # process in so that we know that the process survived beyond that shell.
+      ansible.builtin.shell: |-
+        n=0
+        while [ $n -lt 3 ]; do
+          pgrep -f '^clamd --foreground$' && \
+            echo 'clamd      : Started' >> '/var/local/services.log' && break
+          let n=n+1
+          sleep 3
+        done
+
+        if [ $n -eq 3 ]; then
+          echo 'clamd      : Failed to start process' \
+            >> /var/local/services.log
+          exit 1
+        fi
+      args:
+        executable: /bin/bash
+
+  when: pgrep_result.rc == 1

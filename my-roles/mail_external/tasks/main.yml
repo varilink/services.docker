@@ -12,6 +12,20 @@
     vars_from: none
     name: /roles/mail_external
 
+- name: Update the virus databases if they're not already present
+  # The freshclam command updates the virus databases, creating them if they're
+  # not already present. Its use is rate limited, so we only run it if the virus
+  # databases are not already present to avoid exceeding the limit. The virus
+  # databases are stored in a volume to persist them between container runs.
+  ansible.builtin.shell:
+    cmd: '[[ $(ls -A /var/lib/clamav) ]] || freshclam'
+    executable: /usr/bin/bash
+  become: yes
+
+- ansible.builtin.import_tasks: start-clamd.yml
+
+- ansible.builtin.import_tasks: start-spamd.yml
+
 - ansible.builtin.import_role:
     tasks_from: configure
     vars_from: none

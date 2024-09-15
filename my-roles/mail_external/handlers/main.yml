@@ -1,0 +1,11 @@
+# ------------------------------------------------------------------------------
+# my-roles/mail_external/handlers/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.include_tasks: stop-clamd.yml
+  listen: ClamAV configuration changed
+
+- ansible.builtin.include_tasks: start-clamd.yml
+  listen: ClamAV configuration changed

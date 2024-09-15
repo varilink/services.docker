@@ -1,0 +1,24 @@
+# ------------------------------------------------------------------------------
+# my-roles/mail_external/tasks/stop-clamd.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the clamd process is running
+  ansible.builtin.shell: pgrep -f '^clamd --foreground$'
+  register: pgrep_result
+  changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
+
+- name: Stop the clamd process if it is running
+  ansible.builtin.shell: |-
+    echo 'clamd      : Stopping' >> '/var/local/services.log'
+    pkill -f '^clamd --foreground$'
+    while true
+    do
+      sleep 3
+      pgrep -f '^clamd --foreground$' || break
+    done
+    echo 'clamd      : Stopped' >> '/var/local/services.log'
+  become: yes
+  when: pgrep_result.rc == 0

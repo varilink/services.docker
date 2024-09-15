@@ -1,0 +1,46 @@
+# ------------------------------------------------------------------------------
+# my-roles/mail_external/tasks/start-spamd.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- name: Test if the spamd process is running
+  ansible.builtin.shell: pgrep -f '^/usr/bin/perl -T -w /usr/sbin/spamd$'
+  register: pgrep_result
+  changed_when: false
+  failed_when: pgrep_result.rc != 0 and pgrep_result.rc != 1
+
+- block:
+
+    - name: Start the spamd process
+      ansible.builtin.shell: |-
+        echo 'spamd      : Starting' >> '/var/local/services.log'
+        nohup bash -c \
+          "spamd |& sed -u 's/^/spamd      : /'" \
+          &>> '/var/local/services.log' &
+        sleep 3
+      args:
+        executable: /bin/bash
+      become: yes
+
+    - name: Check the spamd process has started
+      # We do this in a separate shell task to the one that we started the
+      # process in so that we know that the process survived beyond that shell.
+      ansible.builtin.shell: |-
+        n=0
+        while [ $n -lt 3 ]; do
+          pgrep -f '^/usr/bin/perl -T -w /usr/sbin/spamd$' && \
+            echo 'spamd      : Started' >> '/var/local/services.log' && break
+          let n=n+1
+          sleep 3
+        done
+
+        if [ $n -eq 3 ]; then
+          echo 'spamd      : Failed to start process' \
+            >> /var/local/services.log
+          exit 1
+        fi
+      args:
+        executable: /bin/bash
+
+  when: pgrep_result.rc == 1
