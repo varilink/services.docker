@@ -1,0 +1,9 @@
+# ------------------------------------------------------------------------------
+# my-roles/my_mail_certificates/tasks/get-domain-cert.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.import_role:
+    name: mail_certificates
+    tasks_from: get-domain-cert

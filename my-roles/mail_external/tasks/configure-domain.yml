@@ -1,0 +1,9 @@
+# ------------------------------------------------------------------------------
+# my-roles/mail_external/tasks/configure-domain.yml
+# -----------------------------------------------------------------------------#
+
+---
+
+- ansible.builtin.import_role:
+    name: /roles/mail_external
+    tasks_from: configure-domain

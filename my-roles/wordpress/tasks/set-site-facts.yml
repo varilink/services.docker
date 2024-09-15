@@ -1,0 +1,3 @@
+- ansible.builtin.import_role:
+    name: /roles/wordpress
+    tasks_from: set-site-facts

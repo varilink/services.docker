@@ -1,0 +1,4 @@
+- ansible.builtin.import_role:
+    name: /roles/dns
+    tasks_from: create-record
+    handlers_from: none

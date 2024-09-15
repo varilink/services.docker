@@ -1,0 +1,10 @@
+# ------------------------------------------------------------------------------
+# my-roles/database/tasks/create-backup-database.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.import_role:
+    name: /roles/database
+    tasks_from: create-backup-database
+    handlers_from: none

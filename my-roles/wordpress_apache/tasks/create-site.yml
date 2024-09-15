@@ -1,0 +1,4 @@
+- ansible.builtin.import_role:
+    name: /roles/wordpress_apache
+    tasks_from: create-site
+    handlers_from: none

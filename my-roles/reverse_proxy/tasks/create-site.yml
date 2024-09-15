@@ -1,0 +1,7 @@
+- ansible.builtin.import_role:
+    name: nginx
+    tasks_from: none
+
+- ansible.builtin.import_role:
+    name: /roles/reverse_proxy
+    tasks_from: create-site-body

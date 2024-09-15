@@ -1,0 +1,10 @@
+# ------------------------------------------------------------------------------
+# my-roles/nginx/tasks/create-site.yml
+# ------------------------------------------------------------------------------
+
+---
+
+- ansible.builtin.import_role:
+    name: /roles/nginx
+    tasks_from: create-site
+    handlers_from: none
