@@ -8,13 +8,13 @@
     name: mta
 
 - ansible.builtin.import_role:
-    tasks_from: install
     name: /roles/mail
+    tasks_from: install-service
     handlers_from: none
 
 - ansible.builtin.import_tasks: ./start-dovecot.yml
 
 - ansible.builtin.import_role:
-    tasks_from: configure
     name: /roles/mail
+    tasks_from: configure-service
     handlers_from: none

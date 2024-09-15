@@ -8,13 +8,13 @@
     name: /roles/wordpress
 
 - ansible.builtin.import_role:
-    tasks_from: install
     name: /roles/wordpress_apache
+    tasks_from: install-service
     handlers_from: none
 
 - ansible.builtin.import_role:
-    tasks_from: configure
     name: /roles/wordpress_apache
+    tasks_from: configure-service
     handlers_from: none
 
 # Starting apache2 is delayed until after the configure step because we need to
