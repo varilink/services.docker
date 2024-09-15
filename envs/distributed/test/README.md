@@ -1,0 +1,1 @@
+Configuration that is used by the test clients provided by *Services - Docker* when they are used in the *distributed* test environment.

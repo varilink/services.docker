@@ -1,0 +1,1 @@
+Ansible hosts inventory for the *now* test environment implemented by *Services - Docker*.

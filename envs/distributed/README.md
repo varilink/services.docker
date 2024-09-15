@@ -1,0 +1,1 @@
+This folder contains the configuration of the *distributed* test environment implemented by *Services - Docker*. The *distributed* test environment tests the Varilink services when they are deployed on a single service to single host basis.

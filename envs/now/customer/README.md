@@ -1,0 +1,1 @@
+Simulation of a project for one of Varilink's customers within the *now* test environment implemented by *Services - Docker*.
