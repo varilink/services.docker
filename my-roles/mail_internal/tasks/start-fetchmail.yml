@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# my-roles/my_mail_internal/tasks/start-fetchmail.yml
+# my-roles/mail_internal/tasks/start-fetchmail.yml
 # ------------------------------------------------------------------------------
 
 ---

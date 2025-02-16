@@ -1,3 +1,9 @@
+# ------------------------------------------------------------------------------
+# my-roles/monitor_server/tasks/main.yml
+# ------------------------------------------------------------------------------
+
+---
+
 - ansible.builtin.import_role:
     name: /roles/monitor_server
     tasks_from: install-service

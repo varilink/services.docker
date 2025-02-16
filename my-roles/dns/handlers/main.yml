@@ -1,10 +1,12 @@
 # ------------------------------------------------------------------------------
-# my-roles/my_dns/handlers/main.yml
+# my-roles/dns/handlers/main.yml
 # ------------------------------------------------------------------------------
 
 # NOTE: We must use include_tasks not import_tasks in handlers in the roles
 # within the my-role directory, otherwise the handlers they define are not
 # visible to the roles within the libraries-ansible directory.
+
+---
 
 - ansible.builtin.include_tasks: stop-dnsmasq.yml
   listen: Dnsmasq configuration changed

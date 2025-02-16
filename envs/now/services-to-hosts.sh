@@ -2,9 +2,17 @@
 # envs/now/services-to-hosts.sh
 # ------------------------------------------------------------------------------
 
+# Script that returns the hosts in scope for the services in scope for the now
+# test environment. This is used by both the Docker Compose raise-hosts and
+# playbook commands to determine the hosts that they should target.
+
+# ------
+
 function services-to-hosts {
 
   backup='dns-external hub mail'
+  # Mapping of individual services to hosts.
+
   calendar='dns-external hub'
   dns='dns-external hub'
   dynamic_dns='dns-external gateway hub'
@@ -15,6 +23,8 @@ function services-to-hosts {
   then
 
     hosts="$backup $calendar $dns $dynamic_dns $mail $web"
+    # No services provided to limit scope so return the hosts for all services.
+
 
   else
 
@@ -44,5 +54,6 @@ function services-to-hosts {
   fi
 
   hosts=`echo $hosts | xargs -n1 | sort | uniq | paste -sd " "`
+  # Make the list of returned hosts both sorted and unique.
 
 }

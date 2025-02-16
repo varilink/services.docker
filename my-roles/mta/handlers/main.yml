@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# my-roles/my_mta/handlers/main.yml
+# my-roles/mta/handlers/main.yml
 # ------------------------------------------------------------------------------
 
 # NOTE: We must use include_tasks not import_tasks in handlers in the roles

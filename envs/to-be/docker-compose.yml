@@ -2,13 +2,16 @@
 # envs/to-be/docker-compose.yml
 # ------------------------------------------------------------------------------
 
-# Host Docker Compose services for the "to-be" test environment.
+# Docker Compose services that simulate the hosts of Varilink Computing Ltd
+# services in the "to-be" test environment. The "to-be" test environment
+# simulates where our live environment will be when the current Debian testing
+# release becomes the next Debian stable release.
 
 version: "3.7"
 
 services:
 
-  # office network
+  # "office" Docker network
 
   dev:
     build: build/sshd
@@ -45,7 +48,7 @@ services:
     cap_add:
       - NET_ADMIN
 
-  # internet
+  # "internet" Docker network
 
   dns-external:
     build: build/sshd

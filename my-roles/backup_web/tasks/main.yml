@@ -1,6 +1,11 @@
 # ------------------------------------------------------------------------------
-# my-roles/my_backup_web/tasks/main.yml
+# my-roles/backup_web/tasks/main.yml
 # ------------------------------------------------------------------------------
+
+# Equivalent to the task list backup_web/tasks/main.yml in the "Libraries -
+# Ansible Roles" repository to facilitate the backup_web role's use in an
+# environment without a system manager; for example, one using Docker
+# Containers.
 
 ---
 

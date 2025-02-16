@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# my-roles/my_reverse_proxy/handlers/main.yml
+# my-roles/nginx/handlers/main.yml
 # ------------------------------------------------------------------------------
 
 # NOTE: We must use include_tasks not import_tasks in handlers in the roles

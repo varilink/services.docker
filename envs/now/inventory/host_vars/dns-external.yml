@@ -1,12 +1,16 @@
 # ------------------------------------------------------------------------------
-# envs/live/inventory/host_vars/dns-external.yml
+# envs/now/inventory/host_vars/dns-external.yml
 # ------------------------------------------------------------------------------
 
 ---
 
 ansible_host: 10.0.1.101
 
-# The dns-external host is a DNS service host and so can use itself for DNS
-# lookups.
+# Note that the dns-external host is not backed up and so we do not set values
+# for backup_client_director_password and backup_client_monitor_password here.
+
+# The dns-external host is a DNS service host and so uses itself for DNS
+# lookups. Note that we do not set this as a dns group var as to do so would
+# clash with the value set for it in the external group.
 dns_client_nameservers:
   - 127.0.0.1

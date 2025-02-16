@@ -1,4 +1,10 @@
-# my-roles/my_mta/tasks/main.yml
+# ------------------------------------------------------------------------------
+# my-roles/mta/tasks/main.yml
+# ------------------------------------------------------------------------------
+
+# Wrapper to the task list mta/tasks/main.yml in the "Libraries - Ansible Roles"
+# repository to facilitate its use in an environment without a system manager;
+# for example, one using Docker Containers.
 
 ---
 

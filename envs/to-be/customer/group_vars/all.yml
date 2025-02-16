@@ -1,14 +1,24 @@
 # ------------------------------------------------------------------------------
-# envs/to-be/playbooks/customer/group_vars/all/public.yml
+# envs/to-be/customer/group_vars/all.yml
 # ------------------------------------------------------------------------------
 
 ---
 
+# These are the variables for a dummy project for the pretend customer.com
+# domain. They illustrate the variables required for project playbooks.
+
+# Mandatory domain information
 domain_name: customer.com
 domain_organisation: Customer Organisation
+
+# Optional domain information that if provided is used in any self-signed
+# certificates that are generated.
 domain_country: GB
 domain_state: Derbyshire
 domain_locality: Long Eaton
+
+# Users associated with the domain. In a real project this would of course be
+# sensitive data.
 domain_users:
   # A user with a personal email address
   - email: "userfname.userlname@{{ domain_name }}"
@@ -16,4 +26,6 @@ domain_users:
   # A user with a role email address
   - email: rolename@{{ domain_name }}
     password: 'fS931Q!RxMqX0HUI'
+# Port reserved for WordPress websites for this project when they sit behind a
+# reverse proxy.
 wordpress_site_reverse_proxy_pass_port: 8081

@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# my-roles/my_monitor_dashboard/tasks/start-grafana.yml
+# my-roles/monitor_dashboard/tasks/start-grafana.yml
 # ------------------------------------------------------------------------------
 
 ---

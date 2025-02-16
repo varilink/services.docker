@@ -1,3 +1,9 @@
+# ------------------------------------------------------------------------------
+# envs/to-be/customer/host_vars/dev.yml
+# ------------------------------------------------------------------------------
+
+---
+
 wordpress_site_subdomain: dev
 wordpress_site_admin_password: 'gCP8e86&2#^!wvQO'
 wordpress_site_database_password: 'oF748&S*V&*U$fEo'

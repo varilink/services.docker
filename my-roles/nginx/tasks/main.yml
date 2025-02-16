@@ -1,6 +1,10 @@
 # ------------------------------------------------------------------------------
-# my-roles/my_nginx/tasks/main.yml
+# my-roles/nginx/tasks/main.yml
 # ------------------------------------------------------------------------------
+
+# Equivalent to the task list nginx/tasks/main.yml in the "Libraries - Ansible
+# Roles" repository to facilitate the backup_client role's use in an environment
+# without a system manager; for example, one using Docker Containers.
 
 ---
 

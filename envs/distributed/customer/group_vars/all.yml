@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# envs/distributed/playbooks/customer/group_vars/all/public.yml
+# envs/distributed/customer/group_vars/all.yml
 # ------------------------------------------------------------------------------
 
 ---

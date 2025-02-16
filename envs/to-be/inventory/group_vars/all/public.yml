@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# envs/now/to-be/group_vars/all/public.yml
+# envs/to-be/inventory/group_vars/all/public.yml
 # ------------------------------------------------------------------------------
 
 # Variables that apply to all hosts. Note that many that are listed here would

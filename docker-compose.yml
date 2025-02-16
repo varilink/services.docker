@@ -3,18 +3,21 @@
 # ------------------------------------------------------------------------------
 
 version: "3.7"
+# This is the primary, and default, Docker Compose file for the project. It
+# contains the networks and services definitions that form the base Compose file
+# configuration for the project. This file is always the first in the Compose
+# file path, whether we're using the distributed, now or to-be test environment.
+# Other Compose files follow in the Compose file path, to modify these service
+# definitions or add other ones.
+
 
 networks:
 
-  # We use the IPAM driver to allocate a subnet. Service hosts are then
-  # allocated fixed IP addresses from 10.0.0.101 and test clients are allowed to
-  # pick up dynamically allocated IP addresses from the Docker DHCP service.
-
-  # The service hosts simulate a hybird server estate, combining on-premise or
-  # office hosted servers (internal) with servers provided by our Cloud, virtual
-  # server hosting provider (external). We don't simulate that network
-  # separation in this Docker Compose project, as to do so would add complexity
-  # without serving any practical purpose.
+  # We use the IPAM driver to allocate subnets to two Docker networks. These
+  # emulate our office (internal) network and the Internet, by which we mean any
+  # network that is external to our office network. This in turn allows us to
+  # emulate our hybrid services architecture, that combines both Cloud and
+  # on-premise hosts.
 
   office:
     ipam:
@@ -28,9 +31,35 @@ networks:
 
 services:
 
-  # Docker Compose services that are used to create and bring up the Docker
-  # Compose services that emulate hosts in our server estate and deploy
-  # application services to them using Ansible.
+  # The definition of quite a number of Docker Compose services follows,
+  # therefore they are grouped in to categories as follows:
+  #
+  #  1. Hosts Commands
+  # Services that implement commands that are used to create and bring up the
+  # Docker Compose services that emulate hosts in our live server estate and
+  # deploy application services to them using Ansible.
+  #
+  #  2. Network Services
+  # These are services that augment to network definitions above to provide
+  # network related functions that we require to do our testing.
+  #
+  #  3. Office only Test Clients
+  # Docker Compose services that provide clients that can be used to test the
+  # function of the application services that are deployed using Ansible to the
+  # hosts in an environment. These are test clients that are only used from the
+  # office network, and so their connection to that network is specified in this
+  # file.
+  #
+  #  4. Other Test Clients
+  # Test clients that can be used from either the Docker office network or the
+  # Docker internet network. Thus the network connection for these services is
+  # not specified in this file. Instead two other Docker Compose files,
+  # internet.yml and office.yml, are provided to be used when a connection via
+  # the Docker internet or Docker office networks is required.
+
+  # -----------------
+  # 1. Hosts Commands
+  # -----------------
 
   raise-hosts:
     # Outputs the required dockker and docker-compose commands to bring up the
@@ -54,12 +83,18 @@ services:
       - ./playbooks/:/playbooks/:ro
       - ./my-roles/:/my-roles:ro
       - ./roles/:/roles/:ro
+  # -------------------
+  # 2. Network Services
+  # -------------------
+
     networks:
       office:
     cap_add:
       - NET_ADMIN
 
   router:
+    # This service implements a router to route network traffic between the
+    # office and internet Docker networks that are defined above.
     build: ./build/router
     env_file:
       - ./envs/${MYENV}/test/network.env
@@ -71,11 +106,12 @@ services:
       office:
         ipv4_address: 10.0.0.254
 
-  # Docker Compose services that provide clients that can be used to test the
-  # function of the application services that are deployed using Ansible to the
-  # hosts in an environment.
+  # ---------------------------
+  # 3. Office only Test Clients
+  # ---------------------------
 
   bconsole:
+    # Bacula console
     build: ./build/bconsole
     env_file:
       - ./envs/${MYENV}/test/network.env
@@ -85,6 +121,7 @@ services:
       office:
 
   cadaver:
+    # Cadaver WebDav client
     build: ./build/cadaver
     env_file:
       - ./envs/${MYENV}/test/network.env
@@ -92,6 +129,7 @@ services:
       office:
 
   dig:
+    # Dig DNS lookup tool
     build: ./build/dig
     env_file:
       - ./envs/${MYENV}/test/network.env
@@ -114,7 +152,12 @@ services:
     networks:
       office:
 
+  # ---------------------
+  # 4. Other Test Clients
+  # ---------------------
+
   mutt:
+    # Mutt text-based email client
     build: ./build/mutt
     env_file:
       - ./envs/${MYENV}/test/network.env
@@ -173,6 +216,7 @@ services:
       - NET_ADMIN
 
   swaks:
+    # Swiss Army Knife for SMTP
     build: ./build/swaks
     env_file:
       - ./envs/${MYENV}/test/network.env

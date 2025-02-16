@@ -11,6 +11,8 @@ ansible_host: 10.0.0.103
 backup_client_director_password: LdsFB0A14P30r0JmMYAGyq34hAkY4Svpe
 backup_client_monitor_password: BE61LpFFABjI97lDHHFW9H0eBOgY3Aypm
 
-# The hub host is a DNS service host and so can use itself for DNS lookups.
+# The hub host is a DNS service host and so uses itself for DNS lookups. Note
+# that we do not set this as a dns group var as to do so would clash with the
+# value set for it in the internal group.
 dns_client_nameservers:
   - 127.0.0.1
