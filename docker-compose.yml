@@ -2,7 +2,6 @@
 # docker-compose.yml
 # ------------------------------------------------------------------------------
 
-version: "3.7"
 # This is the primary, and default, Docker Compose file for the project. It
 # contains the networks and services definitions that form the base Compose file
 # configuration for the project. This file is always the first in the Compose

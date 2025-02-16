@@ -7,7 +7,6 @@
 # our live environment in which our policy is to use the current Debian stable
 # release.
 
-version: "3.7"
 
 services:
 
