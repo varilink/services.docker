@@ -83,14 +83,14 @@ services:
       - ./playbooks/:/playbooks/:ro
       - ./my-roles/:/my-roles:ro
       - ./roles/:/roles/:ro
-  # -------------------
-  # 2. Network Services
-  # -------------------
-
     networks:
       office:
     cap_add:
       - NET_ADMIN
+
+  # -------------------
+  # 2. Network Services
+  # -------------------
 
   router:
     # This service implements a router to route network traffic between the
