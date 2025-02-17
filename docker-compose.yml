@@ -193,20 +193,6 @@ services:
     cap_add:
       - NET_ADMIN
 
-  traceroute-internal:
-    build: ./build/traceroute
-    networks:
-      office:
-    cap_add:
-      - NET_ADMIN
-
-  traceroute-external:
-    build: ./build/traceroute
-    networks:
-      internet:
-    cap_add:
-      - NET_ADMIN
-
   swaks:
     # Swiss Army Knife for SMTP
     build: ./build/swaks
@@ -214,6 +200,11 @@ services:
       - ./envs/${MYENV}/test/network.env
     networks:
       office:
+    cap_add:
+      - NET_ADMIN
+
+  traceroute:
+    build: ./build/traceroute
     cap_add:
       - NET_ADMIN
 
