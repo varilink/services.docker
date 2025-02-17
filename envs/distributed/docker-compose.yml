@@ -4,6 +4,7 @@
 
 # Host Docker Compose services for the "distributed" test environment.
 
+---
 services:
 
   # office network
