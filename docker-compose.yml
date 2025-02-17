@@ -138,23 +138,15 @@ services:
     cap_add:
       - NET_ADMIN
 
-  lynx-external:
-    build: ./build/lynx
-    env_file:
-      - ./envs/${MYENV}/test/network.env
-    networks:
-      internet:
-
-  lynx-internal:
-    build: ./build/lynx
-    env_file:
-      - ./envs/${MYENV}/test/network.env
-    networks:
-      office:
-
   # ---------------------
   # 4. Other Test Clients
   # ---------------------
+
+  lynx:
+    # Lynx text-based web browser
+    build: ./build/lynx
+    env_file:
+      - ./envs/${MYENV}/test/network.env
 
   mutt:
     # Mutt text-based email client
